@@ -1,0 +1,4 @@
+name: MinigameTemplate
+version: '${project.version}'
+main: me.florixak.minigametemplate.MinigameTemplate
+api-version: '1.21'
