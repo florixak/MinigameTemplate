@@ -2,7 +2,7 @@ package me.florixak.minigametemplate.hooks;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import me.florixak.uhcrevamp.game.GameValues;
+import me.florixak.minigametemplate.game.GameValues;
 import org.bukkit.Bukkit;
 
 public class ProtocolLibHook {

@@ -3,6 +3,7 @@ package me.florixak.minigametemplate.managers;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import eu.decentsoftware.holograms.api.utils.PAPI;
+import lombok.Getter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
@@ -22,8 +23,9 @@ import java.util.stream.Collectors;
 public class PlayerManager {
 
 	private final GameManager gameManager;
+	@Getter
 	private final List<GamePlayer> players;
-
+	@Getter
 	private int maxPlayersWhenTeams;
 
 	public PlayerManager(final GameManager gameManager) {
@@ -32,20 +34,20 @@ public class PlayerManager {
 	}
 
 	public boolean doesPlayerExist(final Player player) {
-		if (getUHCPlayer(player.getUniqueId()) != null) return true;
+		if (getGamePlayer(player.getUniqueId()) != null) return true;
 		return false;
 	}
 
-	public GamePlayer getUHCPlayer(final UUID uuid) {
+	public GamePlayer getGamePlayer(final UUID uuid) {
 		for (final GamePlayer gamePlayer : getPlayersList()) {
-			if (gamePlayer.getUUID().equals(uuid)) {
+			if (gamePlayer.getUuid().equals(uuid)) {
 				return gamePlayer;
 			}
 		}
 		return null;
 	}
 
-	public GamePlayer getUhcPlayer(final String name) {
+	public GamePlayer getGamePlayer(final String name) {
 		for (final GamePlayer gamePlayer : getPlayersList()) {
 			if (gamePlayer.getName().equals(name)) {
 				return gamePlayer;
@@ -55,30 +57,26 @@ public class PlayerManager {
 	}
 
 
-	public GamePlayer getUHCPlayer(final Player player) {
-		return getUHCPlayer(player.getUniqueId());
+	public GamePlayer getGamePlayer(final Player player) {
+		return getGamePlayer(player.getUniqueId());
 	}
 
-	public GamePlayer getOrCreateUHCPlayer(final Player player) {
+	public GamePlayer getOrCreateGamePlayer(final Player player) {
 		if (doesPlayerExist(player)) {
-			return getUHCPlayer(player);
+			return getGamePlayer(player);
 		} else {
-			return newUHCPlayer(player);
+			return newGamePlayer(player);
 		}
 	}
 
-	public synchronized GamePlayer newUHCPlayer(final Player player) {
-		return newUHCPlayer(player.getUniqueId(), player.getName());
+	public synchronized GamePlayer newGamePlayer(final Player player) {
+		return newGamePlayer(player.getUniqueId(), player.getName());
 	}
 
-	public synchronized GamePlayer newUHCPlayer(final UUID uuid, final String name) {
+	public synchronized GamePlayer newGamePlayer(final UUID uuid, final String name) {
 		final GamePlayer newPlayer = new GamePlayer(uuid, name);
 		getPlayersList().add(newPlayer);
 		return newPlayer;
-	}
-
-	public List<GamePlayer> getPlayers() {
-		return this.players;
 	}
 
 	public Set<GamePlayer> getAlivePlayers() {
@@ -113,19 +111,19 @@ public class PlayerManager {
 	}
 
 	public GamePlayer getRandomOnlineUHCPlayer() {
-		return getPlayers().get(RandomUtils.getRandom().nextInt(getPlayers().size()));
+		return RandomUtils.randomOnlinePlayer(getOnlinePlayers().stream().collect(Collectors.toList()));
 	}
 
 	public GamePlayer getGamePlayerWithoutPerm(final String perm) {
 		final List<GamePlayer> onlineListWithoutPerm = getPlayers().stream().filter(gamePlayer -> !gamePlayer.hasPermission(perm)).collect(Collectors.toList());
-		return onlineListWithoutPerm.get(RandomUtils.getRandom().nextInt(onlineListWithoutPerm.size()));
+		return RandomUtils.randomOnlinePlayer(onlineListWithoutPerm);
 	}
 
 	public GamePlayer getWinnerPlayer() {
 		return this.players.stream().filter(GamePlayer::isWinner).filter(GamePlayer::isOnline).findFirst().orElse(null);
 	}
 
-	public void setUHCWinner() {
+	public void setWinner() {
 		final GamePlayer winner = getAlivePlayers().stream()
 				.filter(GamePlayer::isOnline)
 				.max(Comparator.comparingInt(GamePlayer::getKills))
@@ -138,27 +136,11 @@ public class PlayerManager {
 		} else {
 			winner.setWinner(true);
 		}
-//        if (getAliveList().isEmpty()) return;
-//
-//        UHCPlayer winner = getAliveList().get(0);
-//        if (winner == null) return;
-//
-//        for (UHCPlayer uhcPlayer : getAliveList()) {
-//            if (!uhcPlayer.isOnline()) return;
-//            if (uhcPlayer.getKills() > winner.getKills()) {
-//                winner = uhcPlayer;
-//            }
-//        }
-//        if (GameValues.TEAM.TEAM_MODE) {
-//            winner.getTeam().getMembers().forEach(member -> member.setWinner(true));
-//            return;
-//        }
-//        winner.setWinner(true);
 	}
 
-	public String getUHCWinner() {
+	public String getWinner() {
 		if (GameValues.TEAM.TEAM_MODE) {
-			final GameTeam winnerTeam = this.gameManager.getTeamManager().getWinnerTeam();
+			final GameTeam winnerTeam = this.gameManager.getTeamsManager().getWinnerTeam();
 			return winnerTeam != null ? (winnerTeam.getMembers().size() == 1 ? winnerTeam.getMembers().get(0).getName() : winnerTeam.getName()) : "None";
 		}
 		return getWinnerPlayer() != null ? getWinnerPlayer().getName() : "None";
@@ -174,7 +156,7 @@ public class PlayerManager {
 	}
 
 	public void setMaxPlayers() {
-		this.maxPlayersWhenTeams = Math.min(this.gameManager.getTeamManager().getTeamsList().size() * GameValues.TEAM.TEAM_SIZE, Bukkit.getMaxPlayers());
+		this.maxPlayersWhenTeams = Math.min(this.gameManager.getTeamsManager().getTeamsList().size() * GameValues.TEAM.TEAM_SIZE, Bukkit.getMaxPlayers());
 	}
 
 	public int getMaxPlayers() {
@@ -211,7 +193,7 @@ public class PlayerManager {
 		gamePlayer.clearInventory();
 
 		if (GameValues.TEAM.TEAM_MODE && !gamePlayer.hasTeam()) {
-			this.gameManager.getTeamManager().joinRandomTeam(gamePlayer);
+			this.gameManager.getTeamsManager().joinRandomTeam(gamePlayer);
 		}
 
 		if (gamePlayer.hasKit()) {

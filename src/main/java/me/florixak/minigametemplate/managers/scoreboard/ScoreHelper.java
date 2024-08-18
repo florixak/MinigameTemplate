@@ -1,7 +1,7 @@
 package me.florixak.minigametemplate.managers.scoreboard;
 
-import me.florixak.uhcrevamp.utils.placeholderapi.PlaceholderUtil;
-import me.florixak.uhcrevamp.utils.text.TextUtils;
+import eu.decentsoftware.holograms.api.utils.PAPI;
+import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -59,7 +59,7 @@ public class ScoreHelper {
 	}
 
 	public String setPlaceholders(final String text) {
-		return TextUtils.color(PlaceholderUtil.setPlaceholders(text, this.player));
+		return TextUtils.color(PAPI.setPlaceholders(this.player, text));
 	}
 
 	public void setSlotsFromList(final List<String> list) {

@@ -1,11 +1,13 @@
 package me.florixak.minigametemplate.game.quests;
 
 import com.cryptomorin.xseries.XMaterial;
+import lombok.Getter;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import org.bukkit.Material;
 
 import java.util.List;
 
+@Getter
 public class Quest {
 
 	private final String id;
@@ -24,38 +26,13 @@ public class Quest {
 		this.questReward = questReward;
 	}
 
-	public String getId() {
-		return this.id;
-	}
-
-	public QuestType getQuestType() {
-		return this.questType;
-	}
-
-	public String getDisplayName() {
-		return this.displayName;
-	}
-
-	public String getDisplayItem() {
-		return this.displayItem;
-	}
-
 	public Material parseDisplayItem() {
 		return XMaterial.matchXMaterial(this.displayItem).get().parseMaterial();
-	}
-
-	public List<String> getDescription() {
-		return this.description;
-	}
-
-	public QuestReward getReward() {
-		return this.questReward;
 	}
 
 	public void giveReward(final GamePlayer gamePlayer) {
 		this.questReward.giveReward(gamePlayer);
 	}
-
 
 	@Override
 	public boolean equals(final Object obj) {

@@ -2,6 +2,8 @@ package me.florixak.minigametemplate.game.player;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XPotion;
+import lombok.Getter;
+import lombok.Setter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
@@ -10,7 +12,6 @@ import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.game.teams.GameTeam;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.NMSUtils;
-import me.florixak.minigametemplate.utils.TeleportUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -19,12 +20,14 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
 public class GamePlayer {
 
 	private final UUID uuid;
@@ -32,15 +35,17 @@ public class GamePlayer {
 	private final PlayerData data;
 	private final PlayerQuestData questData;
 
-	private PlayerState state;
+	private PlayerState state = PlayerState.LOBBY;
 	private int kills = 0;
 	private int assists = 0;
 	private Kit kit;
 	private Perk perk;
+	@Setter
 	private GameTeam team;
 	private boolean hasWon = false;
 	private long timePlayed = 0;
-	private Location spawnLoc;
+	@Setter
+	private Location spawnLocation;
 
 	private double moneyForGameResult = 0, moneyForKills = 0, moneyForAssists = 0, moneyForActivity = 0;
 	private double expForGameResult = 0, expForKills = 0, expForAssists = 0, expForActivity = 0;
@@ -50,11 +55,6 @@ public class GamePlayer {
 		this.name = name;
 		this.data = new PlayerData(this);
 		this.questData = new PlayerQuestData(this);
-		setState(PlayerState.LOBBY);
-	}
-
-	public UUID getUUID() {
-		return this.uuid;
 	}
 
 	public Player getPlayer() {
@@ -63,7 +63,7 @@ public class GamePlayer {
 
 	public String getName() {
 		if (Bukkit.getPlayer(this.name) == null) {
-			return getData().getName();
+			return getData().getPlayerName();
 		}
 		return this.name;
 	}
@@ -78,24 +78,12 @@ public class GamePlayer {
 		this.state = state;
 	}
 
-	public PlayerState getState() {
-		return this.state;
-	}
-
-	public PlayerData getData() {
-		return this.data;
-	}
-
-	public PlayerQuestData getQuestData() {
-		return this.questData;
-	}
-
 	public void setWinner(final boolean win) {
 		if (this.hasWon == win) return;
 		this.hasWon = win;
 
 		if (getQuestData().hasQuestWithTypeOf("WIN")) {
-			getQuestData().addProgressToTypes("WIN", getPlayer().getInventory().getItemInHand().getType());
+			getQuestData().addProgressToTypes("WIN", getInventory().getItemInHand().getType());
 		}
 	}
 
@@ -104,39 +92,23 @@ public class GamePlayer {
 	}
 
 	public boolean isAlive() {
-		return getState() == PlayerState.ALIVE;
+		return getState().equals(PlayerState.ALIVE);
 	}
 
 	public boolean isDead() {
-		return getState() == PlayerState.DEAD;
+		return getState().equals(PlayerState.DEAD);
 	}
 
 	public boolean isSpectator() {
-		return getState() == PlayerState.SPECTATOR || getState() == PlayerState.DEAD;
-	}
-
-	public void setTeam(final GameTeam team) {
-		this.team = team;
-	}
-
-	public GameTeam getTeam() {
-		return this.team;
+		return getState().equals(PlayerState.SPECTATOR) || getState().equals(PlayerState.DEAD);
 	}
 
 	public boolean hasTeam() {
-		return getTeam() != null;
-	}
-
-	public int getKills() {
-		return this.kills;
+		return this.team != null;
 	}
 
 	public void addKill() {
 		this.kills++;
-	}
-
-	public int getAssists() {
-		return this.assists;
 	}
 
 	public void addAssist() {
@@ -145,10 +117,6 @@ public class GamePlayer {
 
 	public boolean hasKit() {
 		return this.kit != null;
-	}
-
-	public Kit getKit() {
-		return this.kit;
 	}
 
 	public void setKit(final Kit kit) {
@@ -163,10 +131,6 @@ public class GamePlayer {
 		return this.perk != null;
 	}
 
-	public Perk getPerk() {
-		return this.perk;
-	}
-
 	public void setPerk(final Perk perk) {
 		if (this.perk != perk) {
 			this.perk = perk;
@@ -175,34 +139,18 @@ public class GamePlayer {
 		}
 	}
 
-	public void setSpawnLocation(final Location spawnLoc) {
-		this.spawnLoc = spawnLoc;
-	}
-
-	public Location getSpawnLocation() {
-		return this.spawnLoc;
-	}
-
-	public long getTimePlayed() {
-		return this.timePlayed;
-	}
-
-	public void addTimePlayed(final long time) {
-		this.timePlayed += time;
-	}
-
 	public void revive() {
 		if (GameValues.TEAM.TEAM_MODE && !hasTeam()) {
-			if (GameManager.getGameManager().getTeamManager().getFreeTeams().isEmpty()) {
+			if (GameManager.getGameManager().getTeamsManager().getFreeTeams().isEmpty()) {
 				sendMessage(Messages.TEAM_NO_FREE.toString());
 				return;
 			}
-			GameManager.getGameManager().getTeamManager().joinRandomTeam(this);
+			GameManager.getGameManager().getTeamsManager().joinRandomTeam(this);
 		}
 
 		setState(PlayerState.ALIVE);
 		setGameMode(GameMode.SURVIVAL);
-		teleport(TeleportUtils.getSafeLocation());
+//		teleport(TeleportUtils.getSafeLocation());
 
 		getPlayer().setHealth(getPlayer().getMaxHealth());
 		getPlayer().setFoodLevel(20);
@@ -210,7 +158,6 @@ public class GamePlayer {
 		getPlayer().setFireTicks(0);
 		clearPotions();
 		clearInventory();
-		//if (kit != null) getKit().giveKit(this);
 	}
 
 	public void kill(final GamePlayer victim) {
@@ -303,45 +250,22 @@ public class GamePlayer {
 		this.expForActivity += exp;
 	}
 
-	public double getMoneyForGameResult() {
-		return this.moneyForGameResult;
-	}
-
-	public double getMoneyForKills() {
-		return this.moneyForKills;
-	}
-
-	public double getMoneyForAssists() {
-		return this.moneyForAssists;
-	}
-
-	public double getMoneyForActivity() {
-		return this.moneyForActivity;
-	}
-
-	public double getExpForGameResult() {
-		return this.expForGameResult;
-	}
-
-	public double getExpForKills() {
-		return this.expForKills;
-	}
-
-	public double getExpForAssists() {
-		return this.expForAssists;
-	}
-
-	public double getExpForActivity() {
-		return this.expForActivity;
-	}
-
 	public boolean hasPermission(final String permission) {
 		return getPlayer().hasPermission(permission);
+	}
+
+	public void leaveTeam() {
+		if (getTeam() == null) return;
+		getTeam().removeMember(this);
 	}
 
 	public void teleport(final Location loc) {
 		if (loc == null) return;
 		getPlayer().teleport(loc);
+	}
+
+	public PlayerInventory getInventory() {
+		return getPlayer().getInventory();
 	}
 
 	public void clearInventory() {
@@ -353,6 +277,14 @@ public class GamePlayer {
 			emptyArmor[i] = new ItemStack(Material.AIR);
 		}
 		getPlayer().getInventory().setArmorContents(emptyArmor);
+	}
+
+	public void openInventory(final Inventory inventory) {
+		getPlayer().openInventory(inventory);
+	}
+
+	public void closeInventory() {
+		getPlayer().closeInventory();
 	}
 
 	public void giveExp(final int exp) {
@@ -410,14 +342,6 @@ public class GamePlayer {
 		return item;
 	}
 
-	public void openInventory(final Inventory inventory) {
-		getPlayer().openInventory(inventory);
-	}
-
-	public void closeInventory() {
-		getPlayer().closeInventory();
-	}
-
 	public int getPing() {
 		try {
 			return Integer.parseInt(getPlayer().getClass().getMethod("getPing").invoke(getPlayer()).toString());
@@ -431,11 +355,6 @@ public class GamePlayer {
 		NMSUtils.sendHotBarMessageViaNMS(getPlayer(), TextUtils.color(message));
 	}
 
-	public void leaveTeam() {
-		if (getTeam() == null) return;
-		getTeam().removeMember(this);
-	}
-
 	public void reset() {
 		this.hasWon = false;
 		this.kills = 0;
@@ -444,7 +363,7 @@ public class GamePlayer {
 		this.perk = null;
 		if (hasTeam()) getTeam().removeMember(this);
 		this.team = null;
-		this.spawnLoc = null;
+		this.spawnLocation = null;
 		this.timePlayed = 0;
 		this.moneyForGameResult = 0;
 		this.moneyForKills = 0;
@@ -460,6 +379,6 @@ public class GamePlayer {
 
 	@Override
 	public boolean equals(final Object obj) {
-		return obj instanceof GamePlayer && ((GamePlayer) obj).getUUID().equals(this.getUUID());
+		return obj instanceof GamePlayer && ((GamePlayer) obj).getUuid().equals(this.getUuid());
 	}
 }

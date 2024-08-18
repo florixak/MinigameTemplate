@@ -1,6 +1,7 @@
 package me.florixak.minigametemplate.managers;
 
 import com.cryptomorin.xseries.XMaterial;
+import lombok.Getter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.config.Messages;
@@ -20,12 +21,11 @@ import java.util.stream.Collectors;
 public class TeamManager {
 
 	private final FileConfiguration teamsConfig;
-	private final List<GameTeam> teamsList;
+	@Getter
+	private final List<GameTeam> teamsList = new ArrayList<>();
 
 	public TeamManager(final GameManager gameManager) {
-
 		this.teamsConfig = gameManager.getConfigManager().getFile(ConfigType.TEAMS).getConfig();
-		this.teamsList = new ArrayList<>();
 	}
 
 	public void loadTeams() {
@@ -48,10 +48,6 @@ public class TeamManager {
 
 	public GameTeam getTeam(final String name) {
 		return this.teamsList.stream().filter(team -> team.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
-	}
-
-	public List<GameTeam> getTeamsList() {
-		return this.teamsList;
 	}
 
 	public String getTeamsString() {

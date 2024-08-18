@@ -1,5 +1,6 @@
 package me.florixak.minigametemplate.game.teams;
 
+import lombok.Getter;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.utils.NMSUtils;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@Getter
 public class GameTeam {
 
 	private final ItemStack displayItem;
@@ -32,28 +34,12 @@ public class GameTeam {
 		this.members = new ArrayList<>();
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
 	public String getDisplayName() {
-		return getColor() + this.name;
-	}
-
-	public ItemStack getDisplayItem() {
-		return this.displayItem;
+		return this.color + this.name;
 	}
 
 	public int getDisplayItemDurability() {
 		return this.durability;
-	}
-
-	public int getMaxSize() {
-		return this.maxSize;
-	}
-
-	public String getColor() {
-		return this.color;
 	}
 
 	public GamePlayer getLeader() {
@@ -66,10 +52,6 @@ public class GameTeam {
 
 	public boolean isMember(final GamePlayer gamePlayer) {
 		return getMembers().contains(gamePlayer);
-	}
-
-	public List<GamePlayer> getMembers() {
-		return this.members;
 	}
 
 	public String getMembersToString() {
@@ -138,7 +120,9 @@ public class GameTeam {
 
 	@Override
 	public boolean equals(final Object o) {
-		return o instanceof GameTeam && ((GameTeam) o).getName().equals(this.getName());
+		return o instanceof GameTeam
+				&& ((GameTeam) o).getName().equals(this.getName())
+				&& ((GameTeam) o).getColor().equals(this.getColor());
 	}
 
 }

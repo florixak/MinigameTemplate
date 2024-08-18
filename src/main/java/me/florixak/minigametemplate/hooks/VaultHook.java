@@ -1,6 +1,6 @@
 package me.florixak.minigametemplate.hooks;
 
-import me.florixak.uhcrevamp.game.GameValues;
+import me.florixak.minigametemplate.game.GameValues;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

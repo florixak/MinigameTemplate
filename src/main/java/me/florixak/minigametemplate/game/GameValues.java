@@ -59,6 +59,7 @@ public class GameValues {
 	public static final BungeeCordConfig BUNGEECORD = new BungeeCordConfig();
 	public static final QuestConfig QUESTS = new QuestConfig();
 	public static final Sounds SOUNDS = new Sounds();
+	public static final Database DATABASE = new Database();
 
 	private GameValues() {
 	}
@@ -92,6 +93,16 @@ public class GameValues {
 		public final int STARTING = getConfigInt("settings.game.countdowns.starting", 20);
 		public final int IN_GAME = getConfigInt("settings.game.countdowns.in-game", 20);
 		public final int ENDING = getConfigInt("settings.game.countdowns.ending", 20);
+	}
+
+	public static class Database {
+		public final boolean ENABLED = getConfigBoolean("settings.database.enabled", false);
+		public final String HOST = getConfigString("settings.database.host", "localhost");
+		public final String PORT = getConfigString("settings.database.port", "3306");
+		public final String DATABASE = getConfigString("settings.database.database", "database");
+		public final String TABLE = getConfigString("settings.database.table", "minigame");
+		public final String USERNAME = getConfigString("settings.database.username", "root");
+		public final String PASSWORD = getConfigString("settings.database.password", "password");
 	}
 
 	public static class ChatConfig {

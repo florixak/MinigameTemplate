@@ -27,7 +27,7 @@ public class MenuItemsInteractListener implements Listener {
 	public void onItemClick(final PlayerInteractEvent event) {
 
 		final Player p = event.getPlayer();
-		final GamePlayer uhcPlayer = this.gameManager.getPlayerManager().getUHCPlayer(p.getUniqueId());
+		final GamePlayer uhcPlayer = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
 		final ItemStack item = p.getInventory().getItemInHand();
 
 		if (this.gameManager.getGameState() == GameState.LOBBY || this.gameManager.getGameState() == GameState.STARTING) {

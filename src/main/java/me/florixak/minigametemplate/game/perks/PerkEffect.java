@@ -1,11 +1,13 @@
 package me.florixak.minigametemplate.game.perks;
 
 import com.cryptomorin.xseries.XPotion;
+import lombok.Getter;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.potion.PotionEffect;
 
+@Getter
 public class PerkEffect {
 
 	private final String displayName;
@@ -14,14 +16,6 @@ public class PerkEffect {
 	public PerkEffect(final PotionEffect effectType) {
 		this.effectType = effectType;
 		this.displayName = getEffectName() + " " + getFormattedAmplifier() + " (" + getDuration() + "s)";
-	}
-
-	public PotionEffect getEffectType() {
-		return this.effectType;
-	}
-
-	public String getDisplayName() {
-		return this.displayName;
 	}
 
 	public String getEffectName() {

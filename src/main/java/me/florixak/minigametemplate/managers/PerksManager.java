@@ -2,6 +2,7 @@ package me.florixak.minigametemplate.managers;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XPotion;
+import lombok.Getter;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.perks.Perk;
@@ -19,6 +20,7 @@ import java.util.List;
 public class PerksManager {
 
 	private final FileConfiguration perksConfig;
+	@Getter
 	private final List<Perk> perks;
 
 	public PerksManager(final GameManager gameManager) {
@@ -67,9 +69,8 @@ public class PerksManager {
 				} else if (param.equalsIgnoreCase("BONUS")) {
 					final ConfigurationSection bonusSection = perkSection.getConfigurationSection("BONUS");
 					final List<Double> coinsBonus = bonusSection.getDoubleList("coins");
-					final List<Double> uhcExpBonus = bonusSection.getDoubleList("uhc-exp");
-					final List<Integer> expBonus = bonusSection.getIntegerList("exp");
-					final PerkBonus perkBonus = new PerkBonus(coinsBonus, uhcExpBonus, expBonus);
+					final List<Double> expBonus = bonusSection.getDoubleList("exp");
+					final PerkBonus perkBonus = new PerkBonus(coinsBonus, expBonus);
 					bonuses.add(perkBonus);
 				}
 			}
@@ -77,10 +78,6 @@ public class PerksManager {
 			addPerk(perk);
 //            Bukkit.getLogger().info(perks.size() + ". Loaded perk: " + perkName + " with cost: " + cost + " and " + effects.size() + " effects, " + items.size() + " items and " + bonuses.size() + " bonuses.");
 		}
-	}
-
-	public List<Perk> getPerks() {
-		return this.perks;
 	}
 
 	public void addPerk(final Perk perk) {

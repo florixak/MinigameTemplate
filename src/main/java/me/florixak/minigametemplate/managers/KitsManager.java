@@ -3,6 +3,7 @@ package me.florixak.minigametemplate.managers;
 import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XPotion;
+import lombok.Getter;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.kits.Kit;
@@ -22,6 +23,7 @@ import java.util.List;
 public class KitsManager {
 
 	private final FileConfiguration config, kitsConfig;
+	@Getter
 	private final List<Kit> kitsList = new ArrayList<>();
 	private final HashMap<Integer, ItemStack> lobbyMap = new HashMap<>();
 
@@ -122,10 +124,6 @@ public class KitsManager {
 			}
 		}
 		return null;
-	}
-
-	public List<Kit> getKitsList() {
-		return this.kitsList;
 	}
 
 	private void loadLobbyItems() {

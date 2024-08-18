@@ -1,5 +1,6 @@
 package me.florixak.minigametemplate.game.kits;
 
+import lombok.Getter;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.utils.text.TextUtils;
@@ -8,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
+@Getter
 public class Kit {
 
 	private final String name;
@@ -24,28 +26,12 @@ public class Kit {
 		this.items = items;
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
 	public String getDisplayName() {
 		return TextUtils.color(this.displayName);
 	}
 
-	public ItemStack getDisplayItem() {
-		return this.displayItem;
-	}
-
-	public double getCost() {
-		return this.cost;
-	}
-
 	public boolean isFree() {
 		return getCost() == 0;
-	}
-
-	public List<ItemStack> getItems() {
-		return this.items;
 	}
 
 	public String getFormattedCost() {
@@ -58,5 +44,14 @@ public class Kit {
 		for (final ItemStack item : getItems()) {
 			p.getInventory().addItem(item);
 		}
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		return o instanceof Kit
+				&& ((Kit) o).getName().equals(getName())
+				&& ((Kit) o).getDisplayName().equals(getDisplayName())
+				&& ((Kit) o).getCost() == getCost()
+				&& ((Kit) o).getItems().equals(getItems());
 	}
 }

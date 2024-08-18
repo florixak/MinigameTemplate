@@ -1,5 +1,6 @@
 package me.florixak.minigametemplate.game.perks;
 
+import lombok.Getter;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.utils.RandomUtils;
@@ -7,57 +8,43 @@ import me.florixak.minigametemplate.utils.text.TextUtils;
 
 import java.util.List;
 
+@Getter
 public class PerkBonus {
 
 	private final List<Double> coins;
-	private final List<Double> uhcExp;
-	private final List<Integer> exp;
+	private final List<Double> exp;
 
-	public PerkBonus(final List<Double> coins, final List<Double> uhcExp, final List<Integer> exp) {
+	public PerkBonus(final List<Double> coins, final List<Double> uhcExp) {
 		this.coins = coins;
-		this.uhcExp = uhcExp;
-		this.exp = exp;
-	}
-
-	public List<Double> getCoins() {
-		return this.coins;
+		this.exp = uhcExp;
 	}
 
 	public String getFormattedCoins() {
-		if (getCoins().isEmpty()) return "0";
-		if (getCoins().size() == 1) return String.valueOf(getCoins().get(0));
-		return getCoins().get(0) + "-" + getCoins().get(1);
-	}
-
-	public List<Double> getUhcExp() {
-		return this.uhcExp;
+		if (this.coins.isEmpty()) return "0";
+		if (this.coins.size() == 1) return String.valueOf(this.coins.get(0));
+		return this.coins.get(0) + "-" + this.coins.get(1);
 	}
 
 	public String getFormattedUhcExp() {
-		if (getUhcExp().isEmpty()) return "0";
-		if (getUhcExp().size() == 1) return String.valueOf(getUhcExp().get(0));
-		return getUhcExp().get(0) + "-" + getUhcExp().get(1);
+		if (this.exp.isEmpty()) return "0";
+		if (this.exp.size() == 1) return String.valueOf(this.exp.get(0));
+		return this.exp.get(0) + "-" + this.exp.get(1);
 	}
 
-	public List<Integer> getExp() {
-		return this.exp;
-	}
 
 	public String getFormattedExp() {
-		if (getExp().isEmpty()) return "0";
-		if (getExp().size() == 1) return String.valueOf(getExp().get(0));
-		return getExp().get(0) + "-" + getExp().get(1);
+		if (this.exp.isEmpty()) return "0";
+		if (this.exp.size() == 1) return String.valueOf(this.exp.get(0));
+		return this.exp.get(0) + "-" + this.exp.get(1);
 	}
 
 	public void giveBonus(final GamePlayer gamePlayer) {
-		final double randomCoins = getCoins().get(0) + (getCoins().get(1) - getCoins().get(0)) * RandomUtils.getRandom().nextDouble();
-		final double randomUHCExp = getUhcExp().get(0) + (getUhcExp().get(1) - getUhcExp().get(0)) * RandomUtils.getRandom().nextDouble();
-		final int randomExp = RandomUtils.randomInteger(getExp().get(0), getExp().get(1));
+		final double randomCoins = this.exp.get(0) + (this.exp.get(1) - this.exp.get(0)) * RandomUtils.getRandom().nextDouble();
+		final double randomExp = this.exp.get(0) + (this.exp.get(1) - this.exp.get(0)) * RandomUtils.getRandom().nextDouble();
 
 		gamePlayer.getData().depositMoney(randomCoins);
-		gamePlayer.getData().addUHCExp(randomUHCExp);
-		gamePlayer.giveExp(randomExp);
-		gamePlayer.sendMessage(Messages.PERKS_BONUS_RECEIVED.toString().replace("%coins%", TextUtils.formatToOneDecimal(randomCoins)).replace("%uhcExp%", TextUtils.formatToOneDecimal(randomUHCExp)).replace("%exp%", String.valueOf(randomExp)));
+		gamePlayer.getData().addExp(randomExp);
+		gamePlayer.sendMessage(Messages.PERKS_BONUS_RECEIVED.toString().replace("%coins%", TextUtils.formatToOneDecimal(randomCoins)).replace("%exp%", TextUtils.formatToOneDecimal(randomExp)));
 	}
 
 }

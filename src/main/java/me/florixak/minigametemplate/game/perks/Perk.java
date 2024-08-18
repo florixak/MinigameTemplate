@@ -1,5 +1,6 @@
 package me.florixak.minigametemplate.game.perks;
 
+import lombok.Getter;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.utils.text.TextUtils;
@@ -8,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class Perk {
 
 	private final String name;
@@ -28,20 +30,8 @@ public class Perk {
 		this.perkItem = perkItem;
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
 	public String getDisplayName() {
 		return TextUtils.color(this.name);
-	}
-
-	public ItemStack getDisplayItem() {
-		return this.displayItem;
-	}
-
-	public double getCost() {
-		return this.cost;
 	}
 
 	public String getFormattedCost() {
@@ -85,18 +75,6 @@ public class Perk {
 		return formattedDescription;
 	}
 
-	public List<PerkBonus> getPerkBonuses() {
-		return this.perkBonus;
-	}
-
-	public List<PerkEffect> getPerkEffects() {
-		return this.perkEffect;
-	}
-
-	public List<PerkItem> getPerkItems() {
-		return this.perkItem;
-	}
-
 	public boolean hasPerkBonus() {
 		return this.perkBonus != null && !this.perkBonus.isEmpty();
 	}
@@ -125,6 +103,18 @@ public class Perk {
 				bonus.giveBonus(gamePlayer);
 			}
 		}
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		return o instanceof Perk
+				&& ((Perk) o).getName().equals(getName())
+				&& ((Perk) o).getDisplayItem().equals(getDisplayItem())
+				&& ((Perk) o).getCost() == getCost()
+				&& ((Perk) o).getDescription().equals(getDescription())
+				&& ((Perk) o).getPerkBonus().equals(getPerkBonus())
+				&& ((Perk) o).getPerkEffect().equals(getPerkEffect())
+				&& ((Perk) o).getPerkItem().equals(getPerkItem());
 	}
 
 }

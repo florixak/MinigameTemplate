@@ -1,6 +1,6 @@
 package me.florixak.minigametemplate.managers;
 
-import me.florixak.uhcrevamp.game.GameValues;
+import me.florixak.minigametemplate.game.GameValues;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.WorldBorder;

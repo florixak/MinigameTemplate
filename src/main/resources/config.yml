@@ -1,4 +1,4 @@
-# This is the main configuration file of UHCRevamp
+# This is the main configuration file of this minigame.
 # I am going to improve some things in the future.
 # I hope you will like it!
 # If you have problems contact me:
@@ -25,7 +25,8 @@ settings:
     enabled: false # Enable MySQL database integration
     host: "localhost" # MySQL server host
     port: "3306" # MySQL server port
-    database: "uhcrevamp" # MySQL database name
+    database: "minigame" # MySQL database name
+    table: "minigame"
     username: "root" # MySQL username
     password: "" # MySQL password
 
@@ -44,13 +45,6 @@ settings:
       starting: 15 # Countdown for game start in seconds
       ending: 15 # Countdown for game end in seconds
 
-  # Border settings
-  border:
-    init-size: 450 # Size of the game border
-    damage: 1 # Damage taken when outside the border
-    minimum-size: 1 # Minimal size
-    speed: 2 # DIFFERENT!: if 2 and pvp countdown is 600 seconds, border will shrink to minimum in 1200 seconds
-
   # Team settings
   teams:
     team-mode: true # Enable team mode
@@ -67,16 +61,23 @@ settings:
     enabled: true # Enable perks
     bought-forever: true # Perks are bought permanently
 
+  # Border settings
+  border:
+    init-size: 450 # Size of the game border
+    damage: 1 # Damage taken when outside the border
+    minimum-size: 1 # Minimal size
+    speed: 2 # DIFFERENT!: if 2 and pvp countdown is 600 seconds, border will shrink to minimum in 1200 seconds
+
   # Lobby settings
   # Rename your lobby files to these world names, or set it manually
   lobby:
     waiting:
-      world: "UHCWaitingLobby"
+      world: "WaitingLobby"
       x: 0
       y: 10
       z: 0
     ending:
-      world: "UHCEndingLobby"
+      world: "EndingLobby"
       x: 0
       y: 10
       z: 0
@@ -97,17 +98,17 @@ settings:
       slot: 10 # Slot for player stats
       custom-name: "&a%player%" # Custom name for player stats
       lore:
-        - "&fLevel: &a%level%"
-        - "&fRequired EXP: &a%required-exp%"
-        - "&fMoney: &a%money%"
+        - "&fLevel: &a%minigame_level%"
+        - "&fRequired EXP: &a%minigame_required-exp%"
+        - "&fMoney: &a%minigame_money%"
         - " "
-        - "&fWins: &a%total-wins%"
-        - "&fLosses: &a%total-losses%"
-        - "&fKills: &a%total-kills%"
-        - "&fAssists: &a%total-assists%"
-        - "&fDeaths: &a%total-deaths%"
-        - "&fKillstreak: &a%killstreak%"
-        - "&fGames Played: &a%games-played%"
+        - "&fWins: &a%minigame_total-wins%"
+        - "&fLosses: &a%minigame_total-losses%"
+        - "&fKills: &a%minigame_total-kills%"
+        - "&fAssists: &a%minigame_total-assists%"
+        - "&fDeaths: &a%minigame_total-deaths%"
+        - "&fKillstreak: &a%minigame_killstreak%"
+        - "&fGames Played: &a%minigame_games-played%"
     top-stats:
       types:
         WINS:
@@ -145,20 +146,20 @@ settings:
       custom-name: "&a%top-stats-mode%"
       lore:
         - "&7------===========------"
-        - "&a1. &f%uhcrevamp_top-1%"
-        - "&a2. &f%uhcrevamp_top-2%"
-        - "&a3. &f%uhcrevamp_top-3%"
-        - "&a4. &f%uhcrevamp_top-4%"
-        - "&a5. &f%uhcrevamp_top-5%"
+        - "&a1. &f%minigame_top-1%"
+        - "&a2. &f%minigame_top-2%"
+        - "&a3. &f%minigame_top-3%"
+        - "&a4. &f%minigame_top-4%"
+        - "&a5. &f%minigame_top-5%"
         - "&7------===========------"
       hologram: # DecentHolograms plugin required
         - "    &a%top-stats-mode%    "
         - "&7------===========------"
-        - "&a1. &f%uhcrevamp_top-1%"
-        - "&a2. &f%uhcrevamp_top-2%"
-        - "&a3. &f%uhcrevamp_top-3%"
-        - "&a4. &f%uhcrevamp_top-4%"
-        - "&a5. &f%uhcrevamp_top-5%"
+        - "&a1. &f%minigame_top-1%"
+        - "&a2. &f%minigame_top-2%"
+        - "&a3. &f%minigame_top-3%"
+        - "&a4. &f%minigame_top-4%"
+        - "&a5. &f%minigame_top-5%"
         - "&7------===========------"
 
   # Reward settings
@@ -194,8 +195,8 @@ settings:
   tablist:
     enabled: true # Enable custom tablist (requires ProtocolLib)
     header: "&2&lUHC &a&lRevamp\n" # Header text for tablist
-    solo-mode-player-list: "&7[%uhc-level%] &f%player%" # Player list format for solo mode
-    team-mode-player-list: "&7[%uhc-level%] %team% &f%player%" # Player list format for team mode
+    solo-mode-player-list: "&7[%minigame_level%] &f%minigame_player%" # Player list format for solo mode
+    team-mode-player-list: "&7[%minigame_level%] %minigame_team% &f%minigame_player%" # Player list format for team mode
     footer: "\n&7www.your-server.com" # Footer text for tablist
 
   # Selectors
@@ -248,7 +249,7 @@ settings:
       slots: 45 # Number of slots for statistics menu
     confirm-purchase:
       enabled: true # Enable confirm purchase menu
-      confirm: "&aConfirm (%cost% %currency%)" # Text for confirm button
+      confirm: "&aConfirm (%cost% %minigame_currency%)" # Text for confirm button
       confirm-item: EMERALD_BLOCK # Item for confirm button
       cancel: "&cCancel" # Text for cancel button
       cancel-item: REDSTONE_BLOCK # Item for cancel button
@@ -318,11 +319,11 @@ settings:
     # %message% - Sent message
     # %level% - Player level
     # %team% - Team name
-    lobby-format: "&7[%uhc-level%] %team% &f%player% &7» &f%message%" # Format for chat messages in the lobby or in the solo mode
-    global-format: "&6[GLOBAL] &7[%uhc-level%] %team% &f%player% &7» &f%message%" # Format for global chat messages, with ! before message and teams enabled
-    teams-format: "&6[TEAM] &7[%uhc-level%] %team% &f%player% &7» &f%message%" # Format for team chat messages
-    solo-format: "&7[%uhc-level%] &f%player% &7» &f%message%" # Format for chat messages in-game
-    dead-format: "&7[SPECTATOR] [%uhc-level%] %team% &7%player% » %message%" # Format for chat messages from dead players
+    lobby-format: "&7[%minigame_level%] %minigame_team% &f%minigame_player% &7» &f%message%" # Format for chat messages in the lobby or in the solo mode
+    global-format: "&6[GLOBAL] &7[%minigame_level%] %minigame_team% &f%minigame_player% &7» &f%message%" # Format for global chat messages, with ! before message and teams enabled
+    teams-format: "&6[TEAM] &7[%minigame_level%] %minigame_team% &f%minigame_player% &7» &f%message%" # Format for team chat messages
+    solo-format: "&7[%minigame_level%] &f%minigame_player% &7» &f%message%" # Format for chat messages in-game
+    dead-format: "&7[SPECTATOR] [%minigame_level%] %minigame_team% &7%minigame_player% » %message%" # Format for chat messages from dead players
 
     # List of commands blocked in chat
     # It is not perfect, it has some flaws but it works in most cases

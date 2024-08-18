@@ -1,5 +1,6 @@
 package me.florixak.minigametemplate.managers.scoreboard;
 
+import lombok.Getter;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.Bukkit;
@@ -13,9 +14,10 @@ import java.util.UUID;
 
 public class ScoreboardManager {
 
-	private final Map<UUID, ScoreHelper> players;
+	private final Map<UUID, ScoreHelper> players = new HashMap<>();
 
 	private final String title;
+	@Getter
 	private final String footer;
 	private final List<String> waiting;
 	private final List<String> starting;
@@ -25,7 +27,6 @@ public class ScoreboardManager {
 
 	public ScoreboardManager(final GameManager gameManager) {
 		this.gameManager = gameManager;
-		this.players = new HashMap<>();
 
 		final FileConfiguration config = gameManager.getConfigManager().getFile(ConfigType.SCOREBOARD).getConfig();
 
@@ -63,10 +64,6 @@ public class ScoreboardManager {
 				break;
 		}
 		return helper;
-	}
-
-	public String getFooter() {
-		return this.footer;
 	}
 
 	public void removeScoreboard(final Player p) {

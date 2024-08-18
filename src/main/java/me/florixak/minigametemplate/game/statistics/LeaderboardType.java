@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.utils.PAPI;
+import lombok.Getter;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.utils.ItemUtils;
 import me.florixak.minigametemplate.utils.Utils;
@@ -25,14 +26,11 @@ public enum LeaderboardType {
 	UHC_LEVEL("uhc-level"),
 	GAMES_PLAYED("games-played");
 
+	@Getter
 	private final String type;
 
 	LeaderboardType(final String type) {
 		this.type = type;
-	}
-
-	public String getType() {
-		return this.type;
 	}
 
 	public String getDatabaseType() {

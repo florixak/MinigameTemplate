@@ -1,8 +1,8 @@
 package me.florixak.minigametemplate.utils;
 
-import me.florixak.minigametemplate.utils.XSeries.XEnchantment;
-import me.florixak.minigametemplate.utils.XSeries.XMaterial;
-import me.florixak.minigametemplate.utils.XSeries.XPotion;
+import com.cryptomorin.xseries.XEnchantment;
+import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XPotion;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;

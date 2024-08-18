@@ -62,7 +62,7 @@ public class QuestsMenu extends PaginatedMenu {
 						.replace("%count%", String.valueOf(count))
 						.replace("%progress%", String.valueOf(!completed ? this.gamePlayer.getQuestData().getProgress(quest.getId()) : count))
 						.replace("%material%", quest.getQuestType().hasMaterial() ?
-								TextUtils.toNormalCamelText(quest.getQuestType().parseMaterial().name()) :
+								TextUtils.toNormalCamelText(quest.getQuestType().getParsedMaterial().name()) :
 								"None")
 						.replace("%money%", String.valueOf(quest.getReward().getMoney()))
 						.replace("%uhc-exp%", String.valueOf(quest.getReward().getUhcExp()))

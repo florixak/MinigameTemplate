@@ -1,14 +1,20 @@
 package me.florixak.minigametemplate.managers;
 
+import eu.decentsoftware.holograms.api.utils.PAPI;
+import lombok.Getter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.ConfigManager;
 import me.florixak.minigametemplate.config.ConfigType;
+import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameState;
+import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.assists.DamageTrackerManager;
 import me.florixak.minigametemplate.listeners.*;
 import me.florixak.minigametemplate.managers.scoreboard.ScoreboardManager;
 import me.florixak.minigametemplate.managers.scoreboard.TabManager;
 import me.florixak.minigametemplate.sql.MySQL;
 import me.florixak.minigametemplate.sql.SQLGetter;
+import me.florixak.minigametemplate.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,8 +23,10 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class GameManager {
 
+	@Getter
 	private static GameManager instance;
 	private final MinigameTemplate plugin;
 
@@ -37,9 +45,11 @@ public class GameManager {
 	private final SoundManager soundManager;
 	private final LobbyManager lobbyManager;
 	private final WorldManager worldManager;
+	private final DamageTrackerManager damageTrackerManager;
 
 	private MySQL mysql;
 	private SQLGetter data;
+
 	private GameState gameState = GameState.LOBBY;
 	private final FileConfiguration config;
 
@@ -63,8 +73,10 @@ public class GameManager {
 		this.soundManager = new SoundManager();
 		this.lobbyManager = new LobbyManager(this);
 		this.worldManager = new WorldManager();
+		this.damageTrackerManager = new DamageTrackerManager();
 
 		this.config = getConfigManager().getFile(ConfigType.SETTINGS).getConfig();
+		connectToDatabase();
 
 		registerCommands();
 		registerListeners();
@@ -72,14 +84,6 @@ public class GameManager {
 
 	public static GameManager getGameManager() {
 		return instance;
-	}
-
-	public MinigameTemplate getPlugin() {
-		return this.plugin;
-	}
-
-	public GameState getGameState() {
-		return this.gameState;
 	}
 
 	public void setGameState(final GameState gameState) {
@@ -91,10 +95,13 @@ public class GameManager {
 			case LOBBY:
 				break;
 			case STARTING:
+				Utils.broadcast(PAPI.setPlaceholders(null, Messages.GAME_STARTING.toString()));
 				break;
 			case INGAME:
+				Utils.broadcast(PAPI.setPlaceholders(null, Messages.GAME_STARTED.toString()));
 				break;
 			case ENDING:
+				Utils.broadcast(PAPI.setPlaceholders(null, Messages.GAME_ENDED.toString()));
 				break;
 			case RESTARTING:
 				break;
@@ -144,24 +151,15 @@ public class GameManager {
 		return this.playerManager.getPlayers().size() >= this.playerManager.getMaxPlayers();
 	}
 
-	public MySQL getSQL() {
-		return this.mysql;
-	}
-
-	public SQLGetter getDatabase() {
-		return this.data;
-	}
-
 	private void connectToDatabase() {
 		try {
-			final String path = "settings.mysql";
-			if (this.config == null || !this.config.getBoolean(path + ".enabled", false)) return;
+			if (this.config == null || !GameValues.DATABASE.ENABLED) return;
 
-			final String host = this.config.getString(path + ".host", "localhost");
-			final String port = this.config.getString(path + ".port", "3306");
-			final String database = this.config.getString(path + ".database", "minigametemplate");
-			final String username = this.config.getString(path + ".username", "root");
-			final String password = this.config.getString(path + ".password", "");
+			final String host = GameValues.DATABASE.HOST;
+			final String port = GameValues.DATABASE.PORT;
+			final String database = GameValues.DATABASE.DATABASE;
+			final String username = GameValues.DATABASE.USERNAME;
+			final String password = GameValues.DATABASE.PASSWORD;
 
 			this.mysql = new MySQL(host, port, database, username, password);
 			if (this.mysql.hasConnection()) {
@@ -174,7 +172,7 @@ public class GameManager {
 	}
 
 	private void disconnectDatabase() {
-		if (this.config.getBoolean("settings.mysql.enabled", false) && this.mysql != null && this.mysql.hasConnection()) {
+		if (GameValues.DATABASE.ENABLED && this.mysql != null && this.mysql.hasConnection()) {
 			this.mysql.disconnect();
 		}
 	}
@@ -191,66 +189,7 @@ public class GameManager {
 		this.perksManager.onDisable();
 		this.questManager.onDisable();
 		this.leaderboardManager.onDisable();
+		this.damageTrackerManager.onDisable();
 		disconnectDatabase();
-	}
-
-	public ConfigManager getConfigManager() {
-		return this.configManager;
-	}
-
-	public PlayerManager getPlayerManager() {
-		return this.playerManager;
-	}
-
-	public LeaderboardManager getLeaderboardManager() {
-		return this.leaderboardManager;
-	}
-
-	public TeamManager getTeamManager() {
-		return this.teamsManager;
-	}
-
-	public KitsManager getKitsManager() {
-		return this.kitsManager;
-	}
-
-	public PerksManager getPerksManager() {
-		return this.perksManager;
-	}
-
-	public QuestManager getQuestManager() {
-		return this.questManager;
-	}
-
-	public ScoreboardManager getScoreboardManager() {
-		return this.scoreboardManager;
-	}
-
-	public TabManager getTabManager() {
-		return this.tabManager;
-	}
-
-	public MenuManager getMenuManager() {
-		return this.menuManager;
-	}
-
-	public TasksManager getTasksManager() {
-		return this.tasksManager;
-	}
-
-	public BorderManager getBorderManager() {
-		return this.borderManager;
-	}
-
-	public SoundManager getSoundManager() {
-		return this.soundManager;
-	}
-
-	public LobbyManager getLobbyManager() {
-		return this.lobbyManager;
-	}
-
-	public WorldManager getWorldManager() {
-		return this.worldManager;
 	}
 }

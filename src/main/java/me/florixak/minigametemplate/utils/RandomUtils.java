@@ -1,7 +1,9 @@
 package me.florixak.minigametemplate.utils;
 
+import me.florixak.minigametemplate.game.player.GamePlayer;
 import org.bukkit.block.BlockFace;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -99,6 +101,16 @@ public class RandomUtils {
 	 */
 	public static <T> T randomElement(final T[] array) {
 		return array[randomInteger(0, array.length - 1)];
+	}
+
+	/**
+	 * Returns a random element from the specified list.
+	 *
+	 * @param onlineList the list to select an element from
+	 * @return a random element from the list
+	 */
+	public static GamePlayer randomOnlinePlayer(final List<GamePlayer> onlineList) {
+		return onlineList.get(randomInteger(0, onlineList.size() - 1));
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package me.florixak.minigametemplate.sql;
 
+import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.entity.Player;
 
@@ -15,9 +16,9 @@ public class SQLGetter {
 	private final String table;
 
 	public SQLGetter(final GameManager gameManager) {
-		this.conn = gameManager.getSQL().getConnection();
+		this.conn = gameManager.getMysql().getConnection();
 
-		this.table = "uhcrevamp";
+		this.table = GameValues.DATABASE.DATABASE;
 		createTable();
 	}
 
@@ -126,7 +127,7 @@ public class SQLGetter {
 
 	public void addLevel(final UUID uuid) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET uhc_level=? WHERE uuid=?");
+			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET level=? WHERE uuid=?");
 			ps.setInt(1, getLevel(uuid) + 1);
 			ps.setString(2, uuid.toString());
 
@@ -139,12 +140,12 @@ public class SQLGetter {
 
 	public int getLevel(final UUID uuid) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT uhc_level FROM " + this.table + " WHERE uuid=?");
+			final PreparedStatement ps = this.conn.prepareStatement("SELECT level FROM " + this.table + " WHERE uuid=?");
 			ps.setString(1, uuid.toString());
 
 			final ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				return rs.getInt("uhc_level");
+				return rs.getInt("level");
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
@@ -154,7 +155,7 @@ public class SQLGetter {
 
 	public void addExp(final UUID uuid, final double exp) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET uhc_exp=? WHERE uuid=?");
+			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET exp=? WHERE uuid=?");
 			ps.setDouble(1, getExp(uuid) + exp);
 			ps.setString(2, uuid.toString());
 
@@ -167,12 +168,12 @@ public class SQLGetter {
 
 	public double getExp(final UUID uuid) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT uhc_exp FROM " + this.table + " WHERE uuid=?");
+			final PreparedStatement ps = this.conn.prepareStatement("SELECT exp FROM " + this.table + " WHERE uuid=?");
 			ps.setString(1, uuid.toString());
 
 			final ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				return rs.getInt("uhc_exp");
+				return rs.getInt("exp");
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
@@ -182,7 +183,7 @@ public class SQLGetter {
 
 	public void setExp(final UUID uuid, final double exp) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET uhc_exp=? WHERE uuid=?");
+			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET exp=? WHERE uuid=?");
 			ps.setDouble(1, exp);
 			ps.setString(2, uuid.toString());
 
@@ -195,12 +196,12 @@ public class SQLGetter {
 
 	public double getRequiredExp(final UUID uuid) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT required_uhc_exp FROM " + this.table + " WHERE uuid=?");
+			final PreparedStatement ps = this.conn.prepareStatement("SELECT required_exp FROM " + this.table + " WHERE uuid=?");
 			ps.setString(1, uuid.toString());
 
 			final ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				return rs.getInt("required_uhc_exp");
+				return rs.getInt("required_exp");
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
@@ -210,7 +211,7 @@ public class SQLGetter {
 
 	public void setRequiredExp(final UUID uuid, final double exp) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET required_uhc_exp=? WHERE uuid=?");
+			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET required_exp=? WHERE uuid=?");
 			ps.setDouble(1, exp);
 			ps.setString(2, uuid.toString());
 

@@ -1,8 +1,10 @@
 package me.florixak.minigametemplate.game.quests;
 
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
+import com.cryptomorin.xseries.XMaterial;
+import lombok.Getter;
 import org.bukkit.Material;
 
+@Getter
 public class QuestType {
 
 	private final String type;
@@ -20,20 +22,8 @@ public class QuestType {
 		this.material = material;
 	}
 
-	public String getType() {
-		return this.type;
-	}
-
-	public int getCount() {
-		return this.count;
-	}
-
-	public Material parseMaterial() {
+	public Material getParsedMaterial() {
 		return XMaterial.matchXMaterial(this.material).get().parseMaterial();
-	}
-
-	public String getMaterial() {
-		return this.material;
 	}
 
 	public boolean hasMaterial() {

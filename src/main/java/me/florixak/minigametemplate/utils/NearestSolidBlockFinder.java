@@ -1,6 +1,6 @@
 package me.florixak.minigametemplate.utils;
 
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;

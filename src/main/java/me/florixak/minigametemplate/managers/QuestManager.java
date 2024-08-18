@@ -1,5 +1,6 @@
 package me.florixak.minigametemplate.managers;
 
+import lombok.Getter;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.game.quests.Quest;
 import me.florixak.minigametemplate.game.quests.QuestReward;
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class QuestManager {
 	private final FileConfiguration questConfig;
+	@Getter
 	private final List<Quest> quests = new ArrayList<>();
 
 	public QuestManager(final GameManager gameManager) {
@@ -46,10 +48,6 @@ public class QuestManager {
 			}
 		}
 		return null;
-	}
-
-	public List<Quest> getQuests() {
-		return this.quests;
 	}
 
 //	public void resetDailyQuests() {

@@ -3,7 +3,6 @@ package me.florixak.minigametemplate.listeners;
 import eu.decentsoftware.holograms.api.utils.PAPI;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameState;
-import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.Permissions;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.game.player.PlayerState;
@@ -12,10 +11,8 @@ import me.florixak.minigametemplate.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemStack;
 
 public class PlayerListener implements Listener {
 
@@ -59,13 +56,12 @@ public class PlayerListener implements Listener {
 
 		final GamePlayer gamePlayer;
 		if (this.gameManager.getPlayerManager().doesPlayerExist(p)) {
-			gamePlayer = this.gameManager.getPlayerManager().getUHCPlayer(p);
+			gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(p);
 		} else {
-			gamePlayer = this.gameManager.getPlayerManager().newUHCPlayer(p);
+			gamePlayer = this.gameManager.getPlayerManager().newGamePlayer(p);
 		}
 
 		this.gameManager.getScoreboardManager().setScoreboard(p);
-//        gameManager.getTaskManager().getPlayingTimeTask().playerJoined(uhcPlayer);
 
 		final boolean isPlaying = this.gameManager.isPlaying();
 
@@ -78,10 +74,6 @@ public class PlayerListener implements Listener {
 
 		Utils.broadcast(PAPI.setPlaceholders(p, Messages.JOIN.toString()));
 		Utils.broadcast(PAPI.setPlaceholders(p, Messages.PLAYERS_TO_START.toString()));
-
-//		if (!gameManager.isStarting() && gameManager.getPlayerManager().getOnlinePlayers().size() >= GameValues.GAME.PLAYERS_TO_START) {
-//			gameManager.setGameState(GameState.STARTING);
-//		}
 	}
 
 	@EventHandler
@@ -90,18 +82,14 @@ public class PlayerListener implements Listener {
 		event.setQuitMessage(null);
 		final Player p = event.getPlayer();
 
-		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getUHCPlayer(p.getUniqueId());
+		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
 		this.gameManager.getScoreboardManager().removeScoreboard(gamePlayer.getPlayer());
 
 		if (this.gameManager.getGameState().equals(GameState.LOBBY) || this.gameManager.isStarting() || this.gameManager.isEnding()) {
-			Utils.broadcast(PlaceholderUtil.setPlaceholders(Messages.QUIT.toString().replace("%online%", String.valueOf(this.gameManager.getPlayerManager().getOnlinePlayers().size() - 1)), p));
+			Utils.broadcast(PAPI.setPlaceholders(p, Messages.QUIT.toString().replace("%online%", String.valueOf(this.gameManager.getPlayerManager().getOnlinePlayers().size() - 1))));
 			gamePlayer.leaveTeam();
 			this.gameManager.getPlayerManager().getPlayersList().remove(gamePlayer);
-//			if (gameManager.isStarting() && !gameManager.getTaskManager().getGameCheckTask().canStart()) {
-//				gameManager.getTaskManager().cancelStartingTask();
-//				Utils.broadcast(Messages.GAME_STARTING_CANCELED.toString());
-//				gameManager.setGameState(GameState.LOBBY);
-//			}
+
 		} else if (this.gameManager.isPlaying() && !this.gameManager.isEnding()) {
 			gamePlayer.setState(PlayerState.DEAD);
 			if (this.gameManager.getDamageTrackerManager().isInTracker(gamePlayer)) {
@@ -125,16 +113,16 @@ public class PlayerListener implements Listener {
 
 		GamePlayer uhcKiller = null;
 		if (event.getEntity().getKiller() instanceof Player) {
-			uhcKiller = this.gameManager.getPlayerManager().getUHCPlayer(event.getEntity().getKiller().getUniqueId());
+			uhcKiller = this.gameManager.getPlayerManager().getGamePlayer(event.getEntity().getKiller().getUniqueId());
 		}
-		final GamePlayer uhcVictim = this.gameManager.getPlayerManager().getUHCPlayer(event.getEntity().getPlayer().getUniqueId());
+		final GamePlayer uhcVictim = this.gameManager.getPlayerManager().getGamePlayer(event.getEntity().getPlayer().getUniqueId());
 
 //		Bukkit.getServer().getPluginManager().callEvent(new GameKillEvent(uhcKiller, uhcVictim));
 	}
 
 	@EventHandler
 	public void handleItemDrop(final PlayerDropItemEvent event) {
-		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getUHCPlayer(event.getPlayer().getUniqueId());
+		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(event.getPlayer().getUniqueId());
 
 		if (!this.gameManager.isPlaying() || gamePlayer.isDead() || this.gameManager.isEnding()) {
 			event.setCancelled(true);
@@ -144,7 +132,7 @@ public class PlayerListener implements Listener {
 	@Deprecated
 	@EventHandler
 	public void handleItemPickUp(final PlayerPickupItemEvent event) {
-		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getUHCPlayer(event.getPlayer().getUniqueId());
+		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(event.getPlayer().getUniqueId());
 
 		if (!this.gameManager.isPlaying() || gamePlayer.isDead() || this.gameManager.isEnding()) {
 			event.setCancelled(true);
@@ -153,16 +141,6 @@ public class PlayerListener implements Listener {
 
 		if (gamePlayer.getQuestData().hasQuestWithTypeOf("PICKUP")) {
 			gamePlayer.getQuestData().addProgressToTypes("PICKUP", event.getItem().getItemStack().getType());
-		}
-	}
-
-	@EventHandler
-	public void handlePortalTeleport(final PlayerTeleportEvent event) {
-		if (!GameValues.GAME.NETHER_ENABLED && event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
-			event.setCancelled(true);
-		}
-		if (event.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL) {
-			event.setCancelled(true);
 		}
 	}
 
@@ -177,20 +155,6 @@ public class PlayerListener implements Listener {
 	public void handleBucketFill(final PlayerBucketFillEvent event) {
 		if (!this.gameManager.isPlaying() || this.gameManager.getGameState().equals(GameState.ENDING)) {
 			event.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	public void onEnchantPrepare(final PrepareItemEnchantEvent event) {
-		if (UHCRevamp.useOldMethods) {
-			// Automatically add lapis lazuli to the enchantment table for 1.8.8
-			try {
-				event.getInventory().setItem(1, new ItemStack(XMaterial.LAPIS_LAZULI.parseMaterial(), 3)); // 3 lapis lazuli
-			} catch (final Exception e) {
-			}
-		} else {
-			// For newer versions, allow enchanting without lapis lazuli
-			event.getInventory().setItem(1, new ItemStack(XMaterial.LAPIS_LAZULI.parseMaterial(), 3)); // 3 lapis lazuli
 		}
 	}
 }
