@@ -1,0 +1,216 @@
+# Configuration for messages, here you can change all the messages
+
+# All placeholders for PlaceholderAPI are available on buy page under the thumbnail.
+# Or you can use placeholders only for this UHC plugin without PlaceholderAPI that is without uhcrevamp_ prefix. (%kills%)
+# Important to know!
+# -----------------------------------------
+# If you want to use these placeholders in different plugins,
+# you need to put the plugin name before the placeholder, for example:
+# %uhcrevamp_uhc-level% - The player's UHC level
+# -----------------------------------------
+
+Messages:
+  prefix: "&2UHC&aRevamp"
+
+  invalid-command: "&c[!] &fInvalid command! Use help: /uhc help"
+  no-perm: "&c[!] &fYou do not have permissions!"
+  offline-player: "&c[!] &f%player% is offline!"
+  only-for-player: "%prefix% &fThis can be used only by player!"
+  no-money: "&c[!] &fYou do not have enough money!"
+  currency: "coins"
+  purchase-cancel: "&c[!] &fPurchase cancelled!"
+  cant-use-now: "&c[!] &fYou can not use it right now!"
+
+  cant-break: "&c[!] &fYou can not break blocks right now!"
+  cant-place: "&c[!] &fYou can not place blocks right now!"
+
+  player:
+    join: "&a[+] &f%player% joined! (%online%)"
+    quit: "&c[-] &f%player% left! (%online%)"
+
+    kick-due-reserved-slot: "You were kicked because player with reserved slot joined!"
+
+    kill: "&6[†] &f%player% was killed by %killer%!"
+    new-killstreak: "&6[!] &fCongratulations! You broke your killstreak with %kills% kills!"
+    death: "&6[†] &f%player% died!"
+
+    shot-hp: "&6[!] &f%player% has &c%hp%❤"
+
+    uhc-level:
+      level-up: "&a[LEVEL UP] &f%previous-uhc-level% → %new-uhc-level%"
+
+  game:
+    solo: "SOLO"
+    teams: "TEAMS"
+
+    starting: "&6[!] &fGame is starting in %countdown%!"
+    already-starting: "&c[!] &fGame is already about to start!"
+    starting-canceled: "&c[!] &fGame starting has been canceled!"
+    started: "&a[!] &fGame has started!"
+    force-started: "&a[!] &fGame has been force started!"
+    phase-force-skipped: "&a[!] &f%phase% phase was force skipped!"
+
+    mining: "&a[!] &fYou have %countdown% to mine!"
+
+    pvp-in: "&6[!] &fPVP starts in %countdown%!"
+    pvp: "&6[!] &fPVP has been allowed!"
+
+    deathmatch-in: "&6[!] &fDeathmatch starts in %countdown%!"
+    deathmatch: "&6[!] &fDeathmatch has started!"
+
+    border-shrink: "&c[!] &fBorder has begun to shrink! Be careful!"
+    players-to-start: "&6[!] &fGame needs minimal %players-to-start% players to start!"
+    not-enough-players: "&c[!] &fNot enough players to start!"
+
+    ended: "&c[!] &fGame has ended!"
+    restarting: "%prefix% &fGame is restarting!"
+    full: "Game is full!"
+
+  teams:
+    join: "&a[!] &fJoined team %team%&f!"
+    leave: "&c[!] &fLeft team %team%&f!"
+    full: "&c[!] &fTeam is full!"
+    already-in-team: "&c[!] &fYou are already in this team!"
+    not-in-team: "&c[!] &fYou are not in any team!"
+    defeated: "&6[!] &cTeam %team% &cwas defeated!"
+    none: "None"
+    solo: "Solo"
+    no-friendly-fire: "&c[!] &fFriendly fire is disabled!"
+    no-free-team: "&c[!] &fAll teams are full! So you have become spectator!"
+
+  kits:
+    selected: "&a[!] &fKit %kit% &fwas selected!"
+    disabled: "&c[!] &fKits are currently disabled!"
+    cost: "&fCost: &e%cost% %currency%"
+    inventory-selected: "&aSelected"
+    inventory-click-to-select: "&eClick to select"
+    scoreboard-disabled: "Disabled"
+    selected-none: "None"
+    money-deduct-info: "&e[!] &fCoins for kit will be deducted after game starts!"
+    money-deduct: "&e[!] &f%previous-money% - %kit-cost% = %money% %currency% (kit %kit%&f)"
+
+  statistics:
+    reset-all: "&a[!] &fAll statistics have been reset!"
+    reset: "&a[!] &fStatistics for %player% have been reset!"
+
+  perks:
+    selected: "&a[!] &fPerk %perk% &fwas selected!"
+    disabled: "&c[!] &fPerks are currently disabled!"
+    cost: "&fCost: &e%cost% %currency%"
+    inventory-selected: "&aSelected"
+    inventory-click-to-select: "&eClick to select"
+    scoreboard-disabled: "Disabled"
+    selected-none: "None"
+    money-deduct-info: "&e[!] &fMoney for kit will be deducted after game starts!"
+    money-deduct: "&e[!] &f%previous-money% - %perk-cost% = %money% %currency% (Perk %perk%&f)"
+    received:
+      effect: "&a[!] &fObtained %effect% %effect-level% for %effect-duration% seconds!"
+      item: "&a[!] &fYou got lucky! You have received %item%!"
+      bonus: "&a[!] &f+%bonus-coins% %currency%, +%bonus-uhc-exp% UHC exp and +%bonus-exp% exp!"
+
+  quests:
+    completed: "&a[!] &fYou have completed the quest &f%quest%&f!"
+    reward: "&a[!] &fYou have received %reward% %currency% and %exp% exp!"
+
+  revive:
+    you-revived: "&a[!] &fYou have been revived!"
+    you-already-alive: "&c[!] &fYou are already alive!"
+    you-not-dead: "&c[!] &fYou are not dead!"
+    player-revived: "&a[!] &f%player% has been revived!"
+    player-already-alive: "&c[!] &f%player% is already alive!"
+    player-not-dead: "&c[!] &%player% is not dead!"
+
+  rewards:
+    win:
+      - "&7---------- %prefix% &7----------"
+      - " &a+%money-for-game% &f%currency% for win"
+      - " &a+%money-for-kills% &f%currency% for kills"
+      - " &a+%money-for-assists% &f%currency% for assists"
+      - " &a+%money-for-activity% &f%currency% for activity"
+      - " &a+%uhc-exp-for-game% &fexp for win"
+      - " &a+%uhc-exp-for-kills% &fexp for kills"
+      - " &a+%uhc-exp-for-assists% &fexp for assists"
+      - " &a+%uhc-exp-for-activity% &fexp for activity"
+      - "&7--------------------------------"
+    lose:
+      - "&7---------- %prefix% &7----------"
+      - " &a+%money-for-game% &f%currency% for lose"
+      - " &a+%money-for-kills% &f%currency% for kills"
+      - " &a+%money-for-assists% &f%currency% for assists"
+      - " &a+%money-for-activity% &f%currency% for activity"
+      - " &a+%uhc-exp-for-game% &fexp for lose"
+      - " &a+%uhc-exp-for-kills% &fexp for kills"
+      - " &a+%uhc-exp-for-assists% &fexp for assists"
+      - " &a+%uhc-exp-for-activity% &fexp for activity"
+      - "&7--------------------------------"
+
+    kill: "&e[!] &a+%money% &f%currency% and &a+%uhc-exp% &fexp for kill! &7(%player%)"
+    assist: "&e[!] &a+%money% &f%currency% and &a+%uhc-exp% &fexp for assist! &7(%player%)"
+
+    activity: "&6[+] &f%money% %currency% and %uhc-exp% exp for activity!"
+
+    level-up: "&a[LEVEL UP] &a+%money% &f%currency% for level up!"
+
+  game-results:
+    - "&7---------- %prefix% &3----------"
+    - " "
+    - "&lWinner: &a%winner%"
+    - " "
+    - "&l1. &7[%top-killer-1-uhc-level%] %top-killer-1-team% &a%top-killer-1% &7- &f%top-killer-1-kills% kills"
+    - "&l2. &7[%top-killer-2-uhc-level%] %top-killer-2-team% &a%top-killer-2% &7- &f%top-killer-2-kills% kills"
+    - "&l3. &7[%top-killer-3-uhc-level%] %top-killer-3-team% &a%top-killer-3% &7- &f%top-killer-3-kills% kills"
+    - " "
+    - "&7--------------------------------"
+
+  title:
+    victory:
+      title: "&aVictory!"
+      subtitle: "&fYou won the game!"
+    lose:
+      title: "&cDefeat!"
+      subtitle: "&fYou lost the game!"
+
+  help:
+    admin:
+      - "&6Admin Commands Help:"
+      - "&e/forcestart &7(Aliases: /start) - Immediately starts the UHC game, bypassing any countdowns or prerequisites."
+      - "&e/forceskip &7(Aliases: /skip) - Immediately skip current game phase, bypassing any countdowns or prerequisites."
+      - "&e/workbench &7(Aliases: /wb, /craftingtable) - Opens a remote crafting table."
+      - "&e/anvil - Opens a remote anvil."
+      - "&e/team &7(Aliases: /teams) - Opens the team management GUI, allowing players to join teams."
+      - "&e/kits &7(Aliases: /kit) - Opens the kits selection GUI, where players can choose from available kits."
+      - "&e/recipes &7(Aliases: /crafts, /customrecipes) - Opens the custom recipes GUI, displaying all available custom crafting recipes."
+      - "&e/statistics &7(Aliases: /stats) - Opens the player statistics GUI, showing detailed player stats and achievements."
+      - "&e/revive - Revives a dead player, bringing them back into the game."
+      - "&e/uhc set|remove waiting-lobby|ending-lobby|deathmatch - Admin commands to manage locations."
+      - "&e/uhc set|remove hologram kills|wins|losses|deaths|killstreak|assists|uhc-level|games-played - Admin commands to manage holograms."
+    player:
+      - "&6Player Commands Help:"
+      - "&e/team &7(Aliases: /teams) - Opens the team management GUI, allowing players to join teams."
+      - "&e/kits &7(Aliases: /kit) - Opens the kits selection GUI, where players can choose from available kits."
+      - "&e/recipes &7(Aliases: /crafts, /customrecipes) - Opens the custom recipes GUI, displaying all available custom crafting recipes."
+      - "&e/statistics &7(Aliases: /stats) - Opens the player statistics GUI, showing detailed player stats and achievements."
+    vip:
+      - "&6VIP Commands Help:"
+      - "&e/forcestart &7(Aliases: /start) - Immediately starts the UHC game, bypassing any countdowns or prerequisites."
+      - "&e/workbench &7(Aliases: /wb, /craftingtable) - Opens a remote crafting table."
+      - "&e/anvil - Opens a remote anvil."
+      - "&e/team &7(Aliases: /teams) - Opens the team management GUI, allowing players to join teams."
+      - "&e/kits &7(Aliases: /kit) - Opens the kits selection GUI, where players can choose from available kits."
+      - "&e/recipes &7(Aliases: /crafts, /customrecipes) - Opens the custom recipes GUI, displaying all available custom crafting recipes."
+      - "&e/statistics &7(Aliases: /stats) - Opens the player statistics GUI, showing detailed player stats and achievements."
+  
+  setup:
+    hologram:
+      set: "%prefix% &fHologram was set!"
+      removed: "%prefix% &fHologram was not removed!"
+      not-found: "&c[!] &fHologram type was not found!"
+    waiting-lobby:
+      set: "%prefix% &fWaiting lobby was set!"
+      removed: "%prefix% &fWaiting lobby was removed!"
+    ending-lobby:
+      set: "%prefix% &fEnding lobby was set!"
+      removed: "%prefix% &fEnding lobby was removed!"
+    deathmatch:
+      set: "%prefix% &fDeathmatch center was set!"
+      reset: "%prefix% &fDeathmatch center was reset! (def.: X:0.0, Y:75.0, Z:0.0)"

@@ -1,6 +1,6 @@
 package me.florixak.minigametemplate.sql;
 
-import me.florixak.minigametemplate.MinigameTemplate;
+import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.entity.Player;
 
 import java.sql.Connection;
@@ -14,8 +14,8 @@ public class SQLGetter {
 	private final Connection conn;
 	private final String table;
 
-	public SQLGetter(final MinigameTemplate plugin) {
-		this.conn = plugin.getSQL().getConnection();
+	public SQLGetter(final GameManager gameManager) {
+		this.conn = gameManager.getSQL().getConnection();
 
 		this.table = "uhcrevamp";
 		createTable();

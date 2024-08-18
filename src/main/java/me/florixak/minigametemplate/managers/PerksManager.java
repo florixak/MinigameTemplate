@@ -1,13 +1,13 @@
 package me.florixak.minigametemplate.managers;
 
+import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XPotion;
+import me.florixak.minigametemplate.config.ConfigType;
+import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.game.perks.PerkBonus;
 import me.florixak.minigametemplate.game.perks.PerkEffect;
 import me.florixak.minigametemplate.game.perks.PerkItem;
-import me.florixak.uhcrevamp.config.ConfigType;
-import me.florixak.uhcrevamp.game.GameValues;
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
-import me.florixak.uhcrevamp.utils.XSeries.XPotion;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;

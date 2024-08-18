@@ -1,23 +1,23 @@
 package me.florixak.minigametemplate.gui.menu;
 
-import me.florixak.uhcrevamp.game.GameManager;
-import me.florixak.uhcrevamp.game.GameValues;
-import me.florixak.uhcrevamp.game.player.UHCPlayer;
-import me.florixak.uhcrevamp.game.statistics.LeaderboardType;
-import me.florixak.uhcrevamp.gui.Menu;
-import me.florixak.uhcrevamp.gui.MenuUtils;
-import me.florixak.uhcrevamp.utils.ItemUtils;
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
-import me.florixak.uhcrevamp.utils.text.TextUtils;
+import com.cryptomorin.xseries.XMaterial;
+import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.game.statistics.LeaderboardType;
+import me.florixak.minigametemplate.gui.Menu;
+import me.florixak.minigametemplate.gui.MenuUtils;
+import me.florixak.minigametemplate.managers.GameManager;
+import me.florixak.minigametemplate.utils.ItemUtils;
+import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class StatisticsMenu extends Menu {
 
-	private final UHCPlayer uhcPlayer;
+	private final GamePlayer uhcPlayer;
 
 	public StatisticsMenu(final MenuUtils menuUtils) {
 		super(menuUtils);
-		this.uhcPlayer = menuUtils.getUHCPlayer();
+		this.uhcPlayer = menuUtils.getGamePlayer();
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class StatisticsMenu extends Menu {
 
 	@Override
 	public void setMenuItems() {
-		getInventory().setItem(GameValues.STATISTICS.PLAYER_STATS_SLOT, GameManager.getGameManager().getStatisticsManager().getPlayerStatsItem(this.uhcPlayer));
+		getInventory().setItem(GameValues.STATISTICS.PLAYER_STATS_SLOT, GameManager.getGameManager().getLeaderboardManager().getPlayerStatsItem(this.uhcPlayer));
 
 		getInventory().setItem(GameValues.STATISTICS.TOP_WINS_SLOT, LeaderboardType.WINS.getTopStatsDisplayItem());
 		getInventory().setItem(GameValues.STATISTICS.TOP_KILLS_SLOT, LeaderboardType.KILLS.getTopStatsDisplayItem());
@@ -50,7 +50,7 @@ public class StatisticsMenu extends Menu {
 		getInventory().setItem(GameValues.STATISTICS.TOP_DEATHS_SLOT, LeaderboardType.DEATHS.getTopStatsDisplayItem());
 		getInventory().setItem(GameValues.STATISTICS.TOP_LOSSES_SLOT, LeaderboardType.LOSSES.getTopStatsDisplayItem());
 		getInventory().setItem(GameValues.STATISTICS.TOP_KILLSTREAK_SLOT, LeaderboardType.KILLSTREAK.getTopStatsDisplayItem());
-		getInventory().setItem(GameValues.STATISTICS.TOP_UHC_LEVEL_SLOT, LeaderboardType.UHC_LEVEL.getTopStatsDisplayItem());
+		getInventory().setItem(GameValues.STATISTICS.TOP_LEVEL_SLOT, LeaderboardType.UHC_LEVEL.getTopStatsDisplayItem());
 		getInventory().setItem(GameValues.STATISTICS.TOP_GAMES_PLAYED_SLOT, LeaderboardType.GAMES_PLAYED.getTopStatsDisplayItem());
 
 		this.inventory.setItem(getSlots() - 5, ItemUtils.createItem(

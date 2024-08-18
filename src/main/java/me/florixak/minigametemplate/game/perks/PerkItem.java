@@ -2,7 +2,7 @@ package me.florixak.minigametemplate.game.perks;
 
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
-import me.florixak.minigametemplate.utils.MathUtils;
+import me.florixak.minigametemplate.utils.RandomUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.inventory.ItemStack;
 
@@ -45,7 +45,7 @@ public class PerkItem {
 	}
 
 	public void giveItem(final GamePlayer gamePlayer) {
-		final int num = MathUtils.randomInteger(1, 100);
+		final int num = RandomUtils.randomInteger(1, 100);
 		if (num > this.chance) return;
 		gamePlayer.sendMessage(Messages.PERKS_ITEM_RECEIVED.toString().replace("%item%", getDisplayName()));
 		gamePlayer.getPlayer().getInventory().addItem(this.item);

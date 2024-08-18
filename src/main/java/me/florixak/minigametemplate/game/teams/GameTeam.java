@@ -136,4 +136,9 @@ public class GameTeam {
 		getMembers().stream().filter(GamePlayer::isOnline).forEach(gamePlayer -> gamePlayer.sendMessage(TextUtils.color(message)));
 	}
 
+	@Override
+	public boolean equals(final Object o) {
+		return o instanceof GameTeam && ((GameTeam) o).getName().equals(this.getName());
+	}
+
 }

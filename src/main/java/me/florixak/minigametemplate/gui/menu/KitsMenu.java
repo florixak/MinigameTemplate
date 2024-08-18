@@ -1,18 +1,18 @@
 package me.florixak.minigametemplate.gui.menu;
 
-import me.florixak.uhcrevamp.config.Messages;
-import me.florixak.uhcrevamp.game.GameManager;
-import me.florixak.uhcrevamp.game.GameValues;
-import me.florixak.uhcrevamp.game.Permissions;
-import me.florixak.uhcrevamp.game.kits.Kit;
-import me.florixak.uhcrevamp.game.player.UHCPlayer;
-import me.florixak.uhcrevamp.gui.MenuUtils;
-import me.florixak.uhcrevamp.gui.PaginatedMenu;
-import me.florixak.uhcrevamp.utils.ItemUtils;
-import me.florixak.uhcrevamp.utils.XSeries.XEnchantment;
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
-import me.florixak.uhcrevamp.utils.XSeries.XPotion;
-import me.florixak.uhcrevamp.utils.text.TextUtils;
+import com.cryptomorin.xseries.XEnchantment;
+import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.XPotion;
+import me.florixak.minigametemplate.config.Messages;
+import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.Permissions;
+import me.florixak.minigametemplate.game.kits.Kit;
+import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.gui.MenuUtils;
+import me.florixak.minigametemplate.gui.PaginatedMenu;
+import me.florixak.minigametemplate.managers.GameManager;
+import me.florixak.minigametemplate.utils.ItemUtils;
+import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -24,12 +24,12 @@ import java.util.stream.Collectors;
 
 public class KitsMenu extends PaginatedMenu {
 
-	private final UHCPlayer uhcPlayer;
+	private final GamePlayer uhcPlayer;
 	private final List<Kit> kitsList;
 
 	public KitsMenu(final MenuUtils menuUtils) {
 		super(menuUtils, GameValues.INVENTORY.KITS_TITLE);
-		this.uhcPlayer = menuUtils.getUHCPlayer();
+		this.uhcPlayer = menuUtils.getGamePlayer();
 		this.kitsList = GameManager.getGameManager().getKitsManager().getKitsList();
 	}
 

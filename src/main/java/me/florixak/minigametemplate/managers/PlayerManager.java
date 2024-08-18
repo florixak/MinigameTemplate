@@ -9,7 +9,7 @@ import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.game.player.PlayerState;
 import me.florixak.minigametemplate.game.teams.GameTeam;
-import me.florixak.minigametemplate.utils.MathUtils;
+import me.florixak.minigametemplate.utils.RandomUtils;
 import me.florixak.minigametemplate.utils.TeleportUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -113,12 +113,12 @@ public class PlayerManager {
 	}
 
 	public GamePlayer getRandomOnlineUHCPlayer() {
-		return getPlayers().get(MathUtils.getRandom().nextInt(getPlayers().size()));
+		return getPlayers().get(RandomUtils.getRandom().nextInt(getPlayers().size()));
 	}
 
 	public GamePlayer getGamePlayerWithoutPerm(final String perm) {
 		final List<GamePlayer> onlineListWithoutPerm = getPlayers().stream().filter(gamePlayer -> !gamePlayer.hasPermission(perm)).collect(Collectors.toList());
-		return onlineListWithoutPerm.get(MathUtils.getRandom().nextInt(onlineListWithoutPerm.size()));
+		return onlineListWithoutPerm.get(RandomUtils.getRandom().nextInt(onlineListWithoutPerm.size()));
 	}
 
 	public GamePlayer getWinnerPlayer() {

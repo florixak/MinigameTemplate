@@ -25,22 +25,22 @@ public class NMSUtils {
 
 		// Call the event, if cancelled don't send Action Bar
 		try {
-			final Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + MinigameTemplate.nmsVer + ".entity.CraftPlayer");
+			final Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + MinigameTemplate.getNMSVersion() + ".entity.CraftPlayer");
 			final Object craftPlayer = craftPlayerClass.cast(player);
 			Object packet;
-			final Class<?> packetPlayOutChatClass = Class.forName("net.minecraft.server." + MinigameTemplate.nmsVer + ".PacketPlayOutChat");
-			final Class<?> packetClass = Class.forName("net.minecraft.server." + MinigameTemplate.nmsVer + ".Packet");
-			if (MinigameTemplate.useOldMethods) {
-				final Class<?> chatSerializerClass = Class.forName("net.minecraft.server." + MinigameTemplate.nmsVer + ".ChatSerializer");
-				final Class<?> iChatBaseComponentClass = Class.forName("net.minecraft.server." + MinigameTemplate.nmsVer + ".IChatBaseComponent");
+			final Class<?> packetPlayOutChatClass = Class.forName("net.minecraft.server." + MinigameTemplate.getNMSVersion() + ".PacketPlayOutChat");
+			final Class<?> packetClass = Class.forName("net.minecraft.server." + MinigameTemplate.getNMSVersion() + ".Packet");
+			if (MinigameTemplate.useOldMethods()) {
+				final Class<?> chatSerializerClass = Class.forName("net.minecraft.server." + MinigameTemplate.getNMSVersion() + ".ChatSerializer");
+				final Class<?> iChatBaseComponentClass = Class.forName("net.minecraft.server." + MinigameTemplate.getNMSVersion() + ".IChatBaseComponent");
 				final Method m3 = chatSerializerClass.getDeclaredMethod("a", String.class);
 				final Object cbc = iChatBaseComponentClass.cast(m3.invoke(chatSerializerClass, "{\"text\": \"" + TextUtils.color(message) + "\"}"));
 				packet = packetPlayOutChatClass.getConstructor(new Class<?>[]{iChatBaseComponentClass, byte.class}).newInstance(cbc, (byte) 2);
 			} else {
-				final Class<?> chatComponentTextClass = Class.forName("net.minecraft.server." + MinigameTemplate.nmsVer + ".ChatComponentText");
-				final Class<?> iChatBaseComponentClass = Class.forName("net.minecraft.server." + MinigameTemplate.nmsVer + ".IChatBaseComponent");
+				final Class<?> chatComponentTextClass = Class.forName("net.minecraft.server." + MinigameTemplate.getNMSVersion() + ".ChatComponentText");
+				final Class<?> iChatBaseComponentClass = Class.forName("net.minecraft.server." + MinigameTemplate.getNMSVersion() + ".IChatBaseComponent");
 				try {
-					final Class<?> chatMessageTypeClass = Class.forName("net.minecraft.server." + MinigameTemplate.nmsVer + ".ChatMessageType");
+					final Class<?> chatMessageTypeClass = Class.forName("net.minecraft.server." + MinigameTemplate.getNMSVersion() + ".ChatMessageType");
 					final Object[] chatMessageTypes = chatMessageTypeClass.getEnumConstants();
 					Object chatMessageType = null;
 					for (final Object obj : chatMessageTypes) {

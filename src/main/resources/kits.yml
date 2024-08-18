@@ -1,0 +1,205 @@
+# This is a list of kits that you can buy in the shop.
+# You can define the cost, display item, and the items included in the kit.
+# You can also define enchantments for the items in the kit.
+
+# How to create a kit?
+#     '&fStarter': # kit name
+#       display-item: WOODEN_PICKAXE # item that will be displayed in the shop
+#       cost: 0 # cost of the kit
+#       items: # items included in the kit
+#         WOODEN_AXE: # item name
+#           amount: 1 # item amount
+#           durability: 0 # item durability
+#           enchantments: # item enchantments
+#             DIG_SPEED: 3 # enchantment type and level
+#             DURABILITY: 3 # enchantment type and level
+
+kits:
+  '&fStarter':
+    display-item: WOODEN_PICKAXE
+    cost: 0
+    items:
+      WOODEN_AXE:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 3
+          DURABILITY: 3
+      WOODEN_PICKAXE:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 3
+          DURABILITY: 3
+      WOODEN_SHOVEL:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 3
+          DURABILITY: 3
+  '&fMiner':
+    display-item: DIAMOND_PICKAXE
+    cost: 100
+    items:
+      DIAMOND_AXE:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 3
+          DURABILITY: 3
+      DIAMOND_PICKAXE:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 3
+          DURABILITY: 3
+      DIAMOND_SHOVEL:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 3
+          DURABILITY: 3
+      COOKED_PORKCHOP:
+        amount: 16
+  '&fLibrarian':
+    display-item: ENCHANTED_BOOK
+    cost: 100
+    items:
+      STONE_AXE:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 1
+          DURABILITY: 1
+      STONE_PICKAXE:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 1
+          DURABILITY: 1
+      ENCHANTING_TABLE:
+        amount: 1
+      BOOKSHELF:
+        amount: 15
+      BOOK:
+        amount: 9
+      EXPERIENCE_BOTTLE:
+        amount: 32
+  '&fHealer':
+    display-item: GOLDEN_APPLE
+    cost: 30
+    items:
+      STONE_AXE:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 2
+          DURABILITY: 2
+      IRON_PICKAXE:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 3
+          DURABILITY: 3
+      GOLDEN_APPLE:
+        amount: 3
+  '&fTeleporter':
+    display-item: ENDER_PEARL
+    cost: 80
+    items:
+      IRON_SWORD:
+        amount: 1
+        enchantments:
+          DAMAGE_ALL: 1
+          DURABILITY: 2
+      STONE_PICKAXE:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 2
+          DURABILITY: 2
+      ENDER_PEARL:
+        amount: 5
+      LEATHER_HELMET:
+        amount: 1
+        enchantments:
+          PROTECTION_ENVIRONMENTAL: 2
+          DURABILITY: 3
+      LEATHER_BOOTS:
+        amount: 1
+        enchantments:
+          PROTECTION_FALL: 3
+          DURABILITY: 3
+  '&fTrapper':
+    display-item: STICKY_PISTON
+    cost: 50
+    items:
+      STONE_AXE:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 2
+          DURABILITY: 2
+      STONE_PICKAXE:
+        amount: 1
+        enchantments:
+          DIG_SPEED: 2
+          DURABILITY: 2
+      COBWEB:
+        amount: 5
+      STICKY_PISTON:
+        amount: 6
+      REDSTONE:
+        amount: 32
+      REPEATER:
+        amount: 4
+  '&fArcher':
+    display-item: BOW
+    cost: 75
+    items:
+      BOW:
+        amount: 1
+        enchantments:
+          ARROW_DAMAGE: 4
+          DURABILITY: 3
+      ARROW:
+        amount: 64
+      LEATHER_CHESTPLATE:
+        amount: 1
+        enchantments:
+          PROTECTION_PROJECTILE: 4
+      GOLDEN_CARROT:
+        amount: 16
+  '&fAlchemist':
+    display-item: POTION
+    cost: 120
+    items:
+      BREWING_STAND:
+        amount: 1
+      NETHER_WART:
+        amount: 10
+      BLAZE_POWDER:
+        amount: 5
+      GLASS_BOTTLE:
+        amount: 15
+    potions:
+      REGENERATION:
+        amplifier: 2 # Regeneration 2
+        duration: 44 # 44 seconds
+        amount: 3 # 3 potions
+        splash: false # Not splash potion
+      SLOWNESS:
+        amplifier: 2 # Slowness 2
+        duration: 44 # 44 seconds
+        amount: 2 # 2 potions
+        splash: true # Splash potion
+  '&fPyromancer':
+    display-item: BLAZE_POWDER
+    cost: 180
+    items:
+      WOODEN_SWORD:
+        amount: 1
+        durability: 30
+        enchantments:
+          FIRE_ASPECT: 1
+          DURABILITY: 3
+      LEATHER_HELMET:
+        amount: 1
+        enchantments:
+          PROTECTION_FIRE: 3
+          DURABILITY: 3
+      LEATHER_BOOTS:
+        amount: 1
+        enchantments:
+          PROTECTION_FIRE: 3
+          DURABILITY: 3
+      COOKED_BEEF:
+        amount: 16

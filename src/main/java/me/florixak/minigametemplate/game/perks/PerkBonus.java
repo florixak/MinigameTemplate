@@ -2,7 +2,7 @@ package me.florixak.minigametemplate.game.perks;
 
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
-import me.florixak.minigametemplate.utils.MathUtils;
+import me.florixak.minigametemplate.utils.RandomUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 
 import java.util.List;
@@ -50,9 +50,9 @@ public class PerkBonus {
 	}
 
 	public void giveBonus(final GamePlayer gamePlayer) {
-		final double randomCoins = getCoins().get(0) + (getCoins().get(1) - getCoins().get(0)) * MathUtils.getRandom().nextDouble();
-		final double randomUHCExp = getUhcExp().get(0) + (getUhcExp().get(1) - getUhcExp().get(0)) * MathUtils.getRandom().nextDouble();
-		final int randomExp = MathUtils.randomInteger(getExp().get(0), getExp().get(1));
+		final double randomCoins = getCoins().get(0) + (getCoins().get(1) - getCoins().get(0)) * RandomUtils.getRandom().nextDouble();
+		final double randomUHCExp = getUhcExp().get(0) + (getUhcExp().get(1) - getUhcExp().get(0)) * RandomUtils.getRandom().nextDouble();
+		final int randomExp = RandomUtils.randomInteger(getExp().get(0), getExp().get(1));
 
 		gamePlayer.getData().depositMoney(randomCoins);
 		gamePlayer.getData().addUHCExp(randomUHCExp);

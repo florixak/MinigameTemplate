@@ -1,16 +1,16 @@
 package me.florixak.minigametemplate.gui.menu;
 
-import me.florixak.uhcrevamp.UHCRevamp;
-import me.florixak.uhcrevamp.config.Messages;
-import me.florixak.uhcrevamp.game.GameManager;
-import me.florixak.uhcrevamp.game.GameValues;
-import me.florixak.uhcrevamp.game.player.UHCPlayer;
-import me.florixak.uhcrevamp.game.teams.UHCTeam;
-import me.florixak.uhcrevamp.gui.MenuUtils;
-import me.florixak.uhcrevamp.gui.PaginatedMenu;
-import me.florixak.uhcrevamp.utils.ItemUtils;
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
-import me.florixak.uhcrevamp.utils.text.TextUtils;
+import com.cryptomorin.xseries.XMaterial;
+import me.florixak.minigametemplate.MinigameTemplate;
+import me.florixak.minigametemplate.config.Messages;
+import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.game.teams.GameTeam;
+import me.florixak.minigametemplate.gui.MenuUtils;
+import me.florixak.minigametemplate.gui.PaginatedMenu;
+import me.florixak.minigametemplate.managers.GameManager;
+import me.florixak.minigametemplate.utils.ItemUtils;
+import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,12 +19,12 @@ import java.util.List;
 
 public class TeamsMenu extends PaginatedMenu {
 
-	private final UHCPlayer uhcPlayer;
-	private final List<UHCTeam> teamsList;
+	private final GamePlayer gamePlayer;
+	private final List<GameTeam> teamsList;
 
 	public TeamsMenu(final MenuUtils menuUtils) {
 		super(menuUtils, GameValues.INVENTORY.TEAMS_TITLE);
-		this.uhcPlayer = menuUtils.getUHCPlayer();
+		this.gamePlayer = menuUtils.getGamePlayer();
 		this.teamsList = GameManager.getGameManager().getTeamManager().getTeamsList();
 	}
 
@@ -46,7 +46,7 @@ public class TeamsMenu extends PaginatedMenu {
 			handlePaging(event, this.teamsList);
 		} else {
 			if (GameManager.getGameManager().isPlaying()) {
-				this.uhcPlayer.sendMessage(Messages.CANT_USE_NOW.toString());
+				this.gamePlayer.sendMessage(Messages.CANT_USE_NOW.toString());
 				return;
 			}
 			handleTeamSelection(event);
@@ -59,25 +59,25 @@ public class TeamsMenu extends PaginatedMenu {
 		ItemStack item;
 
 		for (int i = getStartIndex(); i < getEndIndex(); i++) {
-			final UHCTeam team = this.teamsList.get(i);
+			final GameTeam team = this.teamsList.get(i);
 			final List<String> lore = new ArrayList<>();
 			lore.add(TextUtils.color("&7(" + team.getMembers().size() + "/" + team.getMaxSize() + ")"));
-			for (final UHCPlayer member : team.getMembers()) {
+			for (final GamePlayer member : team.getMembers()) {
 				lore.add(TextUtils.color("&f" + member.getName()));
 			}
 			item = ItemUtils.createItem(team.getDisplayItem().getType(), "&l" + team.getDisplayName(), 1, lore);
-			if (UHCRevamp.useOldMethods) {
+			if (MinigameTemplate.useOldMethods()) {
 				item.setDurability((short) team.getDisplayItemDurability());
 			}
 
-			inventory.setItem(i - getStartIndex(), item);
+			this.inventory.setItem(i - getStartIndex(), item);
 		}
 	}
 
 	@Override
 	public void open() {
 		if (!GameValues.TEAM.TEAM_MODE) {
-			this.uhcPlayer.sendMessage(Messages.CANT_USE_NOW.toString());
+			this.gamePlayer.sendMessage(Messages.CANT_USE_NOW.toString());
 			return;
 		}
 		super.open();
@@ -85,6 +85,6 @@ public class TeamsMenu extends PaginatedMenu {
 
 	private void handleTeamSelection(final InventoryClickEvent event) {
 		close();
-		this.teamsList.get(event.getSlot()).addMember(this.uhcPlayer);
+		this.teamsList.get(event.getSlot()).addMember(this.gamePlayer);
 	}
 }

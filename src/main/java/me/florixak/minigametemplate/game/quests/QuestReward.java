@@ -1,6 +1,6 @@
 package me.florixak.minigametemplate.game.quests;
 
-import me.florixak.uhcrevamp.game.player.UHCPlayer;
+import me.florixak.minigametemplate.game.player.GamePlayer;
 
 public class QuestReward {
 
@@ -20,12 +20,12 @@ public class QuestReward {
 		return this.uhcExp;
 	}
 
-	public void giveReward(final UHCPlayer uhcPlayer) {
+	public void giveReward(final GamePlayer gamePlayer) {
 		if (this.money > 0) {
-			uhcPlayer.getData().depositMoney(this.money);
+			gamePlayer.getData().depositMoney(this.money);
 		}
 		if (this.uhcExp > 0) {
-			uhcPlayer.getData().addUHCExp(this.uhcExp);
+			gamePlayer.getData().addExp(this.uhcExp);
 		}
 	}
 }

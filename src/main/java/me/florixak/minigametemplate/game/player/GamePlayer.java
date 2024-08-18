@@ -1,5 +1,6 @@
 package me.florixak.minigametemplate.game.player;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XPotion;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.Messages;
@@ -7,6 +8,7 @@ import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.kits.Kit;
 import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.game.teams.GameTeam;
+import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.NMSUtils;
 import me.florixak.minigametemplate.utils.TeleportUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
@@ -394,12 +396,12 @@ public class GamePlayer {
 
 	@SuppressWarnings("deprecation")
 	public ItemStack getPlayerHead(final String playerName) {
-		final Material type = Material.matchMaterial(!MinigameTemplate.useOldMethods ? "PLAYER_HEAD" : "SKULL_ITEM");
+		final Material type = XMaterial.matchXMaterial(MinigameTemplate.useOldMethods() ? "SKULL_ITEM" : "PLAYER_HEAD").get().parseMaterial();
 		final ItemStack item = new ItemStack(type, 1);
 
 		final SkullMeta meta = (SkullMeta) item.getItemMeta();
 		if (playerName != null) meta.setDisplayName(TextUtils.color(playerName));
-		if (MinigameTemplate.useOldMethods) {
+		if (MinigameTemplate.useOldMethods()) {
 			item.setDurability((short) 3);
 			meta.setOwner(getPlayer().getName());
 		} else meta.setOwningPlayer(getPlayer());
@@ -458,10 +460,6 @@ public class GamePlayer {
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (obj instanceof GamePlayer) {
-			final GamePlayer player = (GamePlayer) obj;
-			return player.getUUID().equals(this.getUUID());
-		}
-		return false;
+		return obj instanceof GamePlayer && ((GamePlayer) obj).getUUID().equals(this.getUUID());
 	}
 }

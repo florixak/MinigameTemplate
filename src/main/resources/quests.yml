@@ -1,0 +1,341 @@
+# This file contains the configuration for quests.
+# Each quest has a display name, display item, type, count, material (if applicable),
+# description, and rewards (money and UHC experience points).
+# The players section is used to store the progress of each player's quests.
+# The progress is stored in the following format:
+#
+# How to create quest:
+# quest1: (id needs to be different)
+#   display-name: "..."
+#   display-item: "..." (if empty then BOOK)
+#   type: "..." (TYPES: WIN, KILL, PICKUP, BREAK, CRAFT, ASSIST)
+#   count: ... (goal)
+#   materiaL "..." (optional, if needed - item in hand)
+#   description:
+#       - "..."
+#       - "..."
+#   reward:
+#     money: ...
+#     uhc-exp: ...
+#     -
+# You can give me more ideas for types and send me message on discord! (florixak)
+
+quests:
+  quest1:
+    display-name: "&eTrue King"
+    display-item: BOOK
+    type: "WIN"
+    count: 50
+    description:
+      - "&fWin &a%count% &fgames of UHC"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1200
+      uhc-exp: 1100
+
+  quest2:
+    display-name: "&eKiller"
+    display-item: BOOK
+    type: "KILL"
+    count: 25
+    material: GOLDEN_SWORD
+    description:
+      - "&fKill &a%count% &fplayers with &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1250
+      uhc-exp: 1125
+
+  quest3:
+    display-name: "&eTrue Gardener"
+    display-item: BOOK
+    type: "PICKUP"
+    count: 128
+    material: APPLE
+    description:
+      - "&fPickup &a%count%&f of &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1500
+      uhc-exp: 1300
+
+  quest4:
+    display-name: "&eDiamond Miner"
+    display-item: BOOK
+    type: "BREAK"
+    count: 98
+    material: DIAMOND_ORE
+    description:
+      - "&fBreak &a%count%&f of &a%material%"
+      - "&fReward: &a%money% &a%currency%&f, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1700
+      uhc-exp: 1400
+
+  quest5:
+    display-name: "&eTrue Farmer"
+    display-item: BOOK
+    type: "CRAFT"
+    count: 64
+    material: WHEAT
+    description:
+      - "&fCraft &a%count%&f of &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1900
+      uhc-exp: 1500
+
+  quest6:
+    display-name: "&eTrue Miner"
+    display-item: BOOK
+    type: "PICKUP"
+    count: 32
+    material: IRON_INGOT
+    description:
+      - "&fPickup &a%count%&f of &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1100
+      uhc-exp: 1600
+
+  quest7:
+    display-name: "&eTrue Hunter"
+    display-item: BOOK
+    type: "KILL"
+    count: 10
+    material: "BOW"
+    description:
+      - "&fKill &a%count% &fplayers with &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1300
+      uhc-exp: 700
+
+  quest8:
+    display-name: "&eYou Are Really Kindhearted!"
+    display-item: BOOK
+    type: "ASSIST"
+    count: 10
+    description:
+      - "&fAssist in &f%count% &akills"
+      - "&fReward: &f%money% &a%currency%&a, &f%uhc-exp% &aUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1500
+      uhc-exp: 800
+
+  quest9:
+    display-name: "&eMaster Miner"
+    display-item: BOOK
+    type: "CRAFT"
+    count: 100
+    material: IRON_PICKAXE
+    description:
+      - "&fCraft &a%count% &fof &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1600
+      uhc-exp: 900
+
+  quest10:
+    display-name: "&eUltimate Survivor"
+    display-item: BOOK
+    type: "WIN"
+    count: 100
+    description:
+      - "&fWin &a%count% &fgames of UHC"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 2000
+      uhc-exp: 1200
+
+  quest11:
+    display-name: "&eIron Collector"
+    display-item: BOOK
+    type: "PICKUP"
+    count: 200
+    material: IRON_INGOT
+    description:
+      - "&fPickup &a%count% &fof &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1800
+      uhc-exp: 1000
+
+  quest12:
+    display-name: "&eGolden Hoarder"
+    display-item: BOOK
+    type: "PICKUP"
+    count: 150
+    material: GOLD_INGOT
+    description:
+      - "&fPickup &a%count%&f of &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1700
+      uhc-exp: 950
+
+  quest13:
+    display-name: "&eDiamond Collector"
+    display-item: BOOK
+    type: "PICKUP"
+    count: 50
+    material: DIAMOND
+    description:
+      - "&fPickup &a%count%&f of &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 2500
+      uhc-exp: 1500
+
+  quest14:
+    display-name: "&eSlayer"
+    display-item: BOOK
+    type: "KILL"
+    count: 200
+    material: IRON_SWORD
+    description:
+      - "&fKill &a%count% &fplayers with &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 2200
+      uhc-exp: 1300
+
+  quest15:
+    display-name: "&eMaster Miner"
+    display-item: BOOK
+    type: "BREAK"
+    count: 500
+    material: STONE
+    description:
+      - "&fBreak &a%count%&f of &a%material%"
+      - "&fReward: &a%money% &a%currency%&f, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &2%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 3000
+      uhc-exp: 2000
+
+  quest16:
+    display-name: "&eExpert Farmer"
+    display-item: BOOK
+    type: "CRAFT"
+    count: 200
+    material: GOLDEN_CARROT
+    description:
+      - "&fCraft &a%count%&f of &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 2500
+      uhc-exp: 1500
+
+  quest18:
+    display-name: "&eArchery Expert"
+    display-item: BOOK
+    type: "KILL"
+    count: 50
+    material: "BOW"
+    description:
+      - "&fKill &a%count% &fplayers with &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 3000
+      uhc-exp: 2000
+
+  quest19:
+    display-name: "&eUltimate Warrior"
+    display-item: BOOK
+    type: "KILL"
+    count: 100
+    material: "DIAMOND_SWORD"
+    description:
+      - "&fKill &a%count% &fplayers with &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 3500
+      uhc-exp: 2500
+
+  quest21:
+    display-name: "&eFish Picker"
+    display-item: BOOK
+    type: "PICKUP"
+    count: 100
+    material: RAW_FISH
+    description:
+      - "&fPickup &a%count% &fof &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 1500
+      uhc-exp: 800
+
+  quest23:
+    display-name: "&eExplorer"
+    display-item: BOOK
+    type: "PICKUP"
+    count: 25
+    material: "OBSIDIAN"
+    description:
+      - "&fPickup &a%count%&f of &a%material%"
+      - "&fReward: &a%money% &f%currency%, &a%uhc-exp% &fUHC exp"
+      - " "
+      - "&fProgress: &a%progress%&f/&2%count%"
+      - "&f%status%"
+    reward:
+      money: 2500
+      uhc-exp: 1200
+
+players:

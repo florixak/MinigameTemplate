@@ -1,7 +1,7 @@
 package me.florixak.minigametemplate.gui;
 
-import me.florixak.uhcrevamp.utils.ItemUtils;
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
+import com.cryptomorin.xseries.XMaterial;
+import me.florixak.minigametemplate.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -43,7 +43,7 @@ public abstract class Menu implements InventoryHolder {
 	}
 
 	public void close() {
-		this.menuUtils.getUHCPlayer().getPlayer().closeInventory();
+		this.menuUtils.getGamePlayer().getPlayer().closeInventory();
 	}
 
 	public void setFiller() {

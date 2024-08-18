@@ -1,9 +1,9 @@
 package me.florixak.minigametemplate.gui;
 
-import me.florixak.uhcrevamp.game.GameValues;
-import me.florixak.uhcrevamp.utils.ItemUtils;
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
-import me.florixak.uhcrevamp.utils.text.TextUtils;
+import com.cryptomorin.xseries.XMaterial;
+import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.utils.ItemUtils;
+import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -86,7 +86,7 @@ public abstract class PaginatedMenu extends Menu {
 
 	private void handlePrevious() {
 		if (this.currentPage == 0) {
-			this.menuUtils.getUHCPlayer().sendMessage(ChatColor.GRAY + "You are already on the first page.");
+			this.menuUtils.getGamePlayer().sendMessage(ChatColor.GRAY + "You are already on the first page.");
 		} else {
 			this.currentPage -= 1;
 			super.open();
@@ -98,7 +98,7 @@ public abstract class PaginatedMenu extends Menu {
 			this.currentPage += 1;
 			super.open();
 		} else {
-			this.menuUtils.getUHCPlayer().sendMessage(ChatColor.GRAY + "You are on the last page.");
+			this.menuUtils.getGamePlayer().sendMessage(ChatColor.GRAY + "You are on the last page.");
 		}
 	}
 }

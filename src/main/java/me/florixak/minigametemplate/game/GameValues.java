@@ -1,8 +1,8 @@
 package me.florixak.minigametemplate.game;
 
+import com.cryptomorin.xseries.XMaterial;
+import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.managers.GameManager;
-import me.florixak.uhcrevamp.config.ConfigType;
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -40,7 +40,7 @@ public class GameValues {
 
 	public static final int ERROR_INT_VALUE = -1;
 
-	public static final String WORLD_NAME = "UHCWorld";
+	public static final String WORLD_NAME = "world";
 
 	public static final GameSettings GAME = new GameSettings();
 	public static final ChatConfig CHAT = new ChatConfig();
@@ -56,38 +56,20 @@ public class GameValues {
 	public static final AddonConfig ADDONS = new AddonConfig();
 	public static final ScoreboardConfig SCOREBOARD = new ScoreboardConfig();
 	public static final TitleConfig TITLE = new TitleConfig();
-	public static final DeathChestConfig DEATH_CHEST = new DeathChestConfig();
 	public static final BungeeCordConfig BUNGEECORD = new BungeeCordConfig();
 	public static final QuestConfig QUESTS = new QuestConfig();
 	public static final Sounds SOUNDS = new Sounds();
 
-	public static class Countdowns {
-		public final int STARTING = getConfigInt("settings.game.countdowns.starting", 20);
-		public final int ENDING = getConfigInt("settings.game.countdowns.ending", 20);
+	private GameValues() {
 	}
 
 	public static class GameSettings {
 		public final boolean EXPLOSIONS_DISABLED = getConfigBoolean("settings.game.no-explosions", true);
-		public final boolean NETHER_ENABLED = getConfigBoolean("settings.game.allow-nether", false);
 		public final boolean PROJECTILE_HIT_HP_ENABLED = getConfigBoolean("settings.game.projectile-hit-hp", false);
 		public final boolean SPAWN_MONSTERS = getConfigBoolean("settings.game.spawn-monsters", false);
 		public final boolean MONSTERS_ATTACK = getConfigBoolean("settings.game.monsters-attack", false);
 		public final int PLAYERS_TO_START = getConfigInt("settings.game.players-to-start", 2);
 		public final int STARTING_MESSAGE_AT = getConfigInt("settings.game.starting-message-at", 10);
-	}
-
-	public static class ChatConfig {
-		public final String SOLO_FORMAT = getConfigString("settings.chat.solo-format", "");
-		public final String TEAM_FORMAT = getConfigString("settings.chat.teams-format", "");
-		public final String DEAD_FORMAT = getConfigString("settings.chat.dead-format", "");
-		public final String LOBBY_FORMAT = getConfigString("settings.chat.lobby-format", "");
-		public final String GLOBAL_FORMAT = getConfigString("settings.chat.global-format", "");
-		public final List<String> BLOCKED_COMMANDS = getConfigStringList("settings.chat.blocked-commands");
-	}
-
-	public static class BungeeCordConfig {
-		public final boolean ENABLED = getConfigBoolean("settings.bungeecord.enabled", false);
-		public final String LOBBY_SERVER = getConfigString("settings.bungeecord.lobby-server", "lobby");
 	}
 
 	public static class TeamConfig {
@@ -106,10 +88,30 @@ public class GameValues {
 		public final boolean BOUGHT_FOREVER = getConfigBoolean("settings.perks.bought-forever", true);
 	}
 
+	public static class Countdowns {
+		public final int STARTING = getConfigInt("settings.game.countdowns.starting", 20);
+		public final int IN_GAME = getConfigInt("settings.game.countdowns.in-game", 20);
+		public final int ENDING = getConfigInt("settings.game.countdowns.ending", 20);
+	}
+
+	public static class ChatConfig {
+		public final String SOLO_FORMAT = getConfigString("settings.chat.solo-format", "");
+		public final String TEAM_FORMAT = getConfigString("settings.chat.teams-format", "");
+		public final String DEAD_FORMAT = getConfigString("settings.chat.dead-format", "");
+		public final String LOBBY_FORMAT = getConfigString("settings.chat.lobby-format", "");
+		public final String GLOBAL_FORMAT = getConfigString("settings.chat.global-format", "");
+		public final List<String> BLOCKED_COMMANDS = getConfigStringList("settings.chat.blocked-commands");
+	}
+
+	public static class BungeeCordConfig {
+		public final boolean ENABLED = getConfigBoolean("settings.bungeecord.enabled", false);
+		public final String LOBBY_SERVER = getConfigString("settings.bungeecord.lobby-server", "lobby");
+	}
+
 	public static class StatisticsConfig {
-		public final int FIRST_LEVEL = getConfigInt("settings.statistics.uhc-level.first-level", 0);
-		public final double FIRST_REQUIRED_EXP = getConfigDouble("settings.statistics.uhc-level.first-required-exp", 100.0);
-		public final double EXP_MULTIPLIER = getConfigDouble("settings.statistics.uhc-level.exp-multiplier", 3.75);
+		public final int FIRST_LEVEL = getConfigInt("settings.statistics.level.first-level", 0);
+		public final double FIRST_REQUIRED_EXP = getConfigDouble("settings.statistics.level.first-required-exp", 100.0);
+		public final double EXP_MULTIPLIER = getConfigDouble("settings.statistics.level.exp-multiplier", 3.75);
 		public final String PLAYER_STATS_DIS_ITEM = getConfigString("settings.statistics.player-stats.display-item", "PLAYER_HEAD");
 		public final String PLAYER_STATS_CUST_NAME = getConfigString("settings.statistics.player-stats.custom-name", "YOUR STATS");
 		public final List<String> PLAYER_STATS_LORE = getConfigStringList("settings.statistics.player-stats.lore");
@@ -158,7 +160,6 @@ public class GameValues {
 		public final double EXP_FOR_LOSE = getConfigInt("settings.rewards.lose.uhc-exp", 0);
 		public final double COINS_FOR_KILL = getConfigDouble("settings.rewards.kill.coins", 0);
 		public final double EXP_FOR_KILL = getConfigDouble("settings.rewards.kill.uhc-exp", 0);
-		public final double FOR_KILL = getConfigDouble("settings.rewards.kill.exp", 0);
 		public final double COINS_FOR_ASSIST = getConfigDouble("settings.rewards.assist.coins", 0);
 		public final double EXP_FOR_ASSIST = getConfigDouble("settings.rewards.assist.uhc-exp", 0);
 	}
@@ -167,7 +168,6 @@ public class GameValues {
 		public final String TEAMS_TITLE = getConfigString("settings.inventories.teams.display-name", "Teams");
 		public final String KITS_TITLE = getConfigString("settings.inventories.kits.display-name", "Kits");
 		public final String PERKS_TITLE = getConfigString("settings.inventories.perks.display-name", "Perks");
-		public final String CUSTOM_RECIPES_TITLE = getConfigString("settings.inventories.custom-recipes.display-name", "Custom Recipes");
 		public final String STATS_TITLE = getConfigString("settings.inventories.statistics.display-name", "Statistics");
 		public final String QUESTS_TITLE = getConfigString("settings.inventories.quests.display-name", "Quests");
 
@@ -188,7 +188,6 @@ public class GameValues {
 
 		public final int KITS_SLOTS = getConfigInt("settings.inventories.kits.slots", 45);
 		public final int PERKS_SLOTS = getConfigInt("settings.inventories.perks.slots", 45);
-		public final int CUSTOM_RECIPES_SLOTS = getConfigInt("settings.inventories.custom-recipes.slots", 45);
 		public final int STATS_SLOTS = getConfigInt("settings.inventories.statistics.slots", 45);
 		public final int TEAMS_SLOTS = getConfigInt("settings.inventories.teams.slots", 45);
 		public final int CONFIRM_PURCHASE_SLOTS = getConfigInt("settings.inventories.confirm-purchase.slots", 9);
@@ -226,6 +225,7 @@ public class GameValues {
 		public final boolean CAN_USE_LUCKPERMS = getConfigBoolean("settings.addons.use-LuckPerms", true);
 		public final boolean CAN_USE_PLACEHOLDERAPI = getConfigBoolean("settings.addons.use-PlaceholderAPI", true);
 		public final boolean CAN_USE_PROTOCOLLIB = getConfigBoolean("settings.addons.use-ProtocolLib", true);
+		public final boolean CAN_USE_DECENTHOLOGRAMS = getConfigBoolean("settings.addons.use-DecentHolograms", true);
 	}
 
 	public static class DeathChestConfig {
@@ -254,10 +254,6 @@ public class GameValues {
 		public final float STARTING_VOLUME = (float) getConfigDouble("settings.sounds.starting.volume", 0.5);
 		public final float STARTING_PITCH = (float) getConfigDouble("settings.sounds.starting.pitch", 1.0);
 
-		public final String PVP_STARTED_SOUND = getConfigString("settings.sounds.pvp-started.sound", "NONE");
-		public final float PVP_STARTED_VOLUME = (float) getConfigDouble("settings.sounds.pvp-started.volume", 0.5);
-		public final float PVP_STARTED_PITCH = (float) getConfigDouble("settings.sounds.pvp-started.pitch", 1.0);
-
 		public final String WIN_SOUND = getConfigString("settings.sounds.win.sound", "NONE");
 		public final float WIN_VOLUME = (float) getConfigDouble("settings.sounds.win.volume", 0.5);
 		public final float WIN_PITCH = (float) getConfigDouble("settings.sounds.win.pitch", 1.0);
@@ -266,17 +262,9 @@ public class GameValues {
 		public final float GAME_OVER_VOLUME = (float) getConfigDouble("settings.sounds.game-over.volume", 0.5);
 		public final float GAME_OVER_PITCH = (float) getConfigDouble("settings.sounds.game-over.pitch", 1.0);
 
-		public final String DEATHMATCH_SOUND = getConfigString("settings.sounds.deathmatch.sound", "NONE");
-		public final float DEATHMATCH_VOLUME = (float) getConfigDouble("settings.sounds.deathmatch.volume", 0.5);
-		public final float DEATHMATCH_PITCH = (float) getConfigDouble("settings.sounds.deathmatch.pitch", 1.0);
-
-		public final String DEATHMATCH_STARTING_SOUND = getConfigString("settings.sounds.deathmatch-starting.sound", "NONE");
-		public final float DEATHMATCH_STARTING_VOLUME = (float) getConfigDouble("settings.sounds.deathmatch-starting.volume", 0.5);
-		public final float DEATHMATCH_STARTING_PITCH = (float) getConfigDouble("settings.sounds.deathmatch-starting.pitch", 1.0);
-
-		public final String UHC_LEVEL_UP_SOUND = getConfigString("settings.sounds.uhc-level-up.sound", "NONE");
-		public final float UHC_LEVEL_UP_VOLUME = (float) getConfigDouble("settings.sounds.uhc-level-up.volume", 0.5);
-		public final float UHC_LEVEL_UP_PITCH = (float) getConfigDouble("settings.sounds.uhc-level-up.pitch", 1.0);
+		public final String LEVEL_UP_SOUND = getConfigString("settings.sounds.level-up.sound", "NONE");
+		public final float LEVEL_UP_VOLUME = (float) getConfigDouble("settings.sounds.level-up.volume", 0.5);
+		public final float LEVEL_UP_PITCH = (float) getConfigDouble("settings.sounds.level-up.pitch", 1.0);
 
 		public final String KILL_SOUND = getConfigString("settings.sounds.kill.sound", "NONE");
 		public final float KILL_VOLUME = (float) getConfigDouble("settings.sounds.kill.volume", 0.5);
@@ -293,10 +281,6 @@ public class GameValues {
 		public final String SELECT_SOUND = getConfigString("settings.sounds.select-buy.sound", "NONE");
 		public final float SELECT_VOLUME = (float) getConfigDouble("settings.select-buy.select.volume", 0.5);
 		public final float SELECT_PITCH = (float) getConfigDouble("settings.select-buy.select.pitch", 1.0);
-
-//		public final String BUY_SOUND = getConfigString("settings.sounds.buy.sound", "NONE");
-//		public final float BUY_VOLUME = (float) getConfigDouble("settings.sounds.buy.volume", 0.5);
-//		public final float BUY_PITCH = (float) getConfigDouble("settings.sounds.buy.pitch", 1.0);
 
 		public final String PURCHASE_CANCEL_SOUND = getConfigString("settings.sounds.purchase-cancel.sound", "NONE");
 		public final float PURCHASE_CANCEL_VOLUME = (float) getConfigDouble("settings.sounds.purchase-cancel.volume", 0.5);

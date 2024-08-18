@@ -1,13 +1,13 @@
 package me.florixak.minigametemplate.game.statistics;
 
+import com.cryptomorin.xseries.XMaterial;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.utils.PAPI;
-import me.florixak.uhcrevamp.game.GameValues;
-import me.florixak.uhcrevamp.utils.ItemUtils;
-import me.florixak.uhcrevamp.utils.Utils;
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
-import me.florixak.uhcrevamp.utils.text.TextUtils;
+import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.utils.ItemUtils;
+import me.florixak.minigametemplate.utils.Utils;
+import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
@@ -58,7 +58,7 @@ public enum LeaderboardType {
 			case KILLSTREAK:
 				return GameValues.STATISTICS.TOP_KILLSTREAK_ITEM;
 			case UHC_LEVEL:
-				return GameValues.STATISTICS.TOP_UHC_LEVEL_ITEM;
+				return GameValues.STATISTICS.TOP_LEVEL_ITEM;
 			case GAMES_PLAYED:
 				return GameValues.STATISTICS.TOP_GAMES_PLAYED_ITEM;
 			default:
@@ -81,7 +81,7 @@ public enum LeaderboardType {
 			case KILLSTREAK:
 				return GameValues.STATISTICS.TOP_KILLSTREAK_NAME;
 			case UHC_LEVEL:
-				return GameValues.STATISTICS.TOP_UHC_LEVEL_NAME;
+				return GameValues.STATISTICS.TOP_LEVEL_NAME;
 			case GAMES_PLAYED:
 				return GameValues.STATISTICS.TOP_GAMES_PLAYED_NAME;
 			default:

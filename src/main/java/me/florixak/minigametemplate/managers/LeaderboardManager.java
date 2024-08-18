@@ -1,13 +1,14 @@
-package me.florixak.minigametemplate.game.statistics;
+package me.florixak.minigametemplate.managers;
 
-import me.florixak.uhcrevamp.config.ConfigType;
-import me.florixak.uhcrevamp.game.GameManager;
-import me.florixak.uhcrevamp.game.GameValues;
-import me.florixak.uhcrevamp.game.player.UHCPlayer;
-import me.florixak.uhcrevamp.utils.ItemUtils;
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
-import me.florixak.uhcrevamp.utils.placeholderapi.PlaceholderUtil;
-import me.florixak.uhcrevamp.utils.text.TextUtils;
+import com.cryptomorin.xseries.XMaterial;
+import eu.decentsoftware.holograms.api.utils.PAPI;
+import me.florixak.minigametemplate.config.ConfigType;
+import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.game.statistics.Leaderboard;
+import me.florixak.minigametemplate.game.statistics.LeaderboardType;
+import me.florixak.minigametemplate.utils.ItemUtils;
+import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -70,25 +71,25 @@ public class LeaderboardManager {
 		return this.topLists.get(type);
 	}
 
-	public ItemStack getPlayerStatsItem(final UHCPlayer uhcPlayer) {
+	public ItemStack getPlayerStatsItem(final GamePlayer gamePlayer) {
 		final ItemStack playerStatsItem = GameValues.STATISTICS.PLAYER_STATS_DIS_ITEM.equalsIgnoreCase("PLAYER_HEAD")
-				? uhcPlayer.getPlayerHead(uhcPlayer.getName())
+				? gamePlayer.getPlayerHead(gamePlayer.getName())
 				: XMaterial.matchXMaterial(GameValues.STATISTICS.PLAYER_STATS_DIS_ITEM.toUpperCase())
 				.get().parseItem();
 
 		final String playerStatsName = GameValues.STATISTICS.PLAYER_STATS_CUST_NAME != null
 				? GameValues.STATISTICS.PLAYER_STATS_CUST_NAME
-				: uhcPlayer.getName();
+				: gamePlayer.getName();
 
 		final List<String> playerStatsLore = new ArrayList<>();
 
 		for (String text : GameValues.STATISTICS.PLAYER_STATS_LORE) {
-			text = PlaceholderUtil.setPlaceholders(text, uhcPlayer.getPlayer());
+			text = PAPI.setPlaceholders(gamePlayer.getPlayer(), text);
 			playerStatsLore.add(TextUtils.color(text));
 		}
 		return ItemUtils.createItem(
 				playerStatsItem.getType(),
-				PlaceholderUtil.setPlaceholders(playerStatsName, uhcPlayer.getPlayer()),
+				PAPI.setPlaceholders(gamePlayer.getPlayer(), playerStatsName),
 				1,
 				playerStatsLore);
 	}

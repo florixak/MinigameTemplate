@@ -1,9 +1,16 @@
 package me.florixak.minigametemplate.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.florixak.minigametemplate.MinigameTemplate;
 import org.bukkit.entity.Player;
 
 public class PlaceholderExp extends PlaceholderExpansion {
+
+	private final MinigameTemplate plugin;
+
+	public PlaceholderExp(final MinigameTemplate plugin) {
+		this.plugin = plugin;
+	}
 
 	@Override
 	public String getIdentifier() {

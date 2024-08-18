@@ -1,7 +1,7 @@
 package me.florixak.minigametemplate.game.quests;
 
-import me.florixak.uhcrevamp.game.player.UHCPlayer;
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
+import com.cryptomorin.xseries.XMaterial;
+import me.florixak.minigametemplate.game.player.GamePlayer;
 import org.bukkit.Material;
 
 import java.util.List;
@@ -52,8 +52,8 @@ public class Quest {
 		return this.questReward;
 	}
 
-	public void giveReward(final UHCPlayer uhcPlayer) {
-		this.questReward.giveReward(uhcPlayer);
+	public void giveReward(final GamePlayer gamePlayer) {
+		this.questReward.giveReward(gamePlayer);
 	}
 
 

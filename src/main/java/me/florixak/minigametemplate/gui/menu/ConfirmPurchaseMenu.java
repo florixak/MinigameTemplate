@@ -1,28 +1,28 @@
 package me.florixak.minigametemplate.gui.menu;
 
-import me.florixak.uhcrevamp.config.Messages;
-import me.florixak.uhcrevamp.game.GameManager;
-import me.florixak.uhcrevamp.game.GameValues;
-import me.florixak.uhcrevamp.game.kits.Kit;
-import me.florixak.uhcrevamp.game.perks.Perk;
-import me.florixak.uhcrevamp.game.player.UHCPlayer;
-import me.florixak.uhcrevamp.gui.Menu;
-import me.florixak.uhcrevamp.gui.MenuUtils;
-import me.florixak.uhcrevamp.utils.ItemUtils;
-import me.florixak.uhcrevamp.utils.XSeries.XMaterial;
-import me.florixak.uhcrevamp.utils.text.TextUtils;
+import com.cryptomorin.xseries.XMaterial;
+import me.florixak.minigametemplate.config.Messages;
+import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.kits.Kit;
+import me.florixak.minigametemplate.game.perks.Perk;
+import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.gui.Menu;
+import me.florixak.minigametemplate.gui.MenuUtils;
+import me.florixak.minigametemplate.managers.GameManager;
+import me.florixak.minigametemplate.utils.ItemUtils;
+import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class ConfirmPurchaseMenu extends Menu {
 
-	private final UHCPlayer uhcPlayer;
+	private final GamePlayer uhcPlayer;
 	private final Kit kitToBuy;
 	private final Perk perkToBuy;
 	private double moneyToWithdraw = 0;
 
 	public ConfirmPurchaseMenu(final MenuUtils menuUtils) {
 		super(menuUtils);
-		this.uhcPlayer = menuUtils.getUHCPlayer();
+		this.uhcPlayer = menuUtils.getGamePlayer();
 		this.kitToBuy = menuUtils.getSelectedKitToBuy();
 		this.perkToBuy = menuUtils.getSelectedPerkToBuy();
 	}
@@ -44,11 +44,11 @@ public class ConfirmPurchaseMenu extends Menu {
 
 		if (event.getSlot() == 11) {
 			if (this.kitToBuy != null) {
-				this.uhcPlayer.getData().buyKit(menuUtils.getSelectedKitToBuy());
-				menuUtils.setSelectedKitToBuy(null);
+				this.uhcPlayer.getData().buyKit(this.menuUtils.getSelectedKitToBuy());
+				this.menuUtils.setSelectedKitToBuy(null);
 			} else if (this.perkToBuy != null) {
-				this.uhcPlayer.getData().buyPerk(menuUtils.getSelectedPerkToBuy());
-				menuUtils.setSelectedPerkToBuy(null);
+				this.uhcPlayer.getData().buyPerk(this.menuUtils.getSelectedPerkToBuy());
+				this.menuUtils.setSelectedPerkToBuy(null);
 			} else {
 				this.uhcPlayer.getData().withdrawMoney(0);
 			}
@@ -62,7 +62,7 @@ public class ConfirmPurchaseMenu extends Menu {
 	public void setMenuItems() {
 		this.moneyToWithdraw = this.kitToBuy != null ? this.kitToBuy.getCost() : this.perkToBuy.getCost();
 
-		inventory.setItem(11, ItemUtils.createItem(
+		this.inventory.setItem(11, ItemUtils.createItem(
 				XMaterial.matchXMaterial(GameValues.INVENTORY.CONFIRM_PURCHASE_ITEM).get().parseMaterial(),
 				TextUtils.color(GameValues.INVENTORY.CONFIRM_PURCHASE_NAME
 						.replace("%cost%", String.valueOf(this.moneyToWithdraw))
@@ -70,7 +70,7 @@ public class ConfirmPurchaseMenu extends Menu {
 				1,
 				null)
 		);
-		inventory.setItem(15, ItemUtils.createItem(
+		this.inventory.setItem(15, ItemUtils.createItem(
 				XMaterial.matchXMaterial(GameValues.INVENTORY.CANCEL_PURCHASE_ITEM).get().parseMaterial(),
 				TextUtils.color(GameValues.INVENTORY.CANCEL_PURCHASE_NAME),
 				1,

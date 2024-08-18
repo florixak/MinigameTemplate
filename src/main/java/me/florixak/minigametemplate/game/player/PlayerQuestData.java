@@ -1,11 +1,10 @@
 package me.florixak.minigametemplate.game.player;
 
+import me.florixak.minigametemplate.config.ConfigType;
+import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.quests.Quest;
 import me.florixak.minigametemplate.game.quests.QuestType;
-import me.florixak.uhcrevamp.config.ConfigType;
-import me.florixak.uhcrevamp.config.Messages;
-import me.florixak.uhcrevamp.game.GameManager;
-import me.florixak.uhcrevamp.game.player.UHCPlayer;
+import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -14,13 +13,13 @@ import java.util.*;
 public class PlayerQuestData {
 
 	private final GameManager gameManager = GameManager.getGameManager();
-	private final UHCPlayer uhcPlayer;
+	private final GamePlayer gamePlayer;
 	private final FileConfiguration questConfig;
 	private final Set<String> completedQuests = new HashSet<>();
 	private final Map<String, Integer> questProgress = new HashMap<>();
 
-	public PlayerQuestData(final UHCPlayer uhcPlayer) {
-		this.uhcPlayer = uhcPlayer;
+	public PlayerQuestData(final GamePlayer gamePlayer) {
+		this.gamePlayer = gamePlayer;
 		this.questConfig = this.gameManager.getConfigManager().getFile(ConfigType.QUESTS).getConfig();
 
 		initializeData();
@@ -32,14 +31,14 @@ public class PlayerQuestData {
 	}
 
 	private boolean hasData() {
-		return this.questConfig.contains("players." + this.uhcPlayer.getUUID().toString());
+		return this.questConfig.contains("players." + this.gamePlayer.getUUID().toString());
 	}
 
 	private void loadData() {
 		if (this.questConfig.getConfigurationSection("players") == null)
 			return;
 
-		final String uuid = this.uhcPlayer.getUUID().toString();
+		final String uuid = this.gamePlayer.getUUID().toString();
 
 		if (this.questConfig.getConfigurationSection("players." + uuid) == null)
 			return;
@@ -57,7 +56,7 @@ public class PlayerQuestData {
 	}
 
 	public void savePlayerQuestData() {
-		final String path = "players." + this.uhcPlayer.getUUID().toString();
+		final String path = "players." + this.gamePlayer.getUUID().toString();
 		this.questConfig.set(path + ".completed", new ArrayList<>(this.completedQuests));
 		this.questProgress.forEach((key, value) -> this.questConfig.set(path + ".progress." + key,
 				getProgress(key) == this.gameManager.getQuestManager().getQuest(key).getQuestType().getCount() ? null : value));
@@ -121,14 +120,14 @@ public class PlayerQuestData {
 	private void completeQuest(final Quest quest) {
 		addCompletedQuest(quest.getId());
 		this.questProgress.remove(quest.getId());
-		quest.giveReward(this.uhcPlayer);
-		this.uhcPlayer.sendMessage(Messages.QUEST_COMPLETED.toString().replace("%quest%", quest.getDisplayName()));
-		this.uhcPlayer.sendMessage(Messages.QUEST_REWARD.toString()
+		quest.giveReward(this.gamePlayer);
+		this.gamePlayer.sendMessage(Messages.QUEST_COMPLETED.toString().replace("%quest%", quest.getDisplayName()));
+		this.gamePlayer.sendMessage(Messages.QUEST_REWARD.toString()
 				.replace("%quest%", quest.getDisplayName())
 				.replace("%money%", String.valueOf(quest.getReward().getMoney()))
 				.replace("%uhc-exp%", String.valueOf(quest.getReward().getUhcExp()))
 				.replace("%currency%", Messages.CURRENCY.toString()));
-		this.gameManager.getSoundManager().playQuestCompletedSound(this.uhcPlayer.getPlayer());
+		this.gameManager.getSoundManager().playQuestCompletedSound(this.gamePlayer.getPlayer());
 	}
 
 	public boolean hasQuestWithTypeOf(final String questType) {

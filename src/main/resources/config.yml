@@ -1,0 +1,368 @@
+# This is the main configuration file of UHCRevamp
+# I am going to improve some things in the future.
+# I hope you will like it!
+# If you have problems contact me:
+#   - discord: florixak
+#   - github: https://github.com/florixak
+
+settings:
+
+  # Expanding plugins
+  addons:
+    use-Vault: false # Enable integration with Vault for economy support
+    use-LuckPerms: false # Enable integration with LuckPerms for permission management
+    use-ProtocolLib: true # Enable integration with ProtocolLib for enhanced compatibility
+    use-PlaceholderAPI: true # Enable integration with PlaceholderAPI for custom placeholders
+    use-DecentHolograms: true # Enable integration with DecentHolograms for hologram support
+
+  bungeecord:
+    enabled: false # Enable BungeeCord support
+    lobby-server: "lobby" # Name of the lobby server
+
+  # MySQL database
+  # Warning: Do not forget to create %database% before starting the server
+  mysql:
+    enabled: false # Enable MySQL database integration
+    host: "localhost" # MySQL server host
+    port: "3306" # MySQL server port
+    database: "uhcrevamp" # MySQL database name
+    username: "root" # MySQL username
+    password: "" # MySQL password
+
+  # Game settings
+  game:
+    no-explosions: false # Globally disable explosions
+    explode-block-destroy: true # Allow explosions to destroy blocks
+    spawn-monsters: false # Allow monsters to spawn
+    monsters-attack: false # Allow monsters to attack players
+
+    players-to-start: 2 # Minimum number of players to start the game
+    starting-message-at: 10 # Time in seconds to display starting message
+
+    # Countdowns for different game phases
+    countdowns:
+      starting: 15 # Countdown for game start in seconds
+      ending: 15 # Countdown for game end in seconds
+
+  # Border settings
+  border:
+    init-size: 450 # Size of the game border
+    damage: 1 # Damage taken when outside the border
+    minimum-size: 1 # Minimal size
+    speed: 2 # DIFFERENT!: if 2 and pvp countdown is 600 seconds, border will shrink to minimum in 1200 seconds
+
+  # Team settings
+  teams:
+    team-mode: true # Enable team mode
+    max-size: 2 # Maximum team size
+    friendly-fire: false # Allow friendly fire within teams
+
+  # Kit settings
+  kits:
+    enabled: true # Enable kits
+    bought-forever: true # Kits are bought permanently
+
+  # Perk settings
+  perks:
+    enabled: true # Enable perks
+    bought-forever: true # Perks are bought permanently
+
+  # Lobby settings
+  # Rename your lobby files to these world names, or set it manually
+  lobby:
+    waiting:
+      world: "UHCWaitingLobby"
+      x: 0
+      y: 10
+      z: 0
+    ending:
+      world: "UHCEndingLobby"
+      x: 0
+      y: 10
+      z: 0
+
+  # Statistics settings
+  statistics:
+    # Starting money for each player
+    starting-money: 100
+
+    level:
+      # Players will gain xp and increase their level
+      first-level: 0 # Starting level
+      first-required-exp: 100.0 # Experience required for first level
+      exp-multiplier: 3.75 # Multiplier for experience required for each level
+
+    player-stats:
+      display-item: PLAYER_HEAD # Item to display player stats
+      slot: 10 # Slot for player stats
+      custom-name: "&a%player%" # Custom name for player stats
+      lore:
+        - "&fLevel: &a%level%"
+        - "&fRequired EXP: &a%required-exp%"
+        - "&fMoney: &a%money%"
+        - " "
+        - "&fWins: &a%total-wins%"
+        - "&fLosses: &a%total-losses%"
+        - "&fKills: &a%total-kills%"
+        - "&fAssists: &a%total-assists%"
+        - "&fDeaths: &a%total-deaths%"
+        - "&fKillstreak: &a%killstreak%"
+        - "&fGames Played: &a%games-played%"
+    top-stats:
+      types:
+        WINS:
+          display-name: "Wins" # Display name for top stats
+          display-item: GOLDEN_APPLE # Item to display top stats
+          slot: 12 # Slot for top stats
+        KILLS:
+          display-name: "Kills" # Display name for top stats
+          display-item: IRON_SWORD # Item to display top stats
+          slot: 13 # Slot for top stats
+        DEATHS:
+          display-name: "Deaths" # Display name for top stats
+          display-item: SKULL # Item to display top stats
+          slot: 14 # Slot for top stats
+        ASSISTS:
+          display-name: "Assists" # Display name for top stats
+          display-item: BOW # Item to display top stats
+          slot: 15 # Slot for top stats
+        LOSSES:
+          display-name: "Losses" # Display name for top stats
+          display-item: COAL # Item to display top stats
+          slot: 16 # Slot for top stats
+        KILLSTREAK:
+          display-name: "Killstreak" # Display name for top stats
+          display-item: DIAMOND_SWORD # Item to display top stats
+          slot: 21 # Slot for top stats
+        GAMES-PLAYED:
+          display-name: "Games Played" # Display name for top stats
+          display-item: PAPER # Item to display top stats
+          slot: 22 # Slot for top stats
+        UHC-LEVEL:
+          display-name: "UHC Level" # Display name for top stats
+          display-item: GOLDEN_HELMET # Item to display top stats
+          slot: 23 # Slot for top stats
+      custom-name: "&a%top-stats-mode%"
+      lore:
+        - "&7------===========------"
+        - "&a1. &f%uhcrevamp_top-1%"
+        - "&a2. &f%uhcrevamp_top-2%"
+        - "&a3. &f%uhcrevamp_top-3%"
+        - "&a4. &f%uhcrevamp_top-4%"
+        - "&a5. &f%uhcrevamp_top-5%"
+        - "&7------===========------"
+      hologram: # DecentHolograms plugin required
+        - "    &a%top-stats-mode%    "
+        - "&7------===========------"
+        - "&a1. &f%uhcrevamp_top-1%"
+        - "&a2. &f%uhcrevamp_top-2%"
+        - "&a3. &f%uhcrevamp_top-3%"
+        - "&a4. &f%uhcrevamp_top-4%"
+        - "&a5. &f%uhcrevamp_top-5%"
+        - "&7------===========------"
+
+  # Reward settings
+  rewards:
+    multiplier: 1.0 # Multiplier for rewards (coins, experience) 2 = double rewards, 3 = triple rewards
+    kill:
+      coins: 30 # Money reward for a kill
+      exp: 60 # Experience reward for a kill
+      uhc-exp: 25 # UHC experience reward for a kill
+    assist:
+      coins: 10 # Money reward for an assist
+      exp: 5 # Experience reward for an assist
+      uhc-exp: 10 # UHC experience reward for an assist
+    win:
+      coins: 150 # Money reward for a win
+      uhc-exp: 200 # UHC experience reward for a win
+    lose:
+      coins: 50 # Money reward for a loss
+      uhc-exp: 50 # UHC experience reward for a loss
+    activity:
+      enabled: false # Enable activity rewards
+      coins: 10 # Money reward for activity
+      uhc-exp: 20 # UHC experience reward for activity
+      period: 300 # Time period in seconds for activity rewards
+    level-up:
+      base-reward: 10 # Base reward for leveling up
+      reward-coefficient: 1.2 # %base-reward% + (%reward-coefficient% ^ %uhc-level%)
+
+  # End game commands - commands executed at the end of the game
+  end-game-commands: [ ]
+
+  # Tablist settings
+  tablist:
+    enabled: true # Enable custom tablist (requires ProtocolLib)
+    header: "&2&lUHC &a&lRevamp\n" # Header text for tablist
+    solo-mode-player-list: "&7[%uhc-level%] &f%player%" # Player list format for solo mode
+    team-mode-player-list: "&7[%uhc-level%] %team% &f%player%" # Player list format for team mode
+    footer: "\n&7www.your-server.com" # Footer text for tablist
+
+  # Selectors
+  inventories:
+    next: "&6Next"
+    next-item: DARK_OAK_BUTTON
+    previous: "&6Previous"
+    previous-item: DARK_OAK_BUTTON
+    back: "&6Back"
+    back-item: DARK_OAK_BUTTON
+    close: "&cClose"
+    close-item: BARRIER
+
+    # Available menu - teams, kits, perks, custom-crafts, statistics
+    teams:
+      enabled: true # Enable teams menu
+      display-name: "&fTeams&8" # Display name for teams menu
+      display-item: WHITE_WOOL # Display item for teams menu
+      slot: 0 # Slot for teams menu
+      slots: 36 # Number of slots for teams menu
+    kits:
+      enabled: true # Enable kits menu
+      display-name: "&fKits&8" # Display name for kits menu
+      display-item: IRON_PICKAXE # Display item for kits menu
+      slot: 3 # Slot for kits menu
+      slots: 45 # Number of slots for kits menu
+    perks:
+      enabled: true # Enable perks menu
+      display-name: "&fPerks&8" # Display name for perks menu
+      display-item: BOW # Display item for perks menu
+      slot: 5 # Slot for perks menu
+      slots: 45 # Number of slots for perks menu
+    custom-recipes:
+      enabled: true # Enable custom recipes menu
+      display-name: "&fCustom Recipes&8" # Display name for custom recipes menu
+      display-item: CRAFTING_TABLE # Display item for custom recipes menu
+      slot: 4 # Slot for custom recipes menu
+      slots: 45 # Number of slots for custom recipes menu
+    quests:
+      enabled: true # Enable quests menu
+      display-name: "&fQuests&8" # Display name for quests menu
+      display-item: BOOK # Display item for quests menu
+      slot: 7 # Slot for quests menu
+      slots: 45 # Number of slots for quests menu
+    statistics:
+      enabled: true # Enable statistics menu
+      display-name: "&fProfile" # Display name for statistics menu
+      display-item: PLAYER_HEAD # Display item for statistics menu
+      slot: 8 # Slot for statistics menu
+      slots: 45 # Number of slots for statistics menu
+    confirm-purchase:
+      enabled: true # Enable confirm purchase menu
+      confirm: "&aConfirm (%cost% %currency%)" # Text for confirm button
+      confirm-item: EMERALD_BLOCK # Item for confirm button
+      cancel: "&cCancel" # Text for cancel button
+      cancel-item: REDSTONE_BLOCK # Item for cancel button
+      slot: -1 # Slot for confirm purchase menu, -1 = not in the hotbar menu
+      slots: 27 # Number of slots for confirm purchase menu
+
+  title:
+    enabled: true # Enable title messages like victory or lose
+    fade-in: 2 # Fade in time in seconds
+    stay: 3 # Stay time in seconds
+    fade-out: 2 # Fade out time in seconds
+
+  sounds:
+    # List of sounds for different game events
+    # If you want do disable sound, set it to NONE
+    started:
+      sound: ENTITY_PLAYER_LEVELUP
+      volume: 0.5
+      pitch: 1.0
+    starting:
+      sound: BLOCK_STONE_BUTTON_CLICK_ON
+      volume: 0.5
+      pitch: 1.0
+    win:
+      sound: ENTITY_FIREWORK_ROCKET_BLAST
+      volume: 0.5
+      pitch: 1.0
+    game-over:
+      sound: ENTITY_ENDER_DRAGON_GROWL
+      volume: 0.5
+      pitch: 1.0
+    level-up:
+      sound: ENTITY_PLAYER_LEVELUP
+      volume: 0.5
+      pitch: 1.0
+    kill:
+      sound: ENTITY_LIGHTNING_BOLT_IMPACT
+      volume: 0.1
+      pitch: 1.0
+    death:
+      sound: ENTITY_LIGHTNING_BOLT_IMPACT
+      volume: 0.1
+      pitch: 1.0
+    assist:
+      sound: NONE
+      volume: 0.1
+      pitch: 1.0
+    select-buy: # Sound for selecting and buying kits, perks
+      sound: ENTITY_EXPERIENCE_ORB_PICKUP
+      volume: 0.5
+      pitch: 1.0
+    purchase-cancel:
+      sound: BLOCK_ANVIL_BREAK
+      volume: 0.5
+      pitch: 1.0
+    quest-complete:
+      sound: ENTITY_PLAYER_LEVELUP
+      volume: 0.5
+      pitch: 1.0
+
+  # Chat
+  chat:
+    # Chat format placeholders:
+    # %player% - Name of player
+    # %uhc-level% - UHC level of player
+    # %luckperms-prefix% - If luckperms are allowed in config, displays player's prefix
+    # %message% - Sent message
+    # %level% - Player level
+    # %team% - Team name
+    lobby-format: "&7[%uhc-level%] %team% &f%player% &7» &f%message%" # Format for chat messages in the lobby or in the solo mode
+    global-format: "&6[GLOBAL] &7[%uhc-level%] %team% &f%player% &7» &f%message%" # Format for global chat messages, with ! before message and teams enabled
+    teams-format: "&6[TEAM] &7[%uhc-level%] %team% &f%player% &7» &f%message%" # Format for team chat messages
+    solo-format: "&7[%uhc-level%] &f%player% &7» &f%message%" # Format for chat messages in-game
+    dead-format: "&7[SPECTATOR] [%uhc-level%] %team% &7%player% » %message%" # Format for chat messages from dead players
+
+    # List of commands blocked in chat
+    # It is not perfect, it has some flaws but it works in most cases
+    blocked-commands:
+      - /pl
+      - /plugins
+      - /lp
+      - /lp help
+      - /lp editor
+      - /luckperms
+      - /luckperms editor
+      - /luckperms help
+      - /paper
+      - /plugins
+      - /paper
+      - /plugins
+      - /paper
+      - /gm
+      - /gmc
+      - /gms
+      - /gmsp
+      - /gma
+      - /gamemode
+      - /gamemode 0
+      - /gamemode 1
+      - /gamemode 2
+      - /gamemode 3
+      - /gamemode c
+      - /gamemode s
+      - /gamemode a
+      - /gamemode sp
+      - /gamemode creative
+      - /gamemode survival
+      - /gamemode adventure
+      - /gamemode spectator
+      - /gm c
+      - /gm s
+      - /gm a
+      - /gm sp
+      - /gm spec
+      - /give
+      - /kill
+      - /?

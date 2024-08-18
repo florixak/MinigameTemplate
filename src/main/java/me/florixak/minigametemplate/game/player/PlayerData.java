@@ -82,9 +82,9 @@ public class PlayerData {
 
 		this.playerData.set(path + ".name", this.gamePlayer.getName());
 		this.playerData.set(path + ".money", GameValues.STATISTICS.STARTING_MONEY);
-		this.playerData.set(path + ".uhc-level", GameValues.STATISTICS.FIRST_LEVEL);
-		this.playerData.set(path + ".uhc-exp", 0);
-		this.playerData.set(path + ".required-uhc-exp", GameValues.STATISTICS.FIRST_REQUIRED_EXP);
+		this.playerData.set(path + ".level", GameValues.STATISTICS.FIRST_LEVEL);
+		this.playerData.set(path + ".exp", 0);
+		this.playerData.set(path + ".required-exp", GameValues.STATISTICS.FIRST_REQUIRED_EXP);
 		this.playerData.set(path + ".games-played", 0);
 		this.playerData.set(path + ".wins", 0);
 		this.playerData.set(path + ".losses", 0);
@@ -102,7 +102,7 @@ public class PlayerData {
 	private void loadDataFromDatabase() {
 		this.playerName = this.gameManager.getDatabase().getName(this.gamePlayer.getUUID());
 		this.money = this.gameManager.getDatabase().getMoney(this.gamePlayer.getUUID());
-		this.level = this.gameManager.getDatabase().getUHCLevel(this.gamePlayer.getUUID());
+		this.level = this.gameManager.getDatabase().getLevel(this.gamePlayer.getUUID());
 		this.exp = this.gameManager.getDatabase().getExp(this.gamePlayer.getUUID());
 		this.requiredExp = this.gameManager.getDatabase().getRequiredExp(this.gamePlayer.getUUID());
 		this.wins = this.gameManager.getDatabase().getWins(this.gamePlayer.getUUID());
@@ -117,9 +117,9 @@ public class PlayerData {
 		final String path = "player-data." + this.gamePlayer.getUUID();
 		this.playerName = this.playerData.getString(path + ".name");
 		this.money = this.playerData.getDouble(path + ".money", GameValues.STATISTICS.STARTING_MONEY);
-		this.level = this.playerData.getInt(path + ".uhc-level", GameValues.ERROR_INT_VALUE);
-		this.exp = this.playerData.getDouble(path + ".uhc-exp", GameValues.ERROR_INT_VALUE);
-		this.requiredExp = this.playerData.getDouble(path + ".required-uhc-exp", GameValues.ERROR_INT_VALUE);
+		this.level = this.playerData.getInt(path + ".level", GameValues.ERROR_INT_VALUE);
+		this.exp = this.playerData.getDouble(path + ".exp", GameValues.ERROR_INT_VALUE);
+		this.requiredExp = this.playerData.getDouble(path + ".required-exp", GameValues.ERROR_INT_VALUE);
 		this.wins = this.playerData.getInt(path + ".wins", GameValues.ERROR_INT_VALUE);
 		this.losses = this.playerData.getInt(path + ".losses", GameValues.ERROR_INT_VALUE);
 		this.kills = this.playerData.getInt(path + ".kills", GameValues.ERROR_INT_VALUE);
@@ -420,7 +420,7 @@ public class PlayerData {
 		if (this.gameManager.isDatabaseConnected()) {
 			this.gameManager.getDatabase().addExp(this.gamePlayer.getUUID(), amount);
 		} else {
-			this.playerData.set("player-data." + this.gamePlayer.getUUID() + ".uhc-exp", this.exp);
+			this.playerData.set("player-data." + this.gamePlayer.getUUID() + ".exp", this.exp);
 			this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 		}
 		checkLevelUp();
@@ -441,23 +441,23 @@ public class PlayerData {
 
 		if (this.gameManager.isDatabaseConnected()) {
 			this.gameManager.getDatabase().setExp(this.gamePlayer.getUUID(), this.exp);
-			this.gameManager.getDatabase().addUHCLevel(this.gamePlayer.getUUID());
+			this.gameManager.getDatabase().addLevel(this.gamePlayer.getUUID());
 			this.gameManager.getDatabase().setRequiredExp(this.gamePlayer.getUUID(), this.requiredExp);
 		} else {
-			this.playerData.set("player-data." + this.gamePlayer.getUUID() + ".uhc-exp", this.exp);
-			this.playerData.set("player-data." + this.gamePlayer.getUUID() + ".uhc-level", this.level);
-			this.playerData.set("player-data." + this.gamePlayer.getUUID() + ".required-uhc-exp", this.requiredExp);
+			this.playerData.set("player-data." + this.gamePlayer.getUUID() + ".exp", this.exp);
+			this.playerData.set("player-data." + this.gamePlayer.getUUID() + ".level", this.level);
+			this.playerData.set("player-data." + this.gamePlayer.getUUID() + ".required-exp", this.requiredExp);
 			this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 		}
 
 		final double reward = GameValues.REWARDS.BASE_REWARD * GameValues.REWARDS.REWARD_COEFFICIENT * this.level;
 		depositMoney(reward);
 		if (this.gamePlayer.getPlayer() != null) {
-			this.gameManager.getSoundManager().playUHCLevelUpSound(this.gamePlayer.getPlayer());
-			this.gamePlayer.sendMessage(Messages.LEVEL_UP.toString()
-					.replace("%previous-uhc-level%", String.valueOf(previousLevel))
-					.replace("%new-uhc-level%", String.valueOf(newLevel)));
-			this.gamePlayer.sendMessage(Messages.REWARDS_LEVEL_UP.toString().replace("%money%", String.valueOf(reward)));
+			this.gameManager.getSoundManager().playLevelUpSound(this.gamePlayer.getPlayer());
+			this.gamePlayer.sendMessage(PAPI.setPlaceholders(this.gamePlayer.getPlayer(), Messages.LEVEL_UP.toString()
+					.replace("%previous-level%", String.valueOf(previousLevel))
+					.replace("%new-level%", String.valueOf(newLevel))));
+			this.gamePlayer.sendMessage(PAPI.setPlaceholders(this.gamePlayer.getPlayer(), Messages.REWARDS_LEVEL_UP.toString().replace("%money%", String.valueOf(reward))));
 		}
 	}
 
