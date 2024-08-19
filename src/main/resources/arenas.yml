@@ -1,0 +1,73 @@
+arenas:
+  1:
+    name: "Arena 1"
+    enabled: true
+    world: "world"
+    minPlayers: 2
+    maxPlayers: 12
+    center:
+      x: 0
+      y: 0
+      z: 0
+    spawnpoints:
+      1:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+      2:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+      3:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+      4:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+  2:
+    name: "Arena 2"
+    enabled: true
+    world: "world"
+    minPlayers: 2
+    maxPlayers: 12
+    center:
+      x: 0
+      y: 0
+      z: 0
+    spawnpoints:
+      1:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+      2:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+      3:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+      4:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+
+

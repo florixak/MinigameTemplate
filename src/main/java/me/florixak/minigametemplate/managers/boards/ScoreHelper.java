@@ -1,4 +1,4 @@
-package me.florixak.minigametemplate.managers.scoreboard;
+package me.florixak.minigametemplate.managers.boards;
 
 import eu.decentsoftware.holograms.api.utils.PAPI;
 import me.florixak.minigametemplate.utils.text.TextUtils;

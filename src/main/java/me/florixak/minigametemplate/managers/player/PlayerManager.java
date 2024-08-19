@@ -1,4 +1,4 @@
-package me.florixak.minigametemplate.managers;
+package me.florixak.minigametemplate.managers.player;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -10,6 +10,7 @@ import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.game.player.PlayerState;
 import me.florixak.minigametemplate.game.teams.GameTeam;
+import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.RandomUtils;
 import me.florixak.minigametemplate.utils.TeleportUtils;
 import org.bukkit.Bukkit;

@@ -89,6 +89,8 @@ public class PlayerListener implements Listener {
 			Utils.broadcast(PAPI.setPlaceholders(p, Messages.QUIT.toString().replace("%online%", String.valueOf(this.gameManager.getPlayerManager().getOnlinePlayers().size() - 1))));
 			gamePlayer.leaveTeam();
 			this.gameManager.getPlayerManager().getPlayersList().remove(gamePlayer);
+			this.gameManager.getPlayerDataManager().removePlayerData(gamePlayer);
+			this.gameManager.getPlayerQuestDataManager().removePlayerData(gamePlayer);
 
 		} else if (this.gameManager.isPlaying() && !this.gameManager.isEnding()) {
 			gamePlayer.setState(PlayerState.DEAD);
@@ -139,8 +141,8 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (gamePlayer.getQuestData().hasQuestWithTypeOf("PICKUP")) {
-			gamePlayer.getQuestData().addProgressToTypes("PICKUP", event.getItem().getItemStack().getType());
+		if (gamePlayer.getPlayerQuestData().hasQuestWithTypeOf("PICKUP")) {
+			gamePlayer.getPlayerQuestData().addProgressToTypes("PICKUP", event.getItem().getItemStack().getType());
 		}
 	}
 

@@ -10,8 +10,11 @@ import me.florixak.minigametemplate.game.GameState;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.assists.DamageTrackerManager;
 import me.florixak.minigametemplate.listeners.*;
-import me.florixak.minigametemplate.managers.scoreboard.ScoreboardManager;
-import me.florixak.minigametemplate.managers.scoreboard.TabManager;
+import me.florixak.minigametemplate.managers.boards.ScoreboardManager;
+import me.florixak.minigametemplate.managers.boards.TabManager;
+import me.florixak.minigametemplate.managers.player.PlayerDataManager;
+import me.florixak.minigametemplate.managers.player.PlayerManager;
+import me.florixak.minigametemplate.managers.player.PlayerQuestDataManager;
 import me.florixak.minigametemplate.sql.MySQL;
 import me.florixak.minigametemplate.sql.SQLGetter;
 import me.florixak.minigametemplate.utils.Utils;
@@ -32,6 +35,8 @@ public class GameManager {
 
 	private final ConfigManager configManager;
 	private final PlayerManager playerManager;
+	private final PlayerDataManager playerDataManager;
+	private final PlayerQuestDataManager playerQuestDataManager;
 	private final TeamManager teamsManager;
 	private final KitsManager kitsManager;
 	private final PerksManager perksManager;
@@ -60,6 +65,8 @@ public class GameManager {
 		this.configManager = new ConfigManager();
 		this.configManager.loadFiles(plugin);
 		this.playerManager = new PlayerManager(this);
+		this.playerDataManager = new PlayerDataManager();
+		this.playerQuestDataManager = new PlayerQuestDataManager();
 		this.teamsManager = new TeamManager(this);
 		this.kitsManager = new KitsManager(this);
 		this.perksManager = new PerksManager(this);
@@ -184,6 +191,8 @@ public class GameManager {
 	public void onDisable() {
 //		this.configManager.saveAll();
 		this.playerManager.onDisable();
+		this.playerDataManager.onDisable();
+		this.playerQuestDataManager.onDisable();
 		this.teamsManager.onDisable();
 		this.kitsManager.onDisable();
 		this.perksManager.onDisable();

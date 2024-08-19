@@ -139,8 +139,8 @@ settings:
           display-name: "Games Played" # Display name for top stats
           display-item: PAPER # Item to display top stats
           slot: 22 # Slot for top stats
-        UHC-LEVEL:
-          display-name: "UHC Level" # Display name for top stats
+        LEVEL:
+          display-name: "Level" # Display name for top stats
           display-item: GOLDEN_HELMET # Item to display top stats
           slot: 23 # Slot for top stats
       custom-name: "&a%top-stats-mode%"

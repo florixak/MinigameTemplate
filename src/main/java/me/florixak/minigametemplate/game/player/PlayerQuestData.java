@@ -24,7 +24,6 @@ public class PlayerQuestData {
 	public PlayerQuestData(final GamePlayer gamePlayer) {
 		this.gamePlayer = gamePlayer;
 		this.questConfig = this.gameManager.getConfigManager().getFile(ConfigType.QUESTS).getConfig();
-
 		initializeData();
 	}
 

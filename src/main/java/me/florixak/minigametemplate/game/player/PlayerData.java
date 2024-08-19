@@ -46,11 +46,12 @@ public class PlayerData {
 	}
 
 	public void initializeData() {
-		setInitialData();
-		if (this.gameManager.isDatabaseConnected())
-			loadDataFromDatabase();
-		else
-			loadDataFromConfig();
+		if (!hasData()) {
+			setInitialData();
+			return;
+		}
+		if (this.gameManager.isDatabaseConnected()) loadDataFromDatabase();
+		else loadDataFromConfig();
 
 		loadBoughtKits();
 		loadBoughtPerks();
@@ -67,7 +68,6 @@ public class PlayerData {
 	}
 
 	private void setInitialData() {
-		if (hasData()) return;
 
 		if (this.plugin.getVaultHook().hasEconomy()) {
 			if (GameValues.STATISTICS.STARTING_MONEY > 0 && !this.plugin.getVaultHook().hasAccount(this.gamePlayer.getPlayer())) {
@@ -287,7 +287,7 @@ public class PlayerData {
 		saveKits();
 		final String kitCost = String.valueOf(kit.getCost());
 		final String money = String.valueOf(getMoney());
-		final String prevMoney = String.valueOf(this.gamePlayer.getData().getMoney() + kit.getCost());
+		final String prevMoney = String.valueOf(this.gamePlayer.getPlayerData().getMoney() + kit.getCost());
 		this.gamePlayer.sendMessage(Messages.KITS_MONEY_DEDUCT.toString(), "%previous-money%", prevMoney, "%money%", money, "%kit%", kit.getDisplayName(), "%kit-cost%", kitCost);
 		this.gamePlayer.setKit(kit);
 		this.gameManager.getSoundManager().playSelectBuySound(this.gamePlayer.getPlayer());
@@ -456,7 +456,7 @@ public class PlayerData {
 		setGamesPlayed();
 		depositMoney(money);
 		addExp(uhcExp);
-		this.gamePlayer.getQuestData().savePlayerQuestData();
+		this.gameManager.getPlayerQuestDataManager().getPlayerData(this.gamePlayer).savePlayerQuestData();
 	}
 
 	public void showStatistics() {

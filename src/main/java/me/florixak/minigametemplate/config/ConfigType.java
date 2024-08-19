@@ -9,5 +9,6 @@ public enum ConfigType {
 	TEAMS,
 	KITS,
 	PERKS,
-	QUESTS
+	QUESTS,
+	ARENAS,
 }

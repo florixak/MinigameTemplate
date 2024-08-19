@@ -1,4 +1,4 @@
-package me.florixak.minigametemplate.managers.scoreboard;
+package me.florixak.minigametemplate.managers.boards;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;

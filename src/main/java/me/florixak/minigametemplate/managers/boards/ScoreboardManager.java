@@ -1,4 +1,4 @@
-package me.florixak.minigametemplate.managers.scoreboard;
+package me.florixak.minigametemplate.managers.boards;
 
 import lombok.Getter;
 import me.florixak.minigametemplate.config.ConfigType;

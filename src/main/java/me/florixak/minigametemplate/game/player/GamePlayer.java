@@ -30,10 +30,13 @@ import java.util.UUID;
 @Getter
 public class GamePlayer {
 
+	private final GameManager gameManager = GameManager.getGameManager();
+
 	private final UUID uuid;
 	private final String name;
-	private final PlayerData data;
-	private final PlayerQuestData questData;
+
+	private final PlayerData playerData;
+	private final PlayerQuestData playerQuestData;
 
 	private PlayerState state = PlayerState.LOBBY;
 	private int kills = 0;
@@ -53,8 +56,9 @@ public class GamePlayer {
 	public GamePlayer(final UUID uuid, final String name) {
 		this.uuid = uuid;
 		this.name = name;
-		this.data = new PlayerData(this);
-		this.questData = new PlayerQuestData(this);
+
+		this.playerData = this.gameManager.getPlayerDataManager().getPlayerData(this);
+		this.playerQuestData = this.gameManager.getPlayerQuestDataManager().getPlayerData(this);
 	}
 
 	public Player getPlayer() {
@@ -63,7 +67,7 @@ public class GamePlayer {
 
 	public String getName() {
 		if (Bukkit.getPlayer(this.name) == null) {
-			return getData().getPlayerName();
+			return this.playerData.getPlayerName();
 		}
 		return this.name;
 	}
@@ -82,8 +86,8 @@ public class GamePlayer {
 		if (this.hasWon == win) return;
 		this.hasWon = win;
 
-		if (getQuestData().hasQuestWithTypeOf("WIN")) {
-			getQuestData().addProgressToTypes("WIN", getInventory().getItemInHand().getType());
+		if (this.playerQuestData.hasQuestWithTypeOf("WIN")) {
+			this.playerQuestData.addProgressToTypes("WIN", getInventory().getItemInHand().getType());
 		}
 	}
 
@@ -123,7 +127,7 @@ public class GamePlayer {
 		if (this.kit != kit) {
 			this.kit = kit;
 			sendMessage(Messages.KITS_SELECTED.toString().replace("%kit%", kit.getDisplayName()));
-			GameManager.getGameManager().getSoundManager().playSelectBuySound(getPlayer());
+			this.gameManager.getSoundManager().playSelectBuySound(getPlayer());
 		}
 	}
 
@@ -135,17 +139,17 @@ public class GamePlayer {
 		if (this.perk != perk) {
 			this.perk = perk;
 			sendMessage(Messages.PERKS_SELECTED.toString().replace("%perk%", perk.getDisplayName()));
-			GameManager.getGameManager().getSoundManager().playSelectBuySound(getPlayer());
+			this.gameManager.getSoundManager().playSelectBuySound(getPlayer());
 		}
 	}
 
 	public void revive() {
 		if (GameValues.TEAM.TEAM_MODE && !hasTeam()) {
-			if (GameManager.getGameManager().getTeamsManager().getFreeTeams().isEmpty()) {
+			if (this.gameManager.getTeamsManager().getFreeTeams().isEmpty()) {
 				sendMessage(Messages.TEAM_NO_FREE.toString());
 				return;
 			}
-			GameManager.getGameManager().getTeamsManager().joinRandomTeam(this);
+			this.gameManager.getTeamsManager().joinRandomTeam(this);
 		}
 
 		setState(PlayerState.ALIVE);
@@ -172,10 +176,10 @@ public class GamePlayer {
 				.replace("%player%", victim.getName())
 				.replace("%money%", String.valueOf(GameValues.REWARDS.COINS_FOR_KILL))
 				.replace("%uhc-exp%", String.valueOf(GameValues.REWARDS.EXP_FOR_KILL)));
-		GameManager.getGameManager().getSoundManager().playKillSound(getPlayer());
+		this.gameManager.getSoundManager().playKillSound(getPlayer());
 
-		if (getQuestData().hasQuestWithTypeOf("KILL")) {
-			getQuestData().addProgressToTypes("KILL", getPlayer().getInventory().getItemInHand().getType());
+		if (this.playerQuestData.hasQuestWithTypeOf("KILL")) {
+			this.playerQuestData.addProgressToTypes("KILL", getPlayer().getInventory().getItemInHand().getType());
 		}
 	}
 
@@ -189,8 +193,8 @@ public class GamePlayer {
 				.replace("%uhc-exp%", String.valueOf(GameValues.REWARDS.EXP_FOR_ASSIST)));
 		GameManager.getGameManager().getSoundManager().playAssistSound(getPlayer());
 
-		if (getQuestData().hasQuestWithTypeOf("ASSIST")) {
-			getQuestData().addProgressToTypes("ASSIST", getPlayer().getInventory().getItemInHand().getType());
+		if (this.playerQuestData.hasQuestWithTypeOf("ASSIST")) {
+			this.playerQuestData.addProgressToTypes("ASSIST", getPlayer().getInventory().getItemInHand().getType());
 		}
 	}
 
@@ -373,12 +377,22 @@ public class GamePlayer {
 		this.expForKills = 0;
 		this.expForAssists = 0;
 		this.expForActivity = 0;
-		getQuestData().getCompletedQuests().clear();
-		getQuestData().getQuestProgress().clear();
+		this.playerQuestData.getCompletedQuests().clear();
+		this.playerQuestData.getQuestProgress().clear();
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		return obj instanceof GamePlayer && ((GamePlayer) obj).getUuid().equals(this.getUuid());
+	}
+
+	@Override
+	public String toString() {
+		return "GamePlayer(uuid=" + this.uuid + ", name=" + this.name + ")";
+	}
+
+	@Override
+	public int hashCode() {
+		return this.uuid.hashCode();
 	}
 }
