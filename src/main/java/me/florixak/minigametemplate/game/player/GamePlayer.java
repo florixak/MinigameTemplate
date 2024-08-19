@@ -30,7 +30,7 @@ import java.util.UUID;
 @Getter
 public class GamePlayer {
 
-	private final GameManager gameManager = GameManager.getGameManager();
+	private final GameManager gameManager = GameManager.getInstance();
 
 	private final UUID uuid;
 	private final String name;
@@ -191,7 +191,7 @@ public class GamePlayer {
 				.replace("%player%", victim.getName())
 				.replace("%money%", String.valueOf(GameValues.REWARDS.COINS_FOR_ASSIST))
 				.replace("%uhc-exp%", String.valueOf(GameValues.REWARDS.EXP_FOR_ASSIST)));
-		GameManager.getGameManager().getSoundManager().playAssistSound(getPlayer());
+		this.gameManager.getSoundManager().playAssistSound(getPlayer());
 
 		if (this.playerQuestData.hasQuestWithTypeOf("ASSIST")) {
 			this.playerQuestData.addProgressToTypes("ASSIST", getPlayer().getInventory().getItemInHand().getType());
@@ -211,7 +211,7 @@ public class GamePlayer {
 		clearInventory();
 
 		setSpectator();
-		GameManager.getGameManager().getSoundManager().playDeathSound(getPlayer());
+		this.gameManager.getSoundManager().playDeathSound(getPlayer());
 	}
 
 	public void setSpectator() {

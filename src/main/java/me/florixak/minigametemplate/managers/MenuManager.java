@@ -7,12 +7,23 @@ import java.util.HashMap;
 
 public class MenuManager {
 
-	private static final HashMap<GamePlayer, MenuUtils> menuUtilsMap = new HashMap<>();
+	private final HashMap<GamePlayer, MenuUtils> menuUtilsMap = new HashMap<>();
 
-	public static MenuUtils getMenuUtils(final GamePlayer gamePlayer) {
-		if (!menuUtilsMap.containsKey(gamePlayer)) {
-			menuUtilsMap.put(gamePlayer, new MenuUtils(gamePlayer));
+	public MenuManager() {
+	}
+
+	public MenuUtils getMenuUtils(final GamePlayer gamePlayer) {
+		if (!this.menuUtilsMap.containsKey(gamePlayer)) {
+			this.menuUtilsMap.put(gamePlayer, new MenuUtils(gamePlayer));
 		}
-		return menuUtilsMap.get(gamePlayer);
+		return this.menuUtilsMap.get(gamePlayer);
+	}
+
+	public void removeMenuUtils(final GamePlayer gamePlayer) {
+		this.menuUtilsMap.remove(gamePlayer);
+	}
+
+	public void onDisable() {
+		this.menuUtilsMap.clear();
 	}
 }

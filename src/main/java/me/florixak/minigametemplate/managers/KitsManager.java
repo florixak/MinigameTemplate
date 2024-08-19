@@ -30,6 +30,8 @@ public class KitsManager {
 	public KitsManager(final GameManager gameManager) {
 		this.config = gameManager.getConfigManager().getFile(ConfigType.SETTINGS).getConfig();
 		this.kitsConfig = gameManager.getConfigManager().getFile(ConfigType.KITS).getConfig();
+
+		load();
 	}
 
 	public void load() {

@@ -44,13 +44,13 @@ public class ConfirmPurchaseMenu extends Menu {
 
 		if (event.getSlot() == 11) {
 			if (this.kitToBuy != null) {
-				this.uhcPlayer.getData().buyKit(this.menuUtils.getSelectedKitToBuy());
+				this.uhcPlayer.getPlayerData().buyKit(this.menuUtils.getSelectedKitToBuy());
 				this.menuUtils.setSelectedKitToBuy(null);
 			} else if (this.perkToBuy != null) {
-				this.uhcPlayer.getData().buyPerk(this.menuUtils.getSelectedPerkToBuy());
+				this.uhcPlayer.getPlayerData().buyPerk(this.menuUtils.getSelectedPerkToBuy());
 				this.menuUtils.setSelectedPerkToBuy(null);
 			} else {
-				this.uhcPlayer.getData().withdrawMoney(0);
+				this.uhcPlayer.getPlayerData().withdrawMoney(0);
 			}
 		} else if (event.getSlot() == 15) {
 			this.uhcPlayer.sendMessage(Messages.CANCELLED_PURCHASE.toString());

@@ -1,8 +1,6 @@
 package me.florixak.minigametemplate.gui.menu;
 
-import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.XMaterial;
-import com.cryptomorin.xseries.XPotion;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.Permissions;
@@ -12,25 +10,20 @@ import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.gui.PaginatedMenu;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.ItemUtils;
-import me.florixak.minigametemplate.utils.text.TextUtils;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.PotionMeta;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class KitsMenu extends PaginatedMenu {
 
-	private final GamePlayer uhcPlayer;
-	private final List<Kit> kitsList;
+	private final GameManager gameManager = GameManager.getInstance();
+	private final List<Kit> kitsList = this.gameManager.getKitsManager().getKitsList();
+	private final GamePlayer gamePlayer;
 
 	public KitsMenu(final MenuUtils menuUtils) {
 		super(menuUtils, GameValues.INVENTORY.KITS_TITLE);
-		this.uhcPlayer = menuUtils.getGamePlayer();
-		this.kitsList = GameManager.getGameManager().getKitsManager().getKitsList();
+		this.gamePlayer = menuUtils.getGamePlayer();
 	}
 
 	@Override
@@ -50,8 +43,8 @@ public class KitsMenu extends PaginatedMenu {
 		} else if (event.getCurrentItem().getType().equals(XMaterial.DARK_OAK_BUTTON.parseMaterial())) {
 			handlePaging(event, this.kitsList);
 		} else {
-			if (GameManager.getGameManager().isPlaying()) {
-				this.uhcPlayer.sendMessage(Messages.CANT_USE_NOW.toString());
+			if (!this.gameManager.getArenaManager().isPlayerInArena(this.gamePlayer)) {
+				this.gamePlayer.sendMessage(Messages.CANT_USE_NOW.toString());
 				return;
 			}
 			handleKitSelection(event);
@@ -66,15 +59,16 @@ public class KitsMenu extends PaginatedMenu {
 
 		for (int i = getStartIndex(); i < getEndIndex(); i++) {
 			final Kit kit = this.kitsList.get(i);
-			final List<String> lore = new ArrayList<>();
+			final List<String> lore = kit.getLore();
 
-			if (this.uhcPlayer.hasKit() && this.uhcPlayer.getKit().equals(kit)) {
+			if (this.gamePlayer.hasKit() && this.gamePlayer.getKit().equals(kit)) {
+				lore.add(" ");
 				lore.add(Messages.KITS_INV_SELECTED.toString());
 			} else {
 				if (!GameValues.KITS.BOUGHT_FOREVER) {
 					lore.add(kit.getFormattedCost());
 				} else {
-					if (this.uhcPlayer.getData().hasKitBought(kit) || this.uhcPlayer.hasPermission(Permissions.KITS_FREE.getPerm()) || kit.isFree()) {
+					if (this.gamePlayer.getPlayerData().hasKitBought(kit) || this.gamePlayer.hasPermission(Permissions.KITS_FREE.getPerm()) || kit.isFree()) {
 						lore.add(Messages.KITS_INV_CLICK_TO_SELECT.toString());
 					} else {
 						lore.add(kit.getFormattedCost());
@@ -82,30 +76,6 @@ public class KitsMenu extends PaginatedMenu {
 				}
 			}
 
-			for (final ItemStack item : kit.getItems()) {
-				if (!item.getEnchantments().keySet().isEmpty()) {
-					final List<Enchantment> enchantmentsList = ItemUtils.getEnchantments(item);
-					final StringBuilder enchants = new StringBuilder();
-					for (int j = 0; j < enchantmentsList.size(); j++) {
-						final String enchantment = XEnchantment.matchXEnchantment(enchantmentsList.get(j)).name();
-						enchants.append(TextUtils.toNormalCamelText(enchantment) + " " + item.getEnchantments().get(enchantmentsList.get(j)));
-						if (j < enchantmentsList.size() - 1) enchants.append(", ");
-					}
-					lore.add(TextUtils.color("&7" + item.getAmount() + "x " + TextUtils.toNormalCamelText(item.getType().toString()) + " [" + enchants.toString() + "]"));
-				} else if (ItemUtils.isPotion(item)) {
-					if (item.hasItemMeta()) {
-						final PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
-						if (potionMeta != null && potionMeta.hasCustomEffects()) {
-							final String effects = potionMeta.getCustomEffects().stream()
-									.map(effect -> TextUtils.toNormalCamelText(XPotion.matchXPotion(effect.getType()).name()) + " " + (effect.getAmplifier() + 1) + " (" + (effect.getDuration() / 20) + "s)")
-									.collect(Collectors.joining(", "));
-							lore.add(TextUtils.color("&7" + item.getAmount() + "x " + TextUtils.toNormalCamelText(item.getType().toString()) + " [" + effects + "]"));
-						}
-					}
-				} else {
-					lore.add(TextUtils.color("&7" + item.getAmount() + "x " + TextUtils.toNormalCamelText(item.getType().toString())));
-				}
-			}
 			kitDisplayItem = ItemUtils.createItem(kit.getDisplayItem().getType(), kit.getDisplayName(), 1, lore);
 
 			this.inventory.setItem(i - getStartIndex(), kitDisplayItem);
@@ -115,7 +85,7 @@ public class KitsMenu extends PaginatedMenu {
 	@Override
 	public void open() {
 		if (!GameValues.KITS.ENABLED) {
-			this.uhcPlayer.sendMessage(Messages.KITS_DISABLED.toString());
+			this.gamePlayer.sendMessage(Messages.KITS_DISABLED.toString());
 			return;
 		}
 		super.open();
@@ -126,21 +96,21 @@ public class KitsMenu extends PaginatedMenu {
 		close();
 
 		if (!GameValues.KITS.BOUGHT_FOREVER) {
-			if (!selectedKit.isFree() && this.uhcPlayer.getData().getMoney() < selectedKit.getCost() && !this.uhcPlayer.hasPermission(Permissions.KITS_FREE.getPerm())) {
-				this.uhcPlayer.sendMessage(Messages.NO_MONEY.toString());
+			if (!selectedKit.isFree() && this.gamePlayer.getPlayerData().getMoney() < selectedKit.getCost() && !this.gamePlayer.hasPermission(Permissions.KITS_FREE.getPerm())) {
+				this.gamePlayer.sendMessage(Messages.NO_MONEY.toString());
 				return;
 			}
-			this.uhcPlayer.setKit(selectedKit);
-			this.uhcPlayer.sendMessage(Messages.KITS_MONEY_DEDUCT_INFO.toString());
+			this.gamePlayer.setKit(selectedKit);
+			this.gamePlayer.sendMessage(Messages.KITS_MONEY_DEDUCT_INFO.toString());
 		} else {
-			if (this.uhcPlayer.getData().hasKitBought(selectedKit) || this.uhcPlayer.hasPermission(Permissions.KITS_FREE.getPerm()) || selectedKit.isFree()) {
-				this.uhcPlayer.setKit(selectedKit);
+			if (this.gamePlayer.getPlayerData().hasKitBought(selectedKit) || this.gamePlayer.hasPermission(Permissions.KITS_FREE.getPerm()) || selectedKit.isFree()) {
+				this.gamePlayer.setKit(selectedKit);
 			} else {
 				if (GameValues.INVENTORY.CONFIRM_PURCHASE_ENABLED) {
 					this.menuUtils.setSelectedKitToBuy(selectedKit);
 					new ConfirmPurchaseMenu(this.menuUtils).open();
 				} else {
-					this.uhcPlayer.getData().buyKit(selectedKit);
+					this.gamePlayer.getPlayerData().buyKit(selectedKit);
 				}
 			}
 		}

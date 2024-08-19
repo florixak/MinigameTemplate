@@ -1,8 +1,8 @@
-package me.florixak.minigametemplate.game;
+package me.florixak.minigametemplate.game.arena;
 
-public enum GameState {
+public enum ArenaState {
 
-	LOBBY,
+	WAITING,
 	STARTING,
 	INGAME,
 	ENDING,

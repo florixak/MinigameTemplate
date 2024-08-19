@@ -21,11 +21,12 @@ public class PerksManager {
 
 	private final FileConfiguration perksConfig;
 	@Getter
-	private final List<Perk> perks;
+	private final List<Perk> perks = new ArrayList<>();
 
 	public PerksManager(final GameManager gameManager) {
 		this.perksConfig = gameManager.getConfigManager().getFile(ConfigType.PERKS).getConfig();
-		this.perks = new ArrayList<>();
+
+		loadPerks();
 	}
 
 	public void loadPerks() {

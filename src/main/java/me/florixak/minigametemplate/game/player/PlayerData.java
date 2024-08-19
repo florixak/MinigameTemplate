@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class PlayerData {
 
 	private final MinigameTemplate plugin = MinigameTemplate.getInstance();
-	private final GameManager gameManager = GameManager.getGameManager();
+	private final GameManager gameManager = GameManager.getInstance();
 	private final GamePlayer gamePlayer;
 	private final FileConfiguration playerData;
 
@@ -334,7 +334,7 @@ public class PlayerData {
 		savePerks();
 		final String perkCost = String.valueOf(perk.getCost());
 		final String money = String.valueOf(getMoney());
-		final String prevMoney = String.valueOf(this.gamePlayer.getData().getMoney() + perk.getCost());
+		final String prevMoney = String.valueOf(this.gamePlayer.getPlayerData().getMoney() + perk.getCost());
 		this.gamePlayer.sendMessage(Messages.PERKS_MONEY_DEDUCT.toString().toString(), "%previous-money%", prevMoney, "%money%", money, "%perk%", perk.getDisplayName(), "%perk-cost%", perkCost);
 		this.gamePlayer.setPerk(perk);
 		this.gameManager.getSoundManager().playSelectBuySound(this.gamePlayer.getPlayer());

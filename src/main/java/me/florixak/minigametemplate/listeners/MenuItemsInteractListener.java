@@ -1,11 +1,10 @@
 package me.florixak.minigametemplate.listeners;
 
-import me.florixak.minigametemplate.game.GameState;
 import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.arena.ArenaState;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.gui.menu.*;
 import me.florixak.minigametemplate.managers.GameManager;
-import me.florixak.minigametemplate.managers.MenuManager;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,7 +29,7 @@ public class MenuItemsInteractListener implements Listener {
 		final GamePlayer uhcPlayer = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
 		final ItemStack item = p.getInventory().getItemInHand();
 
-		if (this.gameManager.getGameState() == GameState.LOBBY || this.gameManager.getGameState() == GameState.STARTING) {
+		if (this.gameManager.getArenaState() == ArenaState.WAITING || this.gameManager.getArenaState() == ArenaState.STARTING) {
 			if (item == null || item.getItemMeta() == null || item.getType() == Material.AIR || item.getItemMeta().getDisplayName() == null)
 				return;
 
@@ -38,23 +37,23 @@ public class MenuItemsInteractListener implements Listener {
 
 				if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
 						TextUtils.color(GameValues.INVENTORY.TEAMS_TITLE))) {
-					new TeamsMenu(MenuManager.getMenuUtils(uhcPlayer)).open();
+					new TeamsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
 				}
 				if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
 						TextUtils.color(GameValues.INVENTORY.KITS_TITLE))) {
-					new KitsMenu(MenuManager.getMenuUtils(uhcPlayer)).open();
+					new KitsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
 				}
 				if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
 						TextUtils.color(GameValues.INVENTORY.PERKS_TITLE))) {
-					new PerksMenu(MenuManager.getMenuUtils(uhcPlayer)).open();
+					new PerksMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
 				}
 				if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
 						TextUtils.color(GameValues.INVENTORY.STATS_TITLE))) {
-					new StatisticsMenu(MenuManager.getMenuUtils(uhcPlayer)).open();
+					new StatisticsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
 				}
 				if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
 						TextUtils.color(GameValues.INVENTORY.QUESTS_TITLE))) {
-					new QuestsMenu(MenuManager.getMenuUtils(uhcPlayer)).open();
+					new QuestsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
 				}
 			}
 		}

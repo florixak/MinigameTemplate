@@ -26,10 +26,10 @@ public class TeamManager {
 
 	public TeamManager(final GameManager gameManager) {
 		this.teamsConfig = gameManager.getConfigManager().getFile(ConfigType.TEAMS).getConfig();
+		loadTeams();
 	}
 
 	public void loadTeams() {
-		if (!GameValues.TEAM.TEAM_MODE) return;
 
 		if (this.teamsConfig.contains("teams") && this.teamsConfig.getConfigurationSection("teams").getKeys(false).isEmpty()) {
 			MinigameTemplate.getInstance().getLogger().info("Team file is empty!");

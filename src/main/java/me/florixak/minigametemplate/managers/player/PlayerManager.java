@@ -9,16 +9,14 @@ import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.game.player.PlayerState;
-import me.florixak.minigametemplate.game.teams.GameTeam;
 import me.florixak.minigametemplate.managers.GameManager;
-import me.florixak.minigametemplate.utils.RandomUtils;
-import me.florixak.minigametemplate.utils.TeleportUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PlayerManager {
@@ -26,8 +24,6 @@ public class PlayerManager {
 	private final GameManager gameManager;
 	@Getter
 	private final List<GamePlayer> players;
-	@Getter
-	private int maxPlayersWhenTeams;
 
 	public PlayerManager(final GameManager gameManager) {
 		this.gameManager = gameManager;
@@ -35,12 +31,11 @@ public class PlayerManager {
 	}
 
 	public boolean doesPlayerExist(final Player player) {
-		if (getGamePlayer(player.getUniqueId()) != null) return true;
-		return false;
+		return getGamePlayer(player.getUniqueId()) != null;
 	}
 
 	public GamePlayer getGamePlayer(final UUID uuid) {
-		for (final GamePlayer gamePlayer : getPlayersList()) {
+		for (final GamePlayer gamePlayer : getPlayers()) {
 			if (gamePlayer.getUuid().equals(uuid)) {
 				return gamePlayer;
 			}
@@ -49,14 +44,13 @@ public class PlayerManager {
 	}
 
 	public GamePlayer getGamePlayer(final String name) {
-		for (final GamePlayer gamePlayer : getPlayersList()) {
+		for (final GamePlayer gamePlayer : getPlayers()) {
 			if (gamePlayer.getName().equals(name)) {
 				return gamePlayer;
 			}
 		}
 		return null;
 	}
-
 
 	public GamePlayer getGamePlayer(final Player player) {
 		return getGamePlayer(player.getUniqueId());
@@ -76,96 +70,29 @@ public class PlayerManager {
 
 	public synchronized GamePlayer newGamePlayer(final UUID uuid, final String name) {
 		final GamePlayer newPlayer = new GamePlayer(uuid, name);
-		getPlayersList().add(newPlayer);
+		getPlayers().add(newPlayer);
 		return newPlayer;
 	}
 
-	public Set<GamePlayer> getAlivePlayers() {
-		return this.players.stream()
-				.filter(GamePlayer::isAlive)
-				.filter(GamePlayer::isOnline)
-				.collect(Collectors.toSet());
+	public void removePlayer(final GamePlayer gamePlayer) {
+		this.gameManager.getArenaManager().leaveArena(gamePlayer, this.gameManager.getArenaManager().getPlayerArena(gamePlayer));
+		this.gameManager.getScoreboardManager().removeScoreboard(gamePlayer.getPlayer());
+		this.gameManager.getPlayerQuestDataManager().removePlayerData(gamePlayer);
+		this.gameManager.getPlayerDataManager().removePlayerData(gamePlayer);
+		getPlayers().remove(gamePlayer);
 	}
 
-	public Set<GamePlayer> getAllAlivePlayers() {
-		return this.players.stream()
-				.filter(GamePlayer::isAlive)
-				.collect(Collectors.toSet());
+
+	public List<GamePlayer> getPlayersInLobby() {
+		return getPlayers().stream().filter(gamePlayer -> gamePlayer.getState() == PlayerState.LOBBY).collect(Collectors.toList());
 	}
 
-	public Set<GamePlayer> getOnlinePlayers() {
-		return this.players.stream()
-				.filter(GamePlayer::isOnline)
-				.collect(Collectors.toSet());
+	public List<GamePlayer> getPlayersInArenas() {
+		return getPlayers().stream().filter(gamePlayer -> gamePlayer.getState() != PlayerState.LOBBY).collect(Collectors.toList());
 	}
 
-	public synchronized List<GamePlayer> getPlayersList() {
-		return this.players;
-	}
 
-	public List<GamePlayer> getDeadPlayers() {
-		return this.players.stream().filter(GamePlayer::isDead).filter(GamePlayer::isOnline).collect(Collectors.toList());
-	}
-
-	public List<GamePlayer> getSpectatorPlayers() {
-		return this.players.stream().filter(GamePlayer::isSpectator).filter(GamePlayer::isOnline).collect(Collectors.toList());
-	}
-
-	public GamePlayer getRandomOnlineUHCPlayer() {
-		return RandomUtils.randomOnlinePlayer(getOnlinePlayers().stream().collect(Collectors.toList()));
-	}
-
-	public GamePlayer getGamePlayerWithoutPerm(final String perm) {
-		final List<GamePlayer> onlineListWithoutPerm = getPlayers().stream().filter(gamePlayer -> !gamePlayer.hasPermission(perm)).collect(Collectors.toList());
-		return RandomUtils.randomOnlinePlayer(onlineListWithoutPerm);
-	}
-
-	public GamePlayer getWinnerPlayer() {
-		return this.players.stream().filter(GamePlayer::isWinner).filter(GamePlayer::isOnline).findFirst().orElse(null);
-	}
-
-	public void setWinner() {
-		final GamePlayer winner = getAlivePlayers().stream()
-				.filter(GamePlayer::isOnline)
-				.max(Comparator.comparingInt(GamePlayer::getKills))
-				.orElse(null);
-
-		if (winner == null) return;
-
-		if (GameValues.TEAM.TEAM_MODE) {
-			winner.getTeam().getMembers().forEach(member -> member.setWinner(true));
-		} else {
-			winner.setWinner(true);
-		}
-	}
-
-	public String getWinner() {
-		if (GameValues.TEAM.TEAM_MODE) {
-			final GameTeam winnerTeam = this.gameManager.getTeamsManager().getWinnerTeam();
-			return winnerTeam != null ? (winnerTeam.getMembers().size() == 1 ? winnerTeam.getMembers().get(0).getName() : winnerTeam.getName()) : "None";
-		}
-		return getWinnerPlayer() != null ? getWinnerPlayer().getName() : "None";
-	}
-
-	private List<GamePlayer> findTopKillers(final List<GamePlayer> players) {
-		players.sort((gamePlayer1, gamePlayer2) -> Integer.compare(gamePlayer2.getKills(), gamePlayer1.getKills()));
-		return players;
-	}
-
-	public List<GamePlayer> getTopKillers() {
-		return findTopKillers(getPlayers());
-	}
-
-	public void setMaxPlayers() {
-		this.maxPlayersWhenTeams = Math.min(this.gameManager.getTeamsManager().getTeamsList().size() * GameValues.TEAM.TEAM_SIZE, Bukkit.getMaxPlayers());
-	}
-
-	public int getMaxPlayers() {
-		if (GameValues.TEAM.TEAM_MODE) return this.maxPlayersWhenTeams;
-		return Bukkit.getMaxPlayers();
-	}
-
-	public void setPlayerWaitsAtLobby(final GamePlayer gamePlayer) {
+	public void setPlayerAtLobby(final GamePlayer gamePlayer) {
 		final Player p = gamePlayer.getPlayer();
 		p.setHealth(p.getMaxHealth());
 		p.setFoodLevel(20);
@@ -199,33 +126,14 @@ public class PlayerManager {
 
 		if (gamePlayer.hasKit()) {
 			if (!GameValues.KITS.BOUGHT_FOREVER) {
-				gamePlayer.getData().withdrawMoney(gamePlayer.getKit().getCost());
+				gamePlayer.getPlayerData().withdrawMoney(gamePlayer.getKit().getCost());
 				gamePlayer.sendMessage(PAPI.setPlaceholders(gamePlayer.getPlayer(), Messages.KITS_MONEY_DEDUCT.toString()
-						.replace("%previous-money%", String.valueOf((gamePlayer.getData().getMoney() + gamePlayer.getKit().getCost())))
-						.replace("%current-money%", String.valueOf(gamePlayer.getData().getMoney())
+						.replace("%previous-money%", String.valueOf((gamePlayer.getPlayerData()).getMoney() + gamePlayer.getKit().getCost()))
+						.replace("%current-money%", String.valueOf(gamePlayer.getPlayerData().getMoney())
 						))
 				);
 			}
 			gamePlayer.getKit().giveKit(gamePlayer);
-		}
-	}
-
-	public void teleportInToGame() {
-		for (final GamePlayer gamePlayer : getAlivePlayers()) {
-			final Location location = TeleportUtils.getSafeLocation();
-			gamePlayer.setSpawnLocation(location);
-			gamePlayer.teleport(location);
-		}
-	}
-
-	public void teleportAfterMining() {
-		for (final GamePlayer gamePlayer : getAlivePlayers()) {
-			final Location location = gamePlayer.getPlayer().getLocation();
-
-			final double y = location.getWorld().getHighestBlockYAt(location);
-			location.setY(y);
-
-			gamePlayer.teleport(location);
 		}
 	}
 
@@ -243,7 +151,7 @@ public class PlayerManager {
 	}
 
 	public void onDisable() {
-		for (final GamePlayer gamePlayer : getPlayersList()) {
+		for (final GamePlayer gamePlayer : getPlayers()) {
 			gamePlayer.reset();
 		}
 		this.players.clear();

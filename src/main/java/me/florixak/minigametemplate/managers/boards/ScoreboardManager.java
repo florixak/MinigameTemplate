@@ -2,6 +2,7 @@ package me.florixak.minigametemplate.managers.boards;
 
 import lombok.Getter;
 import me.florixak.minigametemplate.config.ConfigType;
+import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,6 +20,7 @@ public class ScoreboardManager {
 	private final String title;
 	@Getter
 	private final String footer;
+	private final List<String> lobby;
 	private final List<String> waiting;
 	private final List<String> starting;
 	private final List<String> ending;
@@ -33,6 +35,7 @@ public class ScoreboardManager {
 		this.title = config.getString("scoreboard.title");
 		this.footer = config.getString("scoreboard.footer");
 
+		this.lobby = config.getStringList("scoreboard.lobby");
 		this.waiting = config.getStringList("scoreboard.waiting");
 		this.starting = config.getStringList("scoreboard.starting");
 		this.ending = config.getStringList("scoreboard.ending");
@@ -48,12 +51,19 @@ public class ScoreboardManager {
 
 		final Player p = Bukkit.getPlayer(uuid);
 		if (p == null) return null;
+		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(p);
 
 		ScoreHelper helper = this.players.get(p.getUniqueId());
 		if (helper == null) helper = new ScoreHelper(p);
 		helper.setTitle(this.title);
-		switch (this.gameManager.getGameState()) {
-			case LOBBY:
+
+		if (arena == null) {
+			helper.setSlotsFromList(this.lobby);
+			return helper;
+		}
+
+		switch (arena.getArenaState()) {
+			case WAITING:
 				helper.setSlotsFromList(this.waiting);
 				break;
 			case STARTING:

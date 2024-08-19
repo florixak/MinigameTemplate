@@ -1,6 +1,7 @@
 package me.florixak.minigametemplate.game.teams;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.utils.NMSUtils;
@@ -23,7 +24,9 @@ public class GameTeam {
 
 	private final String color;
 
-	private final List<GamePlayer> members;
+	private final List<GamePlayer> members = new ArrayList<>();
+	@Setter
+	private Location spawnLocation;
 
 	public GameTeam(final ItemStack displayItem, final int durability, final String name, final String color, final int maxSize) {
 		this.displayItem = displayItem;
@@ -31,7 +34,6 @@ public class GameTeam {
 		this.name = name;
 		this.maxSize = maxSize;
 		this.color = color;
-		this.members = new ArrayList<>();
 	}
 
 	public String getDisplayName() {

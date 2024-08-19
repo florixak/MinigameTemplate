@@ -17,9 +17,7 @@ public class QuestManager {
 
 	public QuestManager(final GameManager gameManager) {
 		this.questConfig = gameManager.getConfigManager().getFile(ConfigType.QUESTS).getConfig();
-	}
 
-	public void load() {
 		loadQuests();
 	}
 

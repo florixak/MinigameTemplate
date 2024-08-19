@@ -1,13 +1,12 @@
 package me.florixak.minigametemplate.managers;
 
-import eu.decentsoftware.holograms.api.utils.PAPI;
 import lombok.Getter;
 import me.florixak.minigametemplate.MinigameTemplate;
+import me.florixak.minigametemplate.commands.AnvilCommand;
 import me.florixak.minigametemplate.config.ConfigManager;
 import me.florixak.minigametemplate.config.ConfigType;
-import me.florixak.minigametemplate.config.Messages;
-import me.florixak.minigametemplate.game.GameState;
 import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.arena.ArenaManager;
 import me.florixak.minigametemplate.game.assists.DamageTrackerManager;
 import me.florixak.minigametemplate.listeners.*;
 import me.florixak.minigametemplate.managers.boards.ScoreboardManager;
@@ -17,9 +16,9 @@ import me.florixak.minigametemplate.managers.player.PlayerManager;
 import me.florixak.minigametemplate.managers.player.PlayerQuestDataManager;
 import me.florixak.minigametemplate.sql.MySQL;
 import me.florixak.minigametemplate.sql.SQLGetter;
-import me.florixak.minigametemplate.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 
@@ -37,6 +36,7 @@ public class GameManager {
 	private final PlayerManager playerManager;
 	private final PlayerDataManager playerDataManager;
 	private final PlayerQuestDataManager playerQuestDataManager;
+	private final ArenaManager arenaManager;
 	private final TeamManager teamsManager;
 	private final KitsManager kitsManager;
 	private final PerksManager perksManager;
@@ -55,7 +55,6 @@ public class GameManager {
 	private MySQL mysql;
 	private SQLGetter data;
 
-	private GameState gameState = GameState.LOBBY;
 	private final FileConfiguration config;
 
 	public GameManager(final MinigameTemplate plugin) {
@@ -67,6 +66,7 @@ public class GameManager {
 		this.playerManager = new PlayerManager(this);
 		this.playerDataManager = new PlayerDataManager();
 		this.playerQuestDataManager = new PlayerQuestDataManager();
+		this.arenaManager = new ArenaManager(this);
 		this.teamsManager = new TeamManager(this);
 		this.kitsManager = new KitsManager(this);
 		this.perksManager = new PerksManager(this);
@@ -89,57 +89,21 @@ public class GameManager {
 		registerListeners();
 	}
 
-	public static GameManager getGameManager() {
-		return instance;
+	private void registerCommands() {
+		registerCommand("anvil", new AnvilCommand(this));
 	}
 
-	public void setGameState(final GameState gameState) {
-		if (this.gameState == gameState) return;
+	private void registerCommand(final String command, final CommandExecutor executor) {
+		final PluginCommand pluginCommand = this.plugin.getCommand(command);
 
-		this.gameState = gameState;
-
-		switch (gameState) {
-			case LOBBY:
-				break;
-			case STARTING:
-				Utils.broadcast(PAPI.setPlaceholders(null, Messages.GAME_STARTING.toString()));
-				break;
-			case INGAME:
-				Utils.broadcast(PAPI.setPlaceholders(null, Messages.GAME_STARTED.toString()));
-				break;
-			case ENDING:
-				Utils.broadcast(PAPI.setPlaceholders(null, Messages.GAME_ENDED.toString()));
-				break;
-			case RESTARTING:
-				break;
+		if (pluginCommand == null) {
+			this.plugin.getLogger().info("Error in registering command! (" + command + ")");
+			return;
 		}
+		pluginCommand.setExecutor(executor);
 	}
 
-	public boolean isLobby() {
-		return this.gameState == GameState.LOBBY;
-	}
-
-	public boolean isStarting() {
-		return this.gameState == GameState.STARTING;
-	}
-
-	public boolean isPlaying() {
-		return this.gameState == GameState.INGAME;
-	}
-
-	public boolean isEnding() {
-		return this.gameState == GameState.ENDING;
-	}
-
-	public void registerCommands() {
-		final List<CommandExecutor> commands = new ArrayList<>();
-
-		for (final CommandExecutor command : commands) {
-			this.plugin.getCommand("command").setExecutor(command);
-		}
-	}
-
-	public void registerListeners() {
+	private void registerListeners() {
 		final List<Listener> listeners = new ArrayList<>();
 
 		listeners.add(new PlayerListener(this));
@@ -152,10 +116,6 @@ public class GameManager {
 		for (final Listener listener : listeners) {
 			this.plugin.getServer().getPluginManager().registerEvents(listener, this.plugin);
 		}
-	}
-
-	public boolean isGameFull() {
-		return this.playerManager.getPlayers().size() >= this.playerManager.getMaxPlayers();
 	}
 
 	private void connectToDatabase() {

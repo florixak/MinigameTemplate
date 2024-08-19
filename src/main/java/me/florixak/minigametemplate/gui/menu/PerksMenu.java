@@ -24,7 +24,7 @@ public class PerksMenu extends PaginatedMenu {
 	public PerksMenu(final MenuUtils menuUtils) {
 		super(menuUtils, GameValues.INVENTORY.PERKS_TITLE);
 		this.uhcPlayer = menuUtils.getGamePlayer();
-		this.perksList = GameManager.getGameManager().getPerksManager().getPerks();
+		this.perksList = GameManager.getInstance().getPerksManager().getPerks();
 	}
 
 	@Override
@@ -44,10 +44,6 @@ public class PerksMenu extends PaginatedMenu {
 		} else if (event.getCurrentItem().getType().equals(XMaterial.DARK_OAK_BUTTON.parseMaterial())) {
 			handlePaging(event, this.perksList);
 		} else {
-			if (GameManager.getGameManager().isPlaying()) {
-				this.uhcPlayer.sendMessage(Messages.CANT_USE_NOW.toString());
-				return;
-			}
 			handlePerkSelection(event);
 		}
 
@@ -68,7 +64,7 @@ public class PerksMenu extends PaginatedMenu {
 				if (!GameValues.PERKS.BOUGHT_FOREVER) {
 					lore.add(perk.getFormattedCost());
 				} else {
-					if (this.uhcPlayer.getData().hasPerkBought(perk) || this.uhcPlayer.hasPermission(Permissions.PERKS_FREE.getPerm()) || perk.isFree()) {
+					if (this.uhcPlayer.getPlayerData().hasPerkBought(perk) || this.uhcPlayer.hasPermission(Permissions.PERKS_FREE.getPerm()) || perk.isFree()) {
 						lore.add(Messages.PERKS_INV_CLICK_TO_SELECT.toString());
 					} else {
 						lore.add(perk.getFormattedCost());
@@ -99,21 +95,21 @@ public class PerksMenu extends PaginatedMenu {
 		close();
 
 		if (!GameValues.PERKS.BOUGHT_FOREVER) {
-			if (!selectedPerk.isFree() && this.uhcPlayer.getData().getMoney() < selectedPerk.getCost() && !this.uhcPlayer.hasPermission(Permissions.PERKS_FREE.getPerm())) {
+			if (!selectedPerk.isFree() && this.uhcPlayer.getPlayerData().getMoney() < selectedPerk.getCost() && !this.uhcPlayer.hasPermission(Permissions.PERKS_FREE.getPerm())) {
 				this.uhcPlayer.sendMessage(Messages.NO_MONEY.toString());
 				return;
 			}
 			this.uhcPlayer.setPerk(selectedPerk);
 			this.uhcPlayer.sendMessage(Messages.PERKS_MONEY_DEDUCT_INFO.toString());
 		} else {
-			if (this.uhcPlayer.getData().hasPerkBought(selectedPerk) || this.uhcPlayer.hasPermission(Permissions.PERKS_FREE.getPerm()) || selectedPerk.isFree()) {
+			if (this.uhcPlayer.getPlayerData().hasPerkBought(selectedPerk) || this.uhcPlayer.hasPermission(Permissions.PERKS_FREE.getPerm()) || selectedPerk.isFree()) {
 				this.uhcPlayer.setPerk(selectedPerk);
 			} else {
 				if (GameValues.INVENTORY.CONFIRM_PURCHASE_ENABLED) {
 					this.menuUtils.setSelectedPerkToBuy(selectedPerk);
 					new ConfirmPurchaseMenu(this.menuUtils).open();
 				} else {
-					this.uhcPlayer.getData().buyPerk(selectedPerk);
+					this.uhcPlayer.getPlayerData().buyPerk(selectedPerk);
 				}
 			}
 		}

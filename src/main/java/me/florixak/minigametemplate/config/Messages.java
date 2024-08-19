@@ -27,8 +27,11 @@ public enum Messages {
 	CANT_PLACE("cant-place"),
 	CANT_BREAK("cant-break"),
 
-	JOIN("player.join"),
-	QUIT("player.quit"),
+	GAME_JOIN("player.join"),
+	GAME_QUIT("player.quit"),
+
+	ARENA_JOIN("arena.join"),
+	ARENA_LEAVE("arena.leave"),
 
 	KILL("player.kill"),
 	KILL_REWARDS("player.kill"),
