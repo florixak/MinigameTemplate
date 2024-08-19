@@ -4,6 +4,8 @@ package me.florixak.minigametemplate.commands;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.Permissions;
+import me.florixak.minigametemplate.game.arena.Arena;
+import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.versions.VersionUtils;
 import org.bukkit.command.Command;
@@ -25,16 +27,24 @@ public class AnvilCommand implements CommandExecutor {
 		if (!(sender instanceof Player)) return true;
 
 		final Player p = (Player) sender;
+		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
 
 		if (!p.hasPermission(Permissions.ANVIL.getPerm()) && !p.hasPermission(Permissions.VIP.getPerm())) {
 			p.sendMessage(Messages.NO_PERM.toString());
 			return true;
 		}
 
-		if (!this.gameManager.isPlaying() || this.gameManager.isEnding()) {
+		if (!this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
 			p.sendMessage(Messages.CANT_USE_NOW.toString());
 			return true;
 		}
+
+		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
+		if (!arena.isPlaying()) {
+			p.sendMessage(Messages.CANT_USE_NOW.toString());
+			return true;
+		}
+
 		try {
 			final VersionUtils versionUtils = MinigameTemplate.getInstance().getVersionUtils();
 			versionUtils.openAnvil(p);

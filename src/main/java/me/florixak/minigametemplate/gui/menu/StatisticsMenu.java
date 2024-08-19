@@ -42,7 +42,7 @@ public class StatisticsMenu extends Menu {
 
 	@Override
 	public void setMenuItems() {
-		getInventory().setItem(GameValues.STATISTICS.PLAYER_STATS_SLOT, GameManager.getGameManager().getLeaderboardManager().getPlayerStatsItem(this.uhcPlayer));
+		getInventory().setItem(GameValues.STATISTICS.PLAYER_STATS_SLOT, GameManager.getInstance().getLeaderboardManager().getPlayerStatsItem(this.uhcPlayer));
 
 		getInventory().setItem(GameValues.STATISTICS.TOP_WINS_SLOT, LeaderboardType.WINS.getTopStatsDisplayItem());
 		getInventory().setItem(GameValues.STATISTICS.TOP_KILLS_SLOT, LeaderboardType.KILLS.getTopStatsDisplayItem());

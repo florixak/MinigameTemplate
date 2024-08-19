@@ -103,7 +103,9 @@ public class KitsMenu extends PaginatedMenu {
 			this.gamePlayer.setKit(selectedKit);
 			this.gamePlayer.sendMessage(Messages.KITS_MONEY_DEDUCT_INFO.toString());
 		} else {
-			if (this.gamePlayer.getPlayerData().hasKitBought(selectedKit) || this.gamePlayer.hasPermission(Permissions.KITS_FREE.getPerm()) || selectedKit.isFree()) {
+			if (this.gamePlayer.getPlayerData().hasKitBought(selectedKit)
+					|| this.gamePlayer.hasPermission(Permissions.KITS_FREE.getPerm())
+					|| selectedKit.isFree()) {
 				this.gamePlayer.setKit(selectedKit);
 			} else {
 				if (GameValues.INVENTORY.CONFIRM_PURCHASE_ENABLED) {

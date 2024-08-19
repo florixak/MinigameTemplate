@@ -3,6 +3,7 @@ package me.florixak.minigametemplate.game.arena;
 import lombok.Getter;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.game.teams.GameTeam;
 import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,13 +13,14 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArenaManager {
 
 	private final GameManager gameManager;
 	private final FileConfiguration arenaConfig;
 	@Getter
-	private List<Arena> arenas;
+	private final List<Arena> arenas = new ArrayList<>();
 
 	public ArenaManager(final GameManager gameManager) {
 		this.gameManager = gameManager;
@@ -36,39 +38,66 @@ public class ArenaManager {
 		for (final String key : section.getKeys(false)) {
 			final int id = Integer.parseInt(key);
 			final String name = section.getString(key + ".name");
-			final int maxPlayers = section.getInt(key + ".max-players");
 			final boolean enabled = section.getBoolean(key + ".enabled");
+			int maxPlayers = 0;
 			final int minPlayers = section.getInt(key + ".min-players");
-
-			final List<Location> spawnLocations = new ArrayList<>();
-			for (final String spawnLoc : section.getConfigurationSection(key + ".spawn-locations").getKeys(false)) {
-				final String world = this.arenaConfig.getString(key + ".spawn-locations." + spawnLoc + ".world");
-				final double x = this.arenaConfig.getDouble(key + ".spawn-locations." + spawnLoc + ".x");
-				final double y = this.arenaConfig.getDouble(key + ".spawn-locations." + spawnLoc + ".y");
-				final double z = this.arenaConfig.getDouble(key + ".spawn-locations." + spawnLoc + ".z");
-				final float yaw = (float) this.arenaConfig.getDouble(key + ".spawn-locations." + spawnLoc + ".yaw");
-				final float pitch = (float) this.arenaConfig.getDouble(key + ".spawn-locations." + spawnLoc + ".pitch");
-
-				final Location location = new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
-				spawnLocations.add(location);
-			}
 
 			Location centerLocation = null;
 			if (section.contains(key + ".center-location")) {
-				final String world = this.arenaConfig.getString(key + ".center-location.world");
-				final double x = this.arenaConfig.getDouble(key + ".center-location.x");
-				final double y = this.arenaConfig.getDouble(key + ".center-location.y");
-				final double z = this.arenaConfig.getDouble(key + ".center-location.z");
-				final float yaw = (float) this.arenaConfig.getDouble(key + ".center-location.yaw");
-				final float pitch = (float) this.arenaConfig.getDouble(key + ".center-location.pitch");
-
-				centerLocation = new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+				centerLocation = loadArenaCenterLocation(key);
 			}
 
-			final Arena arena = new Arena(id, name, maxPlayers, enabled, minPlayers, spawnLocations, centerLocation);
+			List<GameTeam> teamsList = new ArrayList<>();
+			if (section.contains(key + ".teams")) {
+				teamsList = loadArenaTeams(key);
+				for (final GameTeam team : teamsList) {
+					maxPlayers += team.getSize();
+				}
+			}
+
+			final Arena arena = new Arena(id, name, enabled, maxPlayers, minPlayers, centerLocation, teamsList);
 			this.arenas.add(arena);
 			Bukkit.getLogger().info("Loaded arena: " + arena.toString());
+			Bukkit.getLogger().info("Arenas: " + this.arenas.toString());
 		}
+	}
+
+	private Location loadArenaCenterLocation(final String key) {
+		final ConfigurationSection section = this.arenaConfig.getConfigurationSection("arenas." + key);
+		final ConfigurationSection centerLocationSection = section.getConfigurationSection(key + ".center-location");
+
+		final String world = section.getString("world", "world");
+		final double x = centerLocationSection.getDouble("x");
+		final double y = centerLocationSection.getDouble("y");
+		final double z = centerLocationSection.getDouble("z");
+		final float yaw = (float) centerLocationSection.getDouble("yaw");
+		final float pitch = (float) centerLocationSection.getDouble("pitch");
+		return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+	}
+
+	private List<GameTeam> loadArenaTeams(final String key) {
+		final ConfigurationSection section = this.arenaConfig.getConfigurationSection("arenas." + key + ".teams");
+		final List<GameTeam> teams = new ArrayList<>();
+		if (section == null) {
+			Bukkit.getLogger().info("No teams found in the config.");
+			return teams;
+		}
+		for (final String teamsKey : section.getKeys(false)) {
+			final int size = section.getInt(teamsKey + ".size");
+
+			final String world = section.getString(teamsKey + ".world", "world");
+			final double x = section.getDouble(teamsKey + ".spawn-location.x");
+			final double y = section.getDouble(teamsKey + ".spawn-location.y");
+			final double z = section.getDouble(teamsKey + ".spawn-location.z");
+			final float yaw = (float) section.getDouble(teamsKey + ".spawn-location.yaw");
+			final float pitch = (float) section.getDouble(teamsKey + ".spawn-location.pitch");
+
+			final Location spawnLocation = new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+			final GameTeam team = new GameTeam(teamsKey, size, spawnLocation);
+			teams.add(team);
+			Bukkit.getLogger().info("Loaded team: " + team.toString());
+		}
+		return teams;
 	}
 
 	public void saveArenas() {
@@ -93,14 +122,6 @@ public class ArenaManager {
 		return false;
 	}
 
-	public void joinArena(final GamePlayer player, final Arena arena) {
-		arena.join(player);
-	}
-
-	public void leaveArena(final GamePlayer player, final Arena arena) {
-		arena.leave(player);
-	}
-
 	public Arena getArena(final String name) {
 		for (final Arena arena : this.arenas) {
 			if (arena.getName().equals(name)) {
@@ -120,17 +141,12 @@ public class ArenaManager {
 	}
 
 	public Arena getPlayerArena(final Player player) {
-		for (final Arena arena : this.arenas) {
-			if (arena.containsPlayer(player)) {
-				return arena;
-			}
-		}
-		return null;
+		return getPlayerArena(this.gameManager.getPlayerManager().getGamePlayer(player.getUniqueId()));
 	}
 
 	public Arena getPlayerArena(final GamePlayer player) {
 		for (final Arena arena : this.arenas) {
-			if (arena.containsPlayer(player)) {
+			if (arena.isPlayerIn(player)) {
 				return arena;
 			}
 		}
@@ -139,6 +155,32 @@ public class ArenaManager {
 
 	public boolean isPlayerInArena(final GamePlayer player) {
 		return getPlayerArena(player) != null;
+	}
+
+	public List<Arena> getActiveArenas() {
+		return this.arenas.stream().filter(Arena::isEnabled).collect(Collectors.toList());
+	}
+
+	public List<Arena> getNotInGameArenas() {
+		final List<Arena> notInGameArenas = new ArrayList<>(getWaitingArenas());
+		notInGameArenas.addAll(getStartingArenas());
+		return notInGameArenas;
+	}
+
+	private List<Arena> getWaitingArenas() {
+		return getActiveArenas().stream().filter(Arena::isWaiting).collect(Collectors.toList());
+	}
+
+	private List<Arena> getStartingArenas() {
+		return getActiveArenas().stream().filter(Arena::isStarting).collect(Collectors.toList());
+	}
+
+	public List<Arena> getInGameArenas() {
+		return getActiveArenas().stream().filter(arena -> !arena.isWaiting()).filter(arena -> !arena.isStarting()).collect(Collectors.toList());
+	}
+
+	public List<Arena> getInactiveArenas() {
+		return this.arenas.stream().filter(arena -> !arena.isEnabled()).collect(Collectors.toList());
 	}
 
 	private List<GamePlayer> findTopKillers(final List<GamePlayer> players) {

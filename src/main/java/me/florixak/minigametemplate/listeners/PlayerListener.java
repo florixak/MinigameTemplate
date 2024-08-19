@@ -97,6 +97,6 @@ public class PlayerListener implements Listener {
 		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(player.getUniqueId());
 		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(player);
 
-		return arena.isPlaying() && !gamePlayer.isDead() && !arena.isEnding();
+		return arena.isPlaying() && !gamePlayer.isDead() && !gamePlayer.isSpectator();
 	}
 }

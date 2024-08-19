@@ -16,10 +16,10 @@ public class QuestReward {
 
 	public void giveReward(final GamePlayer gamePlayer) {
 		if (this.money > 0) {
-			gamePlayer.getData().depositMoney(this.money);
+			gamePlayer.getPlayerData().depositMoney(this.money);
 		}
 		if (this.exp > 0) {
-			gamePlayer.getData().addExp(this.exp);
+			gamePlayer.getPlayerData().addExp(this.exp);
 		}
 	}
 }

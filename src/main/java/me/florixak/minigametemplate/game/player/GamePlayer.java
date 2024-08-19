@@ -82,9 +82,8 @@ public class GamePlayer {
 		this.state = state;
 	}
 
-	public void setWinner(final boolean win) {
-		if (this.hasWon == win) return;
-		this.hasWon = win;
+	public void setWinner() {
+		this.hasWon = true;
 
 		if (this.playerQuestData.hasQuestWithTypeOf("WIN")) {
 			this.playerQuestData.addProgressToTypes("WIN", getInventory().getItemInHand().getType());
@@ -144,7 +143,7 @@ public class GamePlayer {
 	}
 
 	public void revive() {
-		if (GameValues.TEAM.TEAM_MODE && !hasTeam()) {
+		/*if (GameValues.TEAM.TEAM_MODE && !hasTeam()) {
 			if (this.gameManager.getTeamsManager().getFreeTeams().isEmpty()) {
 				sendMessage(Messages.TEAM_NO_FREE.toString());
 				return;
@@ -161,7 +160,7 @@ public class GamePlayer {
 		getPlayer().setExhaustion(0);
 		getPlayer().setFireTicks(0);
 		clearPotions();
-		clearInventory();
+		clearInventory();*/
 	}
 
 	public void kill(final GamePlayer victim) {

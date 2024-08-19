@@ -54,7 +54,7 @@ public class ConfirmPurchaseMenu extends Menu {
 			}
 		} else if (event.getSlot() == 15) {
 			this.uhcPlayer.sendMessage(Messages.CANCELLED_PURCHASE.toString());
-			GameManager.getGameManager().getSoundManager().playPurchaseCancelSound(this.uhcPlayer.getPlayer());
+			GameManager.getInstance().getSoundManager().playPurchaseCancelSound(this.uhcPlayer.getPlayer());
 		}
 	}
 

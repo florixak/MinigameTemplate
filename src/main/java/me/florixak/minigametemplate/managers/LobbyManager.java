@@ -15,8 +15,8 @@ public class LobbyManager {
 	public LobbyManager(final GameManager gameManager) {
 		this.gameManager = gameManager;
 		this.config = gameManager.getConfigManager().getFile(ConfigType.SETTINGS).getConfig();
-		this.waitingLobbyName = this.config.getString("settings.lobby.waiting.world", "UHCWaitingLobby");
-		this.endingLobbyName = this.config.getString("settings.lobby.ending.world", "UHCEndingLobby");
+		this.waitingLobbyName = this.config.getString("settings.lobby.waiting.world", "world");
+		this.endingLobbyName = this.config.getString("settings.lobby.ending.world", "world");
 	}
 
 	public void checkLobbies() {
@@ -50,7 +50,7 @@ public class LobbyManager {
 	}
 
 	public void removeWaitingLobby() {
-		this.config.set("settings.lobby.waiting.world", "UHCWaitingLobby");
+		this.config.set("settings.lobby.waiting.world", "world");
 		this.config.set("settings.lobby.waiting.x", 0);
 		this.config.set("settings.lobby.waiting.y", 10);
 		this.config.set("settings.lobby.waiting.z", 0);

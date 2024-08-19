@@ -36,6 +36,7 @@ public final class MinigameTemplate extends JavaPlugin {
 
 		NMSUtils.checkNMSVersion();
 
+		this.gameManager = new GameManager(this);
 		if (GameValues.BUNGEECORD.ENABLED) {
 			try {
 				getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -44,8 +45,6 @@ public final class MinigameTemplate extends JavaPlugin {
 				getLogger().warning("Failed to register BungeeCord channel.");
 			}
 		}
-
-		this.gameManager = new GameManager(this);
 		registerDependencies();
 	}
 

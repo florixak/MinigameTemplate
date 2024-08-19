@@ -7,6 +7,7 @@ import lombok.Getter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.game.player.PlayerState;
 import me.florixak.minigametemplate.managers.GameManager;
@@ -75,7 +76,10 @@ public class PlayerManager {
 	}
 
 	public void removePlayer(final GamePlayer gamePlayer) {
-		this.gameManager.getArenaManager().leaveArena(gamePlayer, this.gameManager.getArenaManager().getPlayerArena(gamePlayer));
+		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
+			arena.leave(gamePlayer);
+		}
 		this.gameManager.getScoreboardManager().removeScoreboard(gamePlayer.getPlayer());
 		this.gameManager.getPlayerQuestDataManager().removePlayerData(gamePlayer);
 		this.gameManager.getPlayerDataManager().removePlayerData(gamePlayer);
@@ -120,8 +124,9 @@ public class PlayerManager {
 		gamePlayer.clearPotions();
 		gamePlayer.clearInventory();
 
-		if (GameValues.TEAM.TEAM_MODE && !gamePlayer.hasTeam()) {
-			this.gameManager.getTeamsManager().joinRandomTeam(gamePlayer);
+		if (!gamePlayer.hasTeam()) {
+			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
+			arena.joinRandomTeam(gamePlayer);
 		}
 
 		if (gamePlayer.hasKit()) {

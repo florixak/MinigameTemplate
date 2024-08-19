@@ -42,8 +42,8 @@ public class PerkBonus {
 		final double randomCoins = this.exp.get(0) + (this.exp.get(1) - this.exp.get(0)) * RandomUtils.getRandom().nextDouble();
 		final double randomExp = this.exp.get(0) + (this.exp.get(1) - this.exp.get(0)) * RandomUtils.getRandom().nextDouble();
 
-		gamePlayer.getData().depositMoney(randomCoins);
-		gamePlayer.getData().addExp(randomExp);
+		gamePlayer.getPlayerData().depositMoney(randomCoins);
+		gamePlayer.getPlayerData().addExp(randomExp);
 		gamePlayer.sendMessage(Messages.PERKS_BONUS_RECEIVED.toString().replace("%coins%", TextUtils.formatToOneDecimal(randomCoins)).replace("%exp%", TextUtils.formatToOneDecimal(randomExp)));
 	}
 

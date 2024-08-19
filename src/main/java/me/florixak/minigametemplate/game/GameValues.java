@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class GameValues {
 
-	private static final GameManager gameManager = GameManager.getGameManager();
+	private static final GameManager gameManager = GameManager.getInstance();
 	private static final FileConfiguration config = gameManager.getConfigManager().getFile(ConfigType.SETTINGS).getConfig();
 
 	public static final Set<Material> LEAVES = new HashSet<>();

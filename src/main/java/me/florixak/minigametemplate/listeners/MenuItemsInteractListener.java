@@ -1,7 +1,7 @@
 package me.florixak.minigametemplate.listeners;
 
 import me.florixak.minigametemplate.game.GameValues;
-import me.florixak.minigametemplate.game.arena.ArenaState;
+import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.gui.menu.*;
 import me.florixak.minigametemplate.managers.GameManager;
@@ -29,7 +29,10 @@ public class MenuItemsInteractListener implements Listener {
 		final GamePlayer uhcPlayer = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
 		final ItemStack item = p.getInventory().getItemInHand();
 
-		if (this.gameManager.getArenaState() == ArenaState.WAITING || this.gameManager.getArenaState() == ArenaState.STARTING) {
+		if (!this.gameManager.getArenaManager().isPlayerInArena(uhcPlayer)) return;
+		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(uhcPlayer);
+
+		if (arena.isWaiting() || arena.isStarting()) {
 			if (item == null || item.getItemMeta() == null || item.getType() == Material.AIR || item.getItemMeta().getDisplayName() == null)
 				return;
 

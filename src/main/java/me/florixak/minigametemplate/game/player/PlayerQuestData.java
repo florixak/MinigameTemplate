@@ -13,7 +13,7 @@ import java.util.*;
 
 public class PlayerQuestData {
 
-	private final GameManager gameManager = GameManager.getGameManager();
+	private final GameManager gameManager = GameManager.getInstance();
 	private final GamePlayer gamePlayer;
 	private final FileConfiguration questConfig;
 	@Getter

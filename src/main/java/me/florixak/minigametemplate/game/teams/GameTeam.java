@@ -1,5 +1,6 @@
 package me.florixak.minigametemplate.game.teams;
 
+import com.cryptomorin.xseries.XMaterial;
 import lombok.Getter;
 import lombok.Setter;
 import me.florixak.minigametemplate.config.Messages;
@@ -20,24 +21,22 @@ public class GameTeam {
 	private final ItemStack displayItem;
 	private final int durability;
 	private final String name;
-	private final int maxSize;
-
-	private final String color;
+	private final int size;
 
 	private final List<GamePlayer> members = new ArrayList<>();
 	@Setter
 	private Location spawnLocation;
 
-	public GameTeam(final ItemStack displayItem, final int durability, final String name, final String color, final int maxSize) {
-		this.displayItem = displayItem;
-		this.durability = durability;
+	public GameTeam(final String name, final int size, final Location spawnLocation) {
+		this.displayItem = XMaterial.MAP.parseItem();
+		this.durability = 1;
 		this.name = name;
-		this.maxSize = maxSize;
-		this.color = color;
+		this.size = size;
+		this.spawnLocation = spawnLocation;
 	}
 
 	public String getDisplayName() {
-		return this.color + this.name;
+		return TextUtils.color(this.name);
 	}
 
 	public int getDisplayItemDurability() {
@@ -49,7 +48,7 @@ public class GameTeam {
 	}
 
 	public boolean isFull() {
-		return getMembers().size() >= this.maxSize;
+		return getMembers().size() >= this.size;
 	}
 
 	public boolean isMember(final GamePlayer gamePlayer) {
@@ -69,19 +68,19 @@ public class GameTeam {
 	}
 
 	public boolean isAlive() {
-		return getAliveMembers() != null && getAliveMembers().size() != 0;
+		return getAliveMembers() != null && !getAliveMembers().isEmpty();
 	}
 
 	public int getKills() {
 		return getMembers().stream().mapToInt(GamePlayer::getKills).sum();
 	}
 
-	public void teleport(final Location loc) {
-		if (loc == null) return;
-		for (final GamePlayer gamePlayer : getAliveMembers()) {
-			if (!gamePlayer.isOnline()) return;
-			gamePlayer.getPlayer().teleport(loc);
-		}
+	public void setWinners() {
+		getMembers().forEach(GamePlayer::setWinner);
+	}
+
+	public boolean isWinner() {
+		return getMembers().stream().anyMatch(GamePlayer::isWinner);
 	}
 
 	public void addMember(final GamePlayer gamePlayer) {
@@ -123,8 +122,17 @@ public class GameTeam {
 	@Override
 	public boolean equals(final Object o) {
 		return o instanceof GameTeam
-				&& ((GameTeam) o).getName().equals(this.getName())
-				&& ((GameTeam) o).getColor().equals(this.getColor());
+				&& ((GameTeam) o).getName().equals(this.getName());
+	}
+
+	@Override
+	public String toString() {
+		return "GameTeam(name=" + this.name + ", maxSize=" + this.size + ", members=" + this.members.size() + ")";
+	}
+
+	@Override
+	public int hashCode() {
+		return this.name.hashCode();
 	}
 
 }

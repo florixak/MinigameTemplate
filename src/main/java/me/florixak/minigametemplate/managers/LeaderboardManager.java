@@ -48,7 +48,7 @@ public class LeaderboardManager {
 		final List<Leaderboard> topTotal = new ArrayList<>();
 
 		if (this.gameManager.isDatabaseConnected()) {
-			final Map<String, Integer> topStatistics = this.gameManager.getDatabase().getTopStatistics(type.getDatabaseType());
+			final Map<String, Integer> topStatistics = this.gameManager.getData().getTopStatistics(type.getDatabaseType());
 			if (topStatistics != null) {
 				topTotal.addAll(topStatistics.entrySet().stream().map(entry -> new Leaderboard(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
 			}

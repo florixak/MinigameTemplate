@@ -72,14 +72,14 @@ settings:
   # Rename your lobby files to these world names, or set it manually
   lobby:
     waiting:
-      world: "WaitingLobby"
+      world: "world"
       x: 0
-      y: 10
+      y: 64
       z: 0
     ending:
-      world: "EndingLobby"
+      world: "world"
       x: 0
-      y: 10
+      y: 64
       z: 0
 
   # Statistics settings

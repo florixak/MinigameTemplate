@@ -3,6 +3,7 @@ package me.florixak.minigametemplate.managers;
 import lombok.Getter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.commands.AnvilCommand;
+import me.florixak.minigametemplate.commands.MinigameCommand;
 import me.florixak.minigametemplate.config.ConfigManager;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.game.GameValues;
@@ -37,7 +38,6 @@ public class GameManager {
 	private final PlayerDataManager playerDataManager;
 	private final PlayerQuestDataManager playerQuestDataManager;
 	private final ArenaManager arenaManager;
-	private final TeamManager teamsManager;
 	private final KitsManager kitsManager;
 	private final PerksManager perksManager;
 	private final QuestManager questManager;
@@ -66,8 +66,6 @@ public class GameManager {
 		this.playerManager = new PlayerManager(this);
 		this.playerDataManager = new PlayerDataManager();
 		this.playerQuestDataManager = new PlayerQuestDataManager();
-		this.arenaManager = new ArenaManager(this);
-		this.teamsManager = new TeamManager(this);
 		this.kitsManager = new KitsManager(this);
 		this.perksManager = new PerksManager(this);
 		this.questManager = new QuestManager(this);
@@ -81,6 +79,7 @@ public class GameManager {
 		this.lobbyManager = new LobbyManager(this);
 		this.worldManager = new WorldManager();
 		this.damageTrackerManager = new DamageTrackerManager();
+		this.arenaManager = new ArenaManager(this);
 
 		this.config = getConfigManager().getFile(ConfigType.SETTINGS).getConfig();
 		connectToDatabase();
@@ -90,6 +89,7 @@ public class GameManager {
 	}
 
 	private void registerCommands() {
+		registerCommand("minigame", new MinigameCommand(this));
 		registerCommand("anvil", new AnvilCommand(this));
 	}
 
@@ -107,7 +107,7 @@ public class GameManager {
 		final List<Listener> listeners = new ArrayList<>();
 
 		listeners.add(new PlayerListener(this));
-		listeners.add(new GameListener());
+		listeners.add(new GameListener(this));
 		listeners.add(new InventoryClickListener(this));
 		listeners.add(new MenuItemsInteractListener(this));
 		listeners.add(new EntityListener());
@@ -153,7 +153,6 @@ public class GameManager {
 		this.playerManager.onDisable();
 		this.playerDataManager.onDisable();
 		this.playerQuestDataManager.onDisable();
-		this.teamsManager.onDisable();
 		this.kitsManager.onDisable();
 		this.perksManager.onDisable();
 		this.questManager.onDisable();

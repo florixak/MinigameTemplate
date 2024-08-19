@@ -3,6 +3,8 @@ package me.florixak.minigametemplate.hooks;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.utils.TimeUtils;
+import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.entity.Player;
 
 public class PlaceholderExp extends PlaceholderExpansion {
@@ -49,40 +51,52 @@ public class PlaceholderExp extends PlaceholderExpansion {
 			}
 
 			if (placeholder.equals("money")) {
-				return String.valueOf(gamePlayer.getData().getMoney());
+				return String.valueOf(gamePlayer.getPlayerData().getMoney());
 			}
 
 			if (placeholder.equals("level")) {
-				return String.valueOf(gamePlayer.getData().getLevel());
+				return String.valueOf(gamePlayer.getPlayerData().getLevel());
 			}
 
 			if (placeholder.equals("exp")) {
-				return String.valueOf(gamePlayer.getData().getExp());
+				return String.valueOf(gamePlayer.getPlayerData().getExp());
+			}
+
+			if (placeholder.equals("required-exp")) {
+				return TextUtils.formatToOneDecimal(gamePlayer.getPlayerData().getRequiredExp());
+			}
+
+			if (placeholder.equals("tokens")) {
+				return String.valueOf(0);
 			}
 
 			if (placeholder.equals("total-wins")) {
-				return String.valueOf(gamePlayer.getData().getWins());
+				return String.valueOf(gamePlayer.getPlayerData().getWins());
 			}
 
 			if (placeholder.equals("total-kills")) {
-				return String.valueOf(gamePlayer.getData().getKills());
+				return String.valueOf(gamePlayer.getPlayerData().getKills());
 			}
 
 			if (placeholder.equals("total-deaths")) {
-				return String.valueOf(gamePlayer.getData().getDeaths());
+				return String.valueOf(gamePlayer.getPlayerData().getDeaths());
 			}
 
 			if (placeholder.equals("total-assists")) {
-				return String.valueOf(gamePlayer.getData().getAssists());
+				return String.valueOf(gamePlayer.getPlayerData().getAssists());
 			}
 
 			if (placeholder.equals("total-losses")) {
-				return String.valueOf(gamePlayer.getData().getLosses());
+				return String.valueOf(gamePlayer.getPlayerData().getLosses());
 			}
 
 			if (placeholder.equals("completed-quests")) {
-				return String.valueOf(gamePlayer.getQuestData().getCompletedQuests().size());
+				return String.valueOf(gamePlayer.getPlayerQuestData().getCompletedQuests().size());
 			}
+		}
+
+		if (placeholder.equals("date")) {
+			return TimeUtils.getCurrentDate();
 		}
 
 		return null;

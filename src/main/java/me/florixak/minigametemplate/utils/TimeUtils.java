@@ -13,12 +13,6 @@ public class TimeUtils {
 	public static final long HOUR = MINUTE * 60;
 	public static final long HOUR_2 = HOUR * 2;
 
-	public static String localDate;
-
-	static {
-		localDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-	}
-
 	public static String getFormattedTime(long time) {
 		final int h;
 		final int m;
@@ -128,6 +122,6 @@ public class TimeUtils {
 	}
 
 	public static String getCurrentDate() {
-		return localDate;
+		return LocalDate.now().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
 	}
 }

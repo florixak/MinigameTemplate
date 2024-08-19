@@ -1,8 +1,11 @@
 package me.florixak.minigametemplate.listeners;
 
 import com.cryptomorin.xseries.XMaterial;
+import me.florixak.minigametemplate.game.arena.Arena;
+import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.gui.Menu;
 import me.florixak.minigametemplate.managers.GameManager;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,8 +26,14 @@ public class InventoryClickListener implements Listener {
 		if (event.getClickedInventory() == null || isNull(event.getCurrentItem()) || event.getClickedInventory() instanceof AnvilInventory)
 			return;
 
-		if (!this.gameManager.isPlaying() || this.gameManager.isEnding()) {
-			event.setCancelled(true);
+		final Player player = (Player) event.getWhoClicked();
+		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(player.getUniqueId());
+
+		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
+			if (!arena.isPlaying()) {
+				event.setCancelled(true);
+			}
 		}
 
 		final InventoryHolder holder = event.getInventory().getHolder();

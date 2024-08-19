@@ -3,6 +3,7 @@ package me.florixak.minigametemplate.utils;
 import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XPotion;
+import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -303,5 +304,108 @@ public class ItemUtils {
 			case NETHERITE_SWORD:
 				return 8;
 		}
+	}
+
+	/**
+	 * Checks if an ItemStack is a wool.
+	 *
+	 * @param item The ItemStack to check.
+	 * @return True if the item is a wool, false otherwise.
+	 */
+	public static boolean isWool(final ItemStack item) {
+		return XMaterial.matchXMaterial(item).parseMaterial().name().contains("WOOL");
+	}
+
+	/**
+	 * Gets a wool ItemStack with the specified durability.
+	 *
+	 * @param durability The durability of the wool.
+	 * @return The wool ItemStack.
+	 */
+	public static ItemStack getColorWool(final short durability) {
+		if (MinigameTemplate.useOldMethods()) {
+			final ItemStack wool = new ItemStack(XMaterial.WHITE_WOOL.parseMaterial(), 1);
+			wool.setDurability(durability);
+			return new ItemStack(XMaterial.WHITE_WOOL.parseMaterial(), 1);
+		}
+		switch (durability) {
+			case 0:
+				return XMaterial.WHITE_WOOL.parseItem();
+			case 1:
+				return XMaterial.ORANGE_WOOL.parseItem();
+			case 2:
+				return XMaterial.MAGENTA_WOOL.parseItem();
+			case 3:
+				return XMaterial.LIGHT_BLUE_WOOL.parseItem();
+			case 4:
+				return XMaterial.YELLOW_WOOL.parseItem();
+			case 5:
+				return XMaterial.LIME_WOOL.parseItem();
+			case 6:
+				return XMaterial.PINK_WOOL.parseItem();
+			case 7:
+				return XMaterial.GRAY_WOOL.parseItem();
+			case 8:
+				return XMaterial.LIGHT_GRAY_WOOL.parseItem();
+			case 9:
+				return XMaterial.CYAN_WOOL.parseItem();
+			case 10:
+				return XMaterial.PURPLE_WOOL.parseItem();
+			case 11:
+				return XMaterial.BLUE_WOOL.parseItem();
+			case 12:
+				return XMaterial.BROWN_WOOL.parseItem();
+			case 13:
+				return XMaterial.GREEN_WOOL.parseItem();
+			case 14:
+				return XMaterial.RED_WOOL.parseItem();
+			case 15:
+				return XMaterial.BLACK_WOOL.parseItem();
+		}
+		return XMaterial.WHITE_WOOL.parseItem();
+	}
+
+	/**
+	 * Gets the durability of a wool ItemStack.
+	 *
+	 * @param material The wool material.
+	 * @return The durability of the wool.
+	 */
+	public static short getWoolDurability(final Material material) {
+		switch (XMaterial.matchXMaterial(material)) {
+			case WHITE_WOOL:
+				return 0;
+			case ORANGE_WOOL:
+				return 1;
+			case MAGENTA_WOOL:
+				return 2;
+			case LIGHT_BLUE_WOOL:
+				return 3;
+			case YELLOW_WOOL:
+				return 4;
+			case LIME_WOOL:
+				return 5;
+			case PINK_WOOL:
+				return 6;
+			case GRAY_WOOL:
+				return 7;
+			case LIGHT_GRAY_WOOL:
+				return 8;
+			case CYAN_WOOL:
+				return 9;
+			case PURPLE_WOOL:
+				return 10;
+			case BLUE_WOOL:
+				return 11;
+			case BROWN_WOOL:
+				return 12;
+			case GREEN_WOOL:
+				return 13;
+			case RED_WOOL:
+				return 14;
+			case BLACK_WOOL:
+				return 15;
+		}
+		return 0;
 	}
 }

@@ -7,4 +7,9 @@ description: A template for creating minigames.
 softdepend: [ PlaceholderAPI, ProtocolLib, Vault, DecentHolograms, LuckPerms ]
 
 commands:
+  minigame:
+    description: Main command for MinigameTemplate.
+    aliases: [ mgt ]
+  anvil:
+    description: Open the anvils GUI.
 
