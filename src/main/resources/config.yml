@@ -71,16 +71,13 @@ settings:
   # Lobby settings
   # Rename your lobby files to these world names, or set it manually
   lobby:
-    waiting:
-      world: "world"
-      x: 0
-      y: 64
-      z: 0
-    ending:
-      world: "world"
-      x: 0
-      y: 64
-      z: 0
+    world: "lobby" # Name of the lobby world
+    spawn:
+      x: 0.0 # X coordinate of the lobby spawn
+      y: 100.0 # Y coordinate of the lobby spawn
+      z: 0.0 # Z coordinate of the lobby spawn
+      yaw: 0.0 # Yaw of the lobby spawn
+      pitch: 0.0 # Pitch of the lobby spawn
 
   # Statistics settings
   statistics:
@@ -96,7 +93,7 @@ settings:
     player-stats:
       display-item: PLAYER_HEAD # Item to display player stats
       slot: 10 # Slot for player stats
-      custom-name: "&a%player%" # Custom name for player stats
+      custom-name: "&a%minigame_player%" # Custom name for player stats
       lore:
         - "&fLevel: &a%minigame_level%"
         - "&fRequired EXP: &a%minigame_required-exp%"
@@ -193,11 +190,16 @@ settings:
 
   # Tablist settings
   tablist:
-    enabled: true # Enable custom tablist (requires ProtocolLib)
-    header: "&2&lUHC &a&lRevamp\n" # Header text for tablist
-    solo-mode-player-list: "&7[%minigame_level%] &f%minigame_player%" # Player list format for solo mode
-    team-mode-player-list: "&7[%minigame_level%] %minigame_team% &f%minigame_player%" # Player list format for team mode
-    footer: "\n&7www.your-server.com" # Footer text for tablist
+    lobby:
+      enabled: true # Enable custom tablist (requires ProtocolLib)
+      header: "&6&lMinigame\n&7%minigame_date%\n" # Header text for tablist
+      player-list: "&7[%minigame_level%] &f%minigame_player%" # Player list format for solo mode
+      footer: "\n&7www.your-server.com" # Footer text for tablist
+    ingame:
+      enabled: true # Enable custom tablist (requires ProtocolLib)
+      header: "&6&lMinigame\n&7%minigame_date%\n" # Header text for tablist
+      player-list: "&7[%minigame_level%] %minigame_team% &f%minigame_player%" # Player list format for team mode
+      footer: "\n&7www.your-server.com" # Footer text for tablist
 
   # Selectors
   inventories:

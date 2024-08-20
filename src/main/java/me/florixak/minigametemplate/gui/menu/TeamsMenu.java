@@ -2,7 +2,6 @@ package me.florixak.minigametemplate.gui.menu;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.MinigameTemplate;
-import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
@@ -76,10 +75,6 @@ public class TeamsMenu extends PaginatedMenu {
 
 	@Override
 	public void open() {
-		if (!GameValues.TEAM.TEAM_MODE) {
-			this.gamePlayer.sendMessage(Messages.CANT_USE_NOW.toString());
-			return;
-		}
 		super.open();
 	}
 

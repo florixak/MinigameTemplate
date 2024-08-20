@@ -33,6 +33,10 @@ public class TextUtils {
 		return ChatColor.translateAlternateColorCodes('&', message);
 	}
 
+	public static String removeColor(String message) {
+		return ChatColor.stripColor(message);
+	}
+
 	public static String toNormalText(String text) {
 		return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
 	}
@@ -63,6 +67,10 @@ public class TextUtils {
 		String newText = sb.toString().trim();
 		return newText;
 
+	}
+
+	public static String removeSpaces(String text) {
+		return text.replaceAll(" ", "");
 	}
 
 	public static String getCenteredMessage(String message) {

@@ -25,7 +25,6 @@ public class ConfigManager {
 		registerFile(ConfigType.KITS, new ConfigHandler(plugin, "kits"));
 		registerFile(ConfigType.PERKS, new ConfigHandler(plugin, "perks"));
 		registerFile(ConfigType.QUESTS, new ConfigHandler(plugin, "quests"));
-		registerFile(ConfigType.ARENAS, new ConfigHandler(plugin, "arenas"));
 
 		this.configurations.values().forEach(ConfigHandler::saveDefaultConfig);
 

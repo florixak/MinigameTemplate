@@ -3,6 +3,8 @@ package me.florixak.minigametemplate.managers;
 import lombok.Getter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.commands.AnvilCommand;
+import me.florixak.minigametemplate.commands.JoinCommand;
+import me.florixak.minigametemplate.commands.LeaveCommand;
 import me.florixak.minigametemplate.commands.MinigameCommand;
 import me.florixak.minigametemplate.config.ConfigManager;
 import me.florixak.minigametemplate.config.ConfigType;
@@ -11,7 +13,7 @@ import me.florixak.minigametemplate.game.arena.ArenaManager;
 import me.florixak.minigametemplate.game.assists.DamageTrackerManager;
 import me.florixak.minigametemplate.listeners.*;
 import me.florixak.minigametemplate.managers.boards.ScoreboardManager;
-import me.florixak.minigametemplate.managers.boards.TabManager;
+import me.florixak.minigametemplate.managers.boards.TablistManager;
 import me.florixak.minigametemplate.managers.player.PlayerDataManager;
 import me.florixak.minigametemplate.managers.player.PlayerManager;
 import me.florixak.minigametemplate.managers.player.PlayerQuestDataManager;
@@ -43,7 +45,7 @@ public class GameManager {
 	private final QuestManager questManager;
 	private final LeaderboardManager leaderboardManager;
 	private final ScoreboardManager scoreboardManager;
-	private final TabManager tabManager;
+	private final TablistManager tablistManager;
 	private final MenuManager menuManager;
 	private final TasksManager tasksManager;
 	private final BorderManager borderManager;
@@ -71,9 +73,9 @@ public class GameManager {
 		this.questManager = new QuestManager(this);
 		this.leaderboardManager = new LeaderboardManager(this);
 		this.scoreboardManager = new ScoreboardManager(this);
-		this.tabManager = new TabManager();
+		this.tablistManager = new TablistManager(this);
 		this.menuManager = new MenuManager();
-		this.tasksManager = new TasksManager();
+		this.tasksManager = new TasksManager(this);
 		this.borderManager = new BorderManager();
 		this.soundManager = new SoundManager();
 		this.lobbyManager = new LobbyManager(this);
@@ -90,6 +92,8 @@ public class GameManager {
 
 	private void registerCommands() {
 		registerCommand("minigame", new MinigameCommand(this));
+		registerCommand("join", new JoinCommand(this));
+		registerCommand("leave", new LeaveCommand(this));
 		registerCommand("anvil", new AnvilCommand(this));
 	}
 
@@ -110,7 +114,7 @@ public class GameManager {
 		listeners.add(new GameListener(this));
 		listeners.add(new InventoryClickListener(this));
 		listeners.add(new MenuItemsInteractListener(this));
-		listeners.add(new EntityListener());
+		listeners.add(new EntityListener(this));
 		if (!MinigameTemplate.useOldMethods()) listeners.add(new AnvilClickListener());
 
 		for (final Listener listener : listeners) {

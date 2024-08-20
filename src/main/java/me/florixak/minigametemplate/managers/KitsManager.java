@@ -7,7 +7,6 @@ import lombok.Getter;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.kits.Kit;
-import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class KitsManager {
@@ -25,7 +23,6 @@ public class KitsManager {
 	private final FileConfiguration config, kitsConfig;
 	@Getter
 	private final List<Kit> kitsList = new ArrayList<>();
-	private final HashMap<Integer, ItemStack> lobbyMap = new HashMap<>();
 
 	public KitsManager(final GameManager gameManager) {
 		this.config = gameManager.getConfigManager().getFile(ConfigType.SETTINGS).getConfig();
@@ -36,7 +33,6 @@ public class KitsManager {
 
 	public void load() {
 		loadKits();
-		loadLobbyItems();
 	}
 
 	private void loadKits() {
@@ -128,31 +124,8 @@ public class KitsManager {
 		return null;
 	}
 
-	private void loadLobbyItems() {
-		final ConfigurationSection section = this.config.getConfigurationSection("settings.inventories");
-		if (section == null) return;
-		for (final String selector : section.getKeys(false)) {
-			if (selector.matches("next|next-item|previous|previous-item|back|back-item|close|close-item")) continue;
-			final String displayName = section.getString(selector + ".display-name");
-			final String material = section.getString(selector + ".display-item", "BARRIER").toUpperCase();
-			final ItemStack item = XMaterial.matchXMaterial(material).get().parseItem();
-			final int slot = section.getInt(selector + ".slot");
-			final ItemStack newItem = ItemUtils.createItem(item.getType(), displayName, 1, null);
-			if (slot < 0 || slot > 8) continue;
-			this.lobbyMap.put(slot, newItem);
-		}
-	}
-
-	public void giveLobbyKit(final GamePlayer p) {
-		if (this.lobbyMap.isEmpty()) return;
-		for (final int slot : this.lobbyMap.keySet()) {
-			p.getPlayer().getInventory().setItem(slot, this.lobbyMap.get(slot));
-		}
-	}
-
 	public void onDisable() {
 		this.kitsList.clear();
-		this.lobbyMap.clear();
 	}
 
 	public boolean exists(final String kitName) {

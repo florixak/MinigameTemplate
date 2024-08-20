@@ -43,10 +43,6 @@ public class WaitingArenasMenu extends PaginatedMenu {
 		} else if (event.getCurrentItem().getType().equals(XMaterial.DARK_OAK_BUTTON.parseMaterial())) {
 			handlePaging(event, this.arenaList);
 		} else {
-			if (!this.gameManager.getArenaManager().isPlayerInArena(this.gamePlayer)) {
-				this.gamePlayer.sendMessage(Messages.CANT_USE_NOW.toString());
-				return;
-			}
 			handleArenaSelection(event);
 		}
 
@@ -77,6 +73,14 @@ public class WaitingArenasMenu extends PaginatedMenu {
 	private void handleArenaSelection(final InventoryClickEvent event) {
 		final Arena arena = this.arenaList.get(event.getSlot());
 		close();
+		this.gamePlayer.sendMessage("Clicking on " + arena.getName());
 
+		if (this.gameManager.getArenaManager().isPlayerInArena(this.gamePlayer)) {
+			final Arena currentArena = this.gameManager.getArenaManager().getPlayerArena(this.gamePlayer);
+			currentArena.leave(this.gamePlayer);
+			currentArena.broadcast(Messages.ARENA_LEAVE.toString().replace("%player%", this.gamePlayer.getPlayer().getName()));
+		}
+		arena.join(this.gamePlayer);
+		arena.broadcast(Messages.ARENA_JOIN.toString().replace("%player%", this.gamePlayer.getPlayer().getName()));
 	}
 }

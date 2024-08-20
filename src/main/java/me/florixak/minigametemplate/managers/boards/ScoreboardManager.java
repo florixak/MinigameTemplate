@@ -3,6 +3,7 @@ package me.florixak.minigametemplate.managers.boards;
 import lombok.Getter;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.game.arena.Arena;
+import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -51,17 +52,18 @@ public class ScoreboardManager {
 
 		final Player p = Bukkit.getPlayer(uuid);
 		if (p == null) return null;
-		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(p);
+		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
 
 		ScoreHelper helper = this.players.get(p.getUniqueId());
 		if (helper == null) helper = new ScoreHelper(p);
 		helper.setTitle(this.title);
 
-		if (arena == null) {
+		if (!this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
 			helper.setSlotsFromList(this.lobby);
 			return helper;
 		}
 
+		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
 		switch (arena.getArenaState()) {
 			case WAITING:
 				helper.setSlotsFromList(this.waiting);
@@ -73,6 +75,7 @@ public class ScoreboardManager {
 				helper.setSlotsFromList(this.ending);
 				break;
 		}
+
 		return helper;
 	}
 

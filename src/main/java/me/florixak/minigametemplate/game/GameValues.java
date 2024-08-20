@@ -45,7 +45,6 @@ public class GameValues {
 	public static final GameSettings GAME = new GameSettings();
 	public static final ChatConfig CHAT = new ChatConfig();
 	public static final BorderConfig BORDER = new BorderConfig();
-	public static final TeamConfig TEAM = new TeamConfig();
 	public static final KitConfig KITS = new KitConfig();
 	public static final PerkConfig PERKS = new PerkConfig();
 	public static final StatisticsConfig STATISTICS = new StatisticsConfig();
@@ -71,12 +70,6 @@ public class GameValues {
 		public final boolean MONSTERS_ATTACK = getConfigBoolean("settings.game.monsters-attack", false);
 		public final int PLAYERS_TO_START = getConfigInt("settings.game.players-to-start", 2);
 		public final int STARTING_MESSAGE_AT = getConfigInt("settings.game.starting-message-at", 10);
-	}
-
-	public static class TeamConfig {
-		public final boolean TEAM_MODE = getConfigBoolean("settings.teams.team-mode", true);
-		public final boolean FRIENDLY_FIRE = getConfigBoolean("settings.teams.friendly-fire", false);
-		public final int TEAM_SIZE = getConfigInt("settings.teams.max-size", 3);
 	}
 
 	public static class KitConfig {

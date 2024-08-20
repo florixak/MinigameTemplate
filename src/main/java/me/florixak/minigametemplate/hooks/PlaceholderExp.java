@@ -2,9 +2,12 @@ package me.florixak.minigametemplate.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.florixak.minigametemplate.MinigameTemplate;
+import me.florixak.minigametemplate.config.Messages;
+import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.utils.TimeUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class PlaceholderExp extends PlaceholderExpansion {
@@ -62,7 +65,7 @@ public class PlaceholderExp extends PlaceholderExpansion {
 				return String.valueOf(gamePlayer.getPlayerData().getExp());
 			}
 
-			if (placeholder.equals("required-exp")) {
+			if (placeholder.equals("required_exp")) {
 				return TextUtils.formatToOneDecimal(gamePlayer.getPlayerData().getRequiredExp());
 			}
 
@@ -70,34 +73,109 @@ public class PlaceholderExp extends PlaceholderExpansion {
 				return String.valueOf(0);
 			}
 
-			if (placeholder.equals("total-wins")) {
+			if (placeholder.equals("total_wins")) {
 				return String.valueOf(gamePlayer.getPlayerData().getWins());
 			}
 
-			if (placeholder.equals("total-kills")) {
+			if (placeholder.equals("total_kills")) {
 				return String.valueOf(gamePlayer.getPlayerData().getKills());
 			}
 
-			if (placeholder.equals("total-deaths")) {
+			if (placeholder.equals("total_deaths")) {
 				return String.valueOf(gamePlayer.getPlayerData().getDeaths());
 			}
 
-			if (placeholder.equals("total-assists")) {
+			if (placeholder.equals("total_assists")) {
 				return String.valueOf(gamePlayer.getPlayerData().getAssists());
 			}
 
-			if (placeholder.equals("total-losses")) {
+			if (placeholder.equals("total_losses")) {
 				return String.valueOf(gamePlayer.getPlayerData().getLosses());
 			}
 
-			if (placeholder.equals("completed-quests")) {
+			if (placeholder.equals("completed_quests")) {
 				return String.valueOf(gamePlayer.getPlayerQuestData().getCompletedQuests().size());
+			}
+
+			if (this.plugin.getGameManager().getArenaManager().isPlayerInArena(gamePlayer)) {
+				final Arena arena = this.plugin.getGameManager().getArenaManager().getPlayerArena(gamePlayer);
+
+				if (placeholder.equals("arena_name")) {
+					return TextUtils.color(arena.getName());
+				}
+
+				if (placeholder.equals("arena_id")) {
+					return TextUtils.color(arena.getId());
+				}
+
+				if (placeholder.equals("arena_online")) {
+					return String.valueOf(arena.getPlayers().size());
+				}
+
+				if (placeholder.equals("arena_min")) {
+					return String.valueOf(arena.getMinPlayers());
+				}
+
+				if (placeholder.equals("arena_max")) {
+					return String.valueOf(arena.getMaxPlayers());
+				}
+
+				if (placeholder.equals("arena_players_alive")) {
+					return String.valueOf(arena.getAlivePlayers().size());
+				}
+
+				if (placeholder.equals("arena_teams_alive")) {
+					return String.valueOf(arena.getAliveTeams().size());
+				}
+
+				if (placeholder.equals("arena_state")) {
+					return TextUtils.color(arena.getArenaState().toString());
+				}
+
+				if (placeholder.equals("arena_seconds")) {
+					return String.valueOf(arena.getGameTime());
+				}
+
+				if (placeholder.equals("arena_winner")) {
+					return TextUtils.color(arena.getWinner());
+				}
+
+				if (placeholder.equals("arena_enabled")) {
+					return TextUtils.color(arena.isEnabled() ? "&aEnabled" : "&cDisabled");
+				}
+
+				if (placeholder.equals("team")) {
+					return TextUtils.color(gamePlayer.getTeam().getDisplayName());
+				}
+
+				if (placeholder.equals("kit")) {
+					if (gamePlayer.hasKit()) return TextUtils.color(gamePlayer.getKit().getDisplayName());
+					else return Messages.KITS_SELECTED_NONE.toString();
+				}
+
+				if (placeholder.equals("perk")) {
+					if (gamePlayer.hasPerk()) return TextUtils.color(gamePlayer.getPerk().getDisplayName());
+					else return Messages.PERKS_SELECTED_NONE.toString();
+				}
 			}
 		}
 
 		if (placeholder.equals("date")) {
 			return TimeUtils.getCurrentDate();
 		}
+
+		if (placeholder.equals("online")) {
+			return String.valueOf(this.plugin.getGameManager().getPlayerManager().getPlayers().size());
+		}
+
+		if (placeholder.equals("max_online")) {
+			return String.valueOf(Bukkit.getServer().getMaxPlayers());
+		}
+
+		if (placeholder.equals("scoreboard_footer")) {
+			return Bukkit.getServer().getName();
+		}
+
 
 		return null;
 	}

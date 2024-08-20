@@ -28,7 +28,7 @@ public class GameTeam {
 	private Location spawnLocation;
 
 	public GameTeam(final String name, final int size, final Location spawnLocation) {
-		this.displayItem = XMaterial.MAP.parseItem();
+		this.displayItem = XMaterial.PAPER.parseItem();
 		this.durability = 1;
 		this.name = name;
 		this.size = size;
@@ -75,7 +75,7 @@ public class GameTeam {
 		return getMembers().stream().mapToInt(GamePlayer::getKills).sum();
 	}
 
-	public void setWinners() {
+	public void setWinner() {
 		getMembers().forEach(GamePlayer::setWinner);
 	}
 

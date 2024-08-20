@@ -1,0 +1,42 @@
+'arena2':
+  name: "Arena 2"
+  enabled: true
+  world: "world"
+  min-players: 2
+  center:
+    x: 0
+    y: 0
+    z: 0
+  teams:
+    '&cRed':
+      size: 4
+      spawn-location:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+    '&cGreen':
+      size: 4
+      spawn-location:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+    '&cBlue':
+      size: 4
+      spawn-location:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0
+    '&cYellow':
+      size: 4
+      spawn-location:
+        x: 0
+        y: 0
+        z: 0
+        yaw: 0
+        pitch: 0

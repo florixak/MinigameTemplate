@@ -86,6 +86,9 @@ public class PlayerManager {
 		getPlayers().remove(gamePlayer);
 	}
 
+	public List<GamePlayer> getOnlinePlayers() {
+		return getPlayers().stream().filter(GamePlayer::isOnline).collect(Collectors.toList());
+	}
 
 	public List<GamePlayer> getPlayersInLobby() {
 		return getPlayers().stream().filter(gamePlayer -> gamePlayer.getState() == PlayerState.LOBBY).collect(Collectors.toList());
@@ -106,11 +109,11 @@ public class PlayerManager {
 		p.setFireTicks(0);
 		p.setGameMode(GameMode.ADVENTURE);
 
-		p.teleport(this.gameManager.getLobbyManager().getWaitingLobbyLocation());
+		p.teleport(this.gameManager.getLobbyManager().getLobbyLocation());
 
 		gamePlayer.clearPotions();
 		gamePlayer.clearInventory();
-		this.gameManager.getKitsManager().giveLobbyKit(gamePlayer);
+		this.gameManager.getLobbyManager().giveLobbyItems(gamePlayer);
 	}
 
 	public void setPlayerForGame(final GamePlayer gamePlayer) {

@@ -10,6 +10,10 @@ commands:
   minigame:
     description: Main command for MinigameTemplate.
     aliases: [ mgt ]
+  join:
+    description: Join the minigame.
+  leave:
+    description: Leave the minigame.
   anvil:
     description: Open the anvils GUI.
 

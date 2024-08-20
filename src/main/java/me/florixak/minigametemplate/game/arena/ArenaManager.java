@@ -1,139 +1,94 @@
 package me.florixak.minigametemplate.game.arena;
 
 import lombok.Getter;
-import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.game.player.GamePlayer;
-import me.florixak.minigametemplate.game.teams.GameTeam;
 import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ArenaManager {
-
 	private final GameManager gameManager;
-	private final FileConfiguration arenaConfig;
 	@Getter
 	private final List<Arena> arenas = new ArrayList<>();
 
 	public ArenaManager(final GameManager gameManager) {
 		this.gameManager = gameManager;
-		this.arenaConfig = gameManager.getConfigManager().getFile(ConfigType.ARENAS).getConfig();
 
-		loadArenas();
+		loadAllArenas();
 	}
 
-	public void loadArenas() {
-		final ConfigurationSection section = this.arenaConfig.getConfigurationSection("arenas");
-		if (section == null) {
-			Bukkit.getLogger().info("No arenas found in the config.");
-			return;
+	public void saveAllArenas() {
+		for (final Arena arena : this.arenas) {
+			arena.saveToFile();
 		}
-		for (final String key : section.getKeys(false)) {
-			final int id = Integer.parseInt(key);
-			final String name = section.getString(key + ".name");
-			final boolean enabled = section.getBoolean(key + ".enabled");
-			int maxPlayers = 0;
-			final int minPlayers = section.getInt(key + ".min-players");
+	}
 
-			Location centerLocation = null;
-			if (section.contains(key + ".center-location")) {
-				centerLocation = loadArenaCenterLocation(key);
-			}
+	public void loadAllArenas() {
+		final File arenasFile = new File(this.gameManager.getPlugin().getDataFolder(), "arenas");
+		if (!arenasFile.exists()) {
+			arenasFile.mkdirs();
+		}
 
-			List<GameTeam> teamsList = new ArrayList<>();
-			if (section.contains(key + ".teams")) {
-				teamsList = loadArenaTeams(key);
-				for (final GameTeam team : teamsList) {
-					maxPlayers += team.getSize();
+		Bukkit.getLogger().info("Loading arenas... " + arenasFile.listFiles().length);
+
+		for (final File file : arenasFile.listFiles()) {
+			if (file.isFile() && file.getName().endsWith(".yml")) {
+				final String id = file.getName().replace(".yml", "");
+				final Arena arena = Arena.loadFromFile(id);
+				if (arena != null) {
+					this.arenas.add(arena);
+					Bukkit.getLogger().info("Loaded arena: " + arena.toString());
 				}
 			}
-
-			final Arena arena = new Arena(id, name, enabled, maxPlayers, minPlayers, centerLocation, teamsList);
-			this.arenas.add(arena);
-			Bukkit.getLogger().info("Loaded arena: " + arena.toString());
-			Bukkit.getLogger().info("Arenas: " + this.arenas.toString());
 		}
 	}
 
-	private Location loadArenaCenterLocation(final String key) {
-		final ConfigurationSection section = this.arenaConfig.getConfigurationSection("arenas." + key);
-		final ConfigurationSection centerLocationSection = section.getConfigurationSection(key + ".center-location");
-
-		final String world = section.getString("world", "world");
-		final double x = centerLocationSection.getDouble("x");
-		final double y = centerLocationSection.getDouble("y");
-		final double z = centerLocationSection.getDouble("z");
-		final float yaw = (float) centerLocationSection.getDouble("yaw");
-		final float pitch = (float) centerLocationSection.getDouble("pitch");
-		return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+	public void createArena(final String id, final String name, final Location centerLocation, final int minPlayers) {
+		final Arena arena = new Arena(id, name, centerLocation, minPlayers);
+		this.arenas.add(arena);
 	}
 
-	private List<GameTeam> loadArenaTeams(final String key) {
-		final ConfigurationSection section = this.arenaConfig.getConfigurationSection("arenas." + key + ".teams");
-		final List<GameTeam> teams = new ArrayList<>();
-		if (section == null) {
-			Bukkit.getLogger().info("No teams found in the config.");
-			return teams;
-		}
-		for (final String teamsKey : section.getKeys(false)) {
-			final int size = section.getInt(teamsKey + ".size");
-
-			final String world = section.getString(teamsKey + ".world", "world");
-			final double x = section.getDouble(teamsKey + ".spawn-location.x");
-			final double y = section.getDouble(teamsKey + ".spawn-location.y");
-			final double z = section.getDouble(teamsKey + ".spawn-location.z");
-			final float yaw = (float) section.getDouble(teamsKey + ".spawn-location.yaw");
-			final float pitch = (float) section.getDouble(teamsKey + ".spawn-location.pitch");
-
-			final Location spawnLocation = new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
-			final GameTeam team = new GameTeam(teamsKey, size, spawnLocation);
-			teams.add(team);
-			Bukkit.getLogger().info("Loaded team: " + team.toString());
-		}
-		return teams;
+	public void enableArena(final Arena arena) {
+		if (arena.isEnabled()) return;
+		if (arena.getTeams().isEmpty()) return;
+		if (arena.getMaxPlayers() == 0) return;
+		arena.setEnabled(true);
 	}
 
-	public void saveArenas() {
-
+	public void startArena(final Arena arena) {
+		if (!arena.isEnabled()) return;
+		if (arena.getPlayers().size() < arena.getMinPlayers()) return;
+		arena.start();
 	}
 
-	public void createArena() {
+	public void disableArena(final Arena arena) {
+		if (!arena.isEnabled()) return;
+		arena.setEnabled(false);
 	}
 
 	public void deleteArena(final Arena arena) {
 		this.arenas.remove(arena);
-		this.arenaConfig.set("arenas." + arena.getId(), null);
-		this.gameManager.getConfigManager().saveFile(ConfigType.ARENAS);
+		arena.delete();
 	}
 
-	public boolean existsArena(final int id) {
+	public boolean existsArena(final String id) {
 		for (final Arena arena : this.arenas) {
-			if (arena.getId() == id) {
+			if (arena.getId().equals(id)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public Arena getArena(final String name) {
+	public Arena getArena(final String arenaIdOrName) {
 		for (final Arena arena : this.arenas) {
-			if (arena.getName().equals(name)) {
-				return arena;
-			}
-		}
-		return null;
-	}
-
-	public Arena getArena(final int id) {
-		for (final Arena arena : this.arenas) {
-			if (arena.getId() == id) {
+			if (arena.getId().equalsIgnoreCase(arenaIdOrName) || arena.getName().equalsIgnoreCase(arenaIdOrName)) {
 				return arena;
 			}
 		}
@@ -190,5 +145,10 @@ public class ArenaManager {
 
 	public List<GamePlayer> getTopKillers(final Arena arena) {
 		return findTopKillers(arena.getPlayers());
+	}
+
+	public void onDisable() {
+		saveAllArenas();
+		this.arenas.clear();
 	}
 }
