@@ -2,6 +2,7 @@ package me.florixak.minigametemplate.commands;
 
 import eu.decentsoftware.holograms.api.utils.PAPI;
 import me.florixak.minigametemplate.config.Messages;
+import me.florixak.minigametemplate.game.Permissions;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.game.teams.GameTeam;
@@ -45,80 +46,132 @@ public class MinigameCommand implements CommandExecutor {
 			}
 			this.gameManager.getArenaManager().getPlayerArena(gamePlayer).leave(gamePlayer);
 			return true;
+
 		} else if (args[0].equalsIgnoreCase("arenas")) {
 			new WaitingArenasMenu(this.gameManager.getMenuManager().getMenuUtils(gamePlayer)).open();
+
 		} else if (args[0].equalsIgnoreCase("ingame")) {
 			new InGameArenasMenu(this.gameManager.getMenuManager().getMenuUtils(gamePlayer)).open();
+
 		} else if (args[0].equalsIgnoreCase("create")) {
 			if (args.length != 4) {
 				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
 				return true;
 			}
 			this.gameManager.getArenaManager().createArena(args[1], args[2], player.getLocation(), Integer.parseInt(args[3]));
+
+
 		} else if (args[0].equalsIgnoreCase("team")) {
-			if (args.length < 2) {
-				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
-				return true;
-			}
-			final Arena arena = this.gameManager.getArenaManager().getArena(args[1]);
+			handleTeamArgument(player, args);
 
-			if (args[1].equalsIgnoreCase("create")) {
-				if (args.length != 4) {
-					player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
-					return true;
-				}
-				arena.addTeam(new GameTeam(args[2], Integer.parseInt(args[3]), player.getLocation()));
-			} else if (args[1].equalsIgnoreCase("delete")) {
-
-			} else {
-				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
-			}
-
-		} else if (args[0].equalsIgnoreCase("start")) {
-			if (args.length != 2) {
-				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
-				return true;
-			}
-
-		} else if (args[0].equalsIgnoreCase("stop")) {
-			if (args.length != 2) {
-				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
-				return true;
-			}
-
-		} else if (args[0].equalsIgnoreCase("join")) {
-			if (args.length != 2) {
-				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
-				return true;
-			}
-
-		} else if (args[0].equalsIgnoreCase("spectate")) {
-			if (args.length != 2) {
-				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
-				return true;
-			}
-
-		} else if (args[0].equalsIgnoreCase("setLobby")) {
+		} else if (args[0].equalsIgnoreCase("arena")) {
+			handleArenaArgument(player, args);
 
 		} else if (args[0].equalsIgnoreCase("setSpectate")) {
 
-		} else if (args[0].equalsIgnoreCase("setSpawn")) {
+		} else if (args[0].equalsIgnoreCase("setLobby")) {
 			if (args.length != 2) {
 				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
 				return true;
 			}
-
-		} else if (args[0].equalsIgnoreCase("setCenter")) {
-			if (args.length != 2) {
-				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
-				return true;
-			}
-
 
 		} else {
 			player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
 		}
 
 		return true;
+	}
+
+	private void handleArenaArgument(final Player player, final String[] args) {
+		if (!player.hasPermission(Permissions.SETUP.getPerm())) {
+			player.sendMessage(PAPI.setPlaceholders(player, Messages.NO_PERM.toString()));
+			return;
+		}
+
+		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(player.getUniqueId());
+
+		if (args[1].equalsIgnoreCase("create")) {
+			if (args.length != 5) {
+				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
+				return;
+			}
+			try {
+				final String arenaId = args[2];
+				final String arenaName = args[3];
+				final int arenaMin = Integer.parseInt(args[4]);
+				this.gameManager.getArenaManager().createArena(arenaId, arenaName, player.getLocation(), arenaMin);
+			} catch (final NumberFormatException e) {
+				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
+			}
+			return;
+		}
+		if (args.length != 3) {
+			player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
+			return;
+		}
+		final Arena arena = this.gameManager.getArenaManager().getArena(args[2]);
+
+		if (arena == null) {
+			player.sendMessage("Arena not found.");
+			return;
+		}
+
+		if (args[1].equalsIgnoreCase("delete")) {
+
+			player.sendMessage("Arena " + arena.getName() + " deleted.");
+			this.gameManager.getArenaManager().deleteArena(arena);
+
+		} else if (args[1].equalsIgnoreCase("enable")) {
+
+			if (!this.gameManager.getArenaManager().enableArena(player, arena)) return;
+			player.sendMessage("Arena " + arena.getName() + " enabled.");
+
+		} else if (args[1].equalsIgnoreCase("disable")) {
+			this.gameManager.getArenaManager().disableArena(arena);
+			player.sendMessage("Arena " + arena.getName() + " disabled.");
+
+		} else if (args[1].equalsIgnoreCase("start")) {
+			this.gameManager.getArenaManager().startArena(arena);
+			player.sendMessage("Arena " + arena.getName() + " started.");
+
+		} else if (args[1].equalsIgnoreCase("stop")) {
+//			this.gameManager.getArenaManager().end(arena);
+			player.sendMessage("Arena " + arena.getName() + " stopped.");
+
+		} else if (args[1].equalsIgnoreCase("join")) {
+			arena.join(gamePlayer);
+
+		} else if (args[1].equalsIgnoreCase("spectate")) {
+			arena.joinAsSpectator(gamePlayer);
+
+		} else {
+			player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
+		}
+	}
+
+	private void handleTeamArgument(final Player player, final String[] args) {
+		if (args.length < 2) {
+			player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
+			return;
+		}
+
+		if (args[1].equalsIgnoreCase("create")) {
+			if (args.length != 5) {
+				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
+				return;
+			}
+			try {
+				final Arena arena = this.gameManager.getArenaManager().getArena(args[2]);
+				final String teamName = args[3];
+				final int teamSize = Integer.parseInt(args[4]);
+				arena.addTeam(new GameTeam(teamName, teamSize, player.getLocation()));
+			} catch (final NumberFormatException e) {
+				player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
+			}
+		} else if (args[1].equalsIgnoreCase("delete")) {
+
+		} else {
+			player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
+		}
 	}
 }

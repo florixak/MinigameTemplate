@@ -14,7 +14,7 @@ scoreboard:
     - "&7%minigame_scoreboard_footer%"
 
   waiting:
-    - "&7%date%"
+    - "&7%minigame_date% %minigame_arena_name%"
     - "&fWaiting for players..."
     - "&fPlayers: &e%minigame_arena_online%&f/&e%minigame_arena_max%"
     - ""
@@ -25,7 +25,7 @@ scoreboard:
     - "&7%minigame_scoreboard_footer%"
 
   starting:
-    - "&7%date%"
+    - "&7%minigame_date% %minigame_arena_name%"
     - "&fStart in: &e%minigame_seconds%"
     - "&fPlayers: &e%minigame_arena_online%&f/&e%minigame_arena_max%"
     - ""
@@ -36,7 +36,7 @@ scoreboard:
     - "&7%minigame_scoreboard_footer%"
 
   ingame:
-    - "&7%date%"
+    - "&7%minigame_date% %minigame_arena_name%"
     - "&fTime left: &e%minigame_seconds%"
     - ""
     - "&fPlayers left: &e%minigame_arena_players_alive%"
@@ -48,7 +48,7 @@ scoreboard:
 
 
   ending:
-    - "&7%date%"
+    - "&7%minigame_date% %minigame_arena_name%"
     - "&fEnding in: &e%minigame_arena_seconds%"
     - ""
     - "&eWinner:"

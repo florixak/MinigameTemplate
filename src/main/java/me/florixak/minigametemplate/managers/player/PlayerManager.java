@@ -113,7 +113,7 @@ public class PlayerManager {
 
 		gamePlayer.clearPotions();
 		gamePlayer.clearInventory();
-		this.gameManager.getLobbyManager().giveLobbyItems(gamePlayer);
+		this.gameManager.getGameItemManager().giveItems(gamePlayer);
 	}
 
 	public void setPlayerForGame(final GamePlayer gamePlayer) {

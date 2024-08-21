@@ -52,13 +52,27 @@ public class ArenaManager {
 	public void createArena(final String id, final String name, final Location centerLocation, final int minPlayers) {
 		final Arena arena = new Arena(id, name, centerLocation, minPlayers);
 		this.arenas.add(arena);
+		Bukkit.getLogger().info("Created arena: " + arena.toString());
 	}
 
-	public void enableArena(final Arena arena) {
-		if (arena.isEnabled()) return;
-		if (arena.getTeams().isEmpty()) return;
-		if (arena.getMaxPlayers() == 0) return;
+	public boolean enableArena(final Player player, final Arena arena) {
+		if (arena.isEnabled()) {
+			if (player == null) Bukkit.getLogger().info("Arena is already enabled.");
+			else player.sendMessage("Arena is already enabled.");
+			return false;
+		}
+		if (arena.getTeams().isEmpty()) {
+			if (player == null) Bukkit.getLogger().info("Arena has no teams.");
+			else player.sendMessage("Arena has no teams.");
+			return false;
+		}
+		if (arena.getMaxPlayers() == 0) {
+			if (player == null) Bukkit.getLogger().info("Arena has no max players.");
+			else player.sendMessage("Arena has no max players.");
+			return false;
+		}
 		arena.setEnabled(true);
+		return true;
 	}
 
 	public void startArena(final Arena arena) {
@@ -69,6 +83,10 @@ public class ArenaManager {
 
 	public void disableArena(final Arena arena) {
 		if (!arena.isEnabled()) return;
+		arena.getPlayers().forEach(gamePlayer -> {
+			gamePlayer.sendMessage("Arena has been disabled.");
+			arena.leave(gamePlayer);
+		});
 		arena.setEnabled(false);
 	}
 

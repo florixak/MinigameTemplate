@@ -203,11 +203,15 @@ public class GameValues {
 	}
 
 	public static class TablistConfig {
-		public final boolean ENABLED = getConfigBoolean("settings.tablist.enabled", true);
-		public final String HEADER = getConfigString("settings.tablist.header", "Tablist Header");
-		public final String FOOTER = getConfigString("settings.tablist.footer", "Tablist Footer");
-		public final String SOLO_MODE = getConfigString("settings.tablist.solo-mode-player-list", "&f%player%");
-		public final String TEAM_MODE = getConfigString("settings.tablist.team-mode-player-list", "%team% &f%player%");
+		public final boolean LOBBY_ENABLED = getConfigBoolean("settings.tablist.lobby.enabled", true);
+		public final String LOBBY_HEADER = getConfigString("settings.tablist.lobby.header", "Tablist Header");
+		public final String LOBBY_FOOTER = getConfigString("settings.tablist.lobby.footer", "Tablist Footer");
+		public final String LOBBY_PLAYER_LIST = getConfigString("settings.tablist.lobby.player-list", "&f%minigame_player%");
+
+		public final boolean INGAME_ENABLED = getConfigBoolean("settings.tablist.ingame.enabled", true);
+		public final String INGAME_HEADER = getConfigString("settings.tablist.ingame.header", "Tablist Header");
+		public final String INGAME_FOOTER = getConfigString("settings.tablist.ingame.footer", "Tablist Footer");
+		public final String INGAME_PLAYER_LIST = getConfigString("settings.tablist.ingame.player-list", "&f%minigame_player%");
 	}
 
 	public static class BorderConfig {

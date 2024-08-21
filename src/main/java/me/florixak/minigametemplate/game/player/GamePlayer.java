@@ -218,7 +218,7 @@ public class GamePlayer {
 			setState(PlayerState.SPECTATOR);
 		}
 		setGameMode(GameMode.SPECTATOR);
-		teleport(new Location(Bukkit.getWorld(GameValues.WORLD_NAME), 0, 100, 0));
+//		teleport(new Location(Bukkit.getWorld(GameValues.WORLD_NAME), 0, 100, 0));
 	}
 
 	public void addMoneyForGameResult(final double money) {

@@ -22,27 +22,29 @@ public class TablistManager {
 	}
 
 	public void setPlayerList() {
-		if (!GameValues.TABLIST.ENABLED) return;
+		if (GameValues.TABLIST.LOBBY_ENABLED) {
+			for (final GamePlayer gamePlayer : this.gameManager.getPlayerManager().getPlayersInLobby()) {
+				final Player player = gamePlayer.getPlayer();
+				final String header = GameValues.TABLIST.LOBBY_HEADER;
+				final String footer = GameValues.TABLIST.LOBBY_FOOTER;
+				final String tablist = GameValues.TABLIST.LOBBY_PLAYER_LIST;
 
-		for (final GamePlayer gamePlayer : this.gameManager.getPlayerManager().getPlayersInLobby()) {
-			final Player player = gamePlayer.getPlayer();
-			final String header = GameValues.TABLIST.HEADER;
-			final String footer = GameValues.TABLIST.FOOTER;
-			final String tablist = GameValues.TABLIST.SOLO_MODE;
-
-			setHeaderAndFooter(player, header, footer);
-			setPlayerListName(player, tablist);
+				setHeaderAndFooter(player, header, footer);
+				setPlayerListName(player, tablist);
+			}
 		}
 
-		for (final GamePlayer gamePlayer : this.gameManager.getPlayerManager().getPlayersInArenas()) {
-			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
-			for (final GamePlayer player : arena.getPlayers()) {
-				final String header = GameValues.TABLIST.HEADER;
-				final String footer = GameValues.TABLIST.FOOTER;
-				final String tablist = GameValues.TABLIST.TEAM_MODE;
+		if (GameValues.TABLIST.INGAME_ENABLED) {
+			for (final GamePlayer gamePlayer : this.gameManager.getPlayerManager().getPlayersInArenas()) {
+				final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
+				for (final GamePlayer player : arena.getPlayers()) {
+					final String header = GameValues.TABLIST.INGAME_HEADER;
+					final String footer = GameValues.TABLIST.INGAME_FOOTER;
+					final String tablist = GameValues.TABLIST.INGAME_PLAYER_LIST;
 
-				setHeaderAndFooter(player.getPlayer(), header, footer);
-				setPlayerListName(player.getPlayer(), tablist);
+					setHeaderAndFooter(player.getPlayer(), header, footer);
+					setPlayerListName(player.getPlayer(), tablist);
+				}
 			}
 		}
 	}

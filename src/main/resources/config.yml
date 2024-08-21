@@ -72,12 +72,11 @@ settings:
   # Rename your lobby files to these world names, or set it manually
   lobby:
     world: "lobby" # Name of the lobby world
-    spawn:
-      x: 0.0 # X coordinate of the lobby spawn
-      y: 100.0 # Y coordinate of the lobby spawn
-      z: 0.0 # Z coordinate of the lobby spawn
-      yaw: 0.0 # Yaw of the lobby spawn
-      pitch: 0.0 # Pitch of the lobby spawn
+    x: 0.0 # X coordinate of the lobby spawn
+    y: 100.0 # Y coordinate of the lobby spawn
+    z: 0.0 # Z coordinate of the lobby spawn
+    yaw: 0.0 # Yaw of the lobby spawn
+    pitch: 0.0 # Pitch of the lobby spawn
 
   # Statistics settings
   statistics:
@@ -189,15 +188,15 @@ settings:
   end-game-commands: [ ]
 
   # Tablist settings
-  tablist:
+  tablist: # Enable custom tablist (requires ProtocolLib)
     lobby:
-      enabled: true # Enable custom tablist (requires ProtocolLib)
-      header: "&6&lMinigame\n&7%minigame_date%\n" # Header text for tablist
+      enabled: true
+      header: "&6&lMinigame\n &7%minigame_date%\n" # Header text for tablist
       player-list: "&7[%minigame_level%] &f%minigame_player%" # Player list format for solo mode
       footer: "\n&7www.your-server.com" # Footer text for tablist
     ingame:
-      enabled: true # Enable custom tablist (requires ProtocolLib)
-      header: "&6&lMinigame\n&7%minigame_date%\n" # Header text for tablist
+      enabled: true
+      header: "&6&lMinigame\n &7%minigame_arena_name%\n" # Header text for tablist
       player-list: "&7[%minigame_level%] %minigame_team% &f%minigame_player%" # Player list format for team mode
       footer: "\n&7www.your-server.com" # Footer text for tablist
 
@@ -212,43 +211,6 @@ settings:
     close: "&cClose"
     close-item: BARRIER
 
-    # Available menu - teams, kits, perks, custom-crafts, statistics
-    teams:
-      enabled: true # Enable teams menu
-      display-name: "&fTeams&8" # Display name for teams menu
-      display-item: WHITE_WOOL # Display item for teams menu
-      slot: 0 # Slot for teams menu
-      slots: 36 # Number of slots for teams menu
-    kits:
-      enabled: true # Enable kits menu
-      display-name: "&fKits&8" # Display name for kits menu
-      display-item: IRON_PICKAXE # Display item for kits menu
-      slot: 3 # Slot for kits menu
-      slots: 45 # Number of slots for kits menu
-    perks:
-      enabled: true # Enable perks menu
-      display-name: "&fPerks&8" # Display name for perks menu
-      display-item: BOW # Display item for perks menu
-      slot: 5 # Slot for perks menu
-      slots: 45 # Number of slots for perks menu
-    custom-recipes:
-      enabled: true # Enable custom recipes menu
-      display-name: "&fCustom Recipes&8" # Display name for custom recipes menu
-      display-item: CRAFTING_TABLE # Display item for custom recipes menu
-      slot: 4 # Slot for custom recipes menu
-      slots: 45 # Number of slots for custom recipes menu
-    quests:
-      enabled: true # Enable quests menu
-      display-name: "&fQuests&8" # Display name for quests menu
-      display-item: BOOK # Display item for quests menu
-      slot: 7 # Slot for quests menu
-      slots: 45 # Number of slots for quests menu
-    statistics:
-      enabled: true # Enable statistics menu
-      display-name: "&fProfile" # Display name for statistics menu
-      display-item: PLAYER_HEAD # Display item for statistics menu
-      slot: 8 # Slot for statistics menu
-      slots: 45 # Number of slots for statistics menu
     confirm-purchase:
       enabled: true # Enable confirm purchase menu
       confirm: "&aConfirm (%cost% %minigame_currency%)" # Text for confirm button
@@ -257,6 +219,57 @@ settings:
       cancel-item: REDSTONE_BLOCK # Item for cancel button
       slot: -1 # Slot for confirm purchase menu, -1 = not in the hotbar menu
       slots: 27 # Number of slots for confirm purchase menu
+
+    slots:
+      arenas: 45 # Number of slots for arenas menu
+      in-game-arenas: 45 # Number of slots for ingame arenas menu
+      profile: 45 # Number of slots for profile menu
+      teams: 35 # Number of slots for teams menu
+      kits: 45 # Number of slots for kits menu
+      perks: 45 # Number of slots for perks menu
+      quests: 45 # Number of slots for quests menus
+
+    # Available menu - teams, kits, perks, custom-crafts, statistics
+  items:
+    lobby:
+      COMPASS:
+        enabled: true # Enable statistics menu
+        display-name: "&fArenas" # Display name for statistics menu
+        slot: 0 # Slot for statistics menu
+      CHEST:
+        enabled: true # Enable shop menu
+        display-name: "&fShop" # Display name for shop menu
+        slot: 3 # Slot for shop menu
+      PLAYER_HEAD:
+        enabled: true # Enable statistics menu
+        display-name: "&fProfile" # Display name for statistics menu
+        slot: 4 # Slot for statistics menu
+      ENDER_CHEST:
+        enabled: true # Enable cosmetics menu
+        display-name: "&fCosmetics" # Display name for cosmetics menu
+        slot: 5 # Slot for cosmetics menu
+
+    in-game:
+      WHITE_WOOL:
+        enabled: true # Enable teams menu
+        display-name: "&fTeams&8" # Display name for teams menu
+        slot: 0 # Slot for teams menu
+      IRON_PICKAXE:
+        enabled: true # Enable kits menu
+        display-name: "&fKits&8" # Display name for kits menu
+        slot: 1 # Slot for kits menu
+      BOW:
+        enabled: true # Enable perks menu
+        display-name: "&fPerks&8" # Display name for perks menu
+        slot: 2 # Slot for perks menu
+      BOOK:
+        enabled: true # Enable quests menu
+        display-name: "&fQuests&8" # Display name for quests menu
+        slot: 4 # Slot for quests menu
+      BED:
+        enabled: true # Enable quests menu
+        display-name: "&cLeave&8" # Display name for quests menu
+        slot: 8 # Slot for quests menu
 
   title:
     enabled: true # Enable title messages like victory or lose

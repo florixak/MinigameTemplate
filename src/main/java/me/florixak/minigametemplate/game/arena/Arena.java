@@ -2,7 +2,6 @@ package me.florixak.minigametemplate.game.arena;
 
 import eu.decentsoftware.holograms.api.utils.PAPI;
 import lombok.Getter;
-import lombok.Setter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
@@ -28,12 +27,11 @@ import java.util.stream.Collectors;
 @Getter
 public class Arena {
 
+	private static final GameManager gameManager = GameManager.getInstance();
 	private static final File pluginFile = new File(MinigameTemplate.getInstance().getDataFolder(), "arenas");
-	private final GameManager gameManager = GameManager.getInstance();
 
 	private final String id;
 	private final String name;
-	@Setter
 	private boolean enabled;
 	private int maxPlayers;
 	private final int minPlayers;
@@ -52,26 +50,28 @@ public class Arena {
 		this.name = name;
 		this.minPlayers = minPlayers;
 		this.enabled = false;
-		this.maxPlayers = minPlayers;
+		this.maxPlayers = 0;
 		this.centerLocation = centerLocation;
 		this.teams = new ArrayList<>();
 	}
 
-	public Arena(final String id, final String name, final boolean enabled, final Location centerLocation, final int minPlayers, final int maxPlayers) {
+	public Arena(final String id,
+				 final String name,
+				 final boolean enabled,
+				 final Location centerLocation,
+				 final int minPlayers,
+				 final int maxPlayers,
+				 final List<GameTeam> teams) {
 		this.id = id;
 		this.name = name;
 		this.enabled = enabled;
 		this.minPlayers = minPlayers;
 		this.maxPlayers = maxPlayers;
 		this.centerLocation = centerLocation;
-		this.teams = loadArenaTeams();
+		this.teams = teams;
 
-		this.arenaCheckTask.runTaskTimer(this.gameManager.getPlugin(), 0L, 20L);
-	}
-
-	public void setEnabled(final boolean enabled) {
-		this.enabled = enabled;
-		this.arenaCheckTask.runTaskTimer(this.gameManager.getPlugin(), 0L, 20L);
+		if (enabled)
+			this.arenaCheckTask.runTaskTimer(MinigameTemplate.getInstance(), 0L, 20L);
 	}
 
 	public void addTeam(final GameTeam team) {
@@ -79,16 +79,19 @@ public class Arena {
 		this.maxPlayers += team.getSize();
 	}
 
-	public String getNameWithoutColorAndSpaces() {
-		return TextUtils.removeColor(TextUtils.removeSpaces(this.name));
+	public void join(final GamePlayer gamePlayer) {
+		this.players.add(gamePlayer);
+		gameManager.getGameItemManager().giveItems(gamePlayer);
 	}
 
-	public void join(final GamePlayer player) {
-		this.players.add(player);
+	public void joinAsSpectator(final GamePlayer gamePlayer) {
+		gamePlayer.setSpectator();
+		this.players.add(gamePlayer);
 	}
 
-	public void leave(final GamePlayer player) {
-		this.players.remove(player);
+	public void leave(final GamePlayer gamePlayer) {
+		this.players.remove(gamePlayer);
+		gameManager.getPlayerManager().setPlayerAtLobby(gamePlayer);
 	}
 
 	public void leaveAll() {
@@ -160,6 +163,22 @@ public class Arena {
 
 	public boolean isEnding() {
 		return this.arenaState == ArenaState.ENDING;
+	}
+
+	public void setEnabled(final boolean enabled) {
+		if (this.enabled == enabled) return;
+		this.enabled = enabled;
+		final File file = new File(pluginFile, this.id + ".yml");
+		final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+		config.set(this.id + ".enabled", enabled);
+		saveToFile();
+
+		if (enabled)
+			this.arenaCheckTask.runTaskTimer(MinigameTemplate.getInstance(), 0L, 20L);
+		else {
+			this.arenaCheckTask.cancel();
+			this.startingTask.cancel();
+		}
 	}
 
 	public boolean isPlayerIn(final GamePlayer player) {
@@ -269,18 +288,36 @@ public class Arena {
 
 	public void saveToFile() {
 		final File file = new File(pluginFile, this.id + ".yml");
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (final IOException e) {
+				e.printStackTrace();
+			}
+		}
 		final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-		config.set(this.id + ".id", this.id);
 		config.set(this.id + ".name", this.name);
 		config.set(this.id + ".enabled", this.enabled);
 		config.set(this.id + ".min-players", this.minPlayers);
+		config.set(this.id + ".max-players", this.maxPlayers);
 		config.set(this.id + ".world", this.centerLocation.getWorld().getName());
 		config.set(this.id + ".center-location.x", this.centerLocation.getX());
 		config.set(this.id + ".center-location.y", this.centerLocation.getY());
 		config.set(this.id + ".center-location.z", this.centerLocation.getZ());
 		config.set(this.id + ".center-location.yaw", this.centerLocation.getYaw());
 		config.set(this.id + ".center-location.pitch", this.centerLocation.getPitch());
+
+		final ConfigurationSection teamsSection = config.createSection(this.id + ".teams");
+		for (final GameTeam team : this.teams) {
+			final String teamKey = team.getName();
+			teamsSection.set(teamKey + ".size", team.getSize());
+			teamsSection.set(teamKey + ".spawn-location.x", team.getSpawnLocation().getX());
+			teamsSection.set(teamKey + ".spawn-location.y", team.getSpawnLocation().getY());
+			teamsSection.set(teamKey + ".spawn-location.z", team.getSpawnLocation().getZ());
+			teamsSection.set(teamKey + ".spawn-location.yaw", team.getSpawnLocation().getYaw());
+			teamsSection.set(teamKey + ".spawn-location.pitch", team.getSpawnLocation().getPitch());
+		}
 
 		try {
 			config.save(file);
@@ -291,7 +328,7 @@ public class Arena {
 
 	@Override
 	public boolean equals(final Object obj) {
-		return obj instanceof Arena && ((Arena) obj).getId() == this.id;
+		return obj instanceof Arena && ((Arena) obj).getId().equals(this.id);
 	}
 
 	@Override
@@ -328,22 +365,21 @@ public class Arena {
 				(float) section.getDouble("center-location.yaw"),
 				(float) section.getDouble("center-location.pitch")
 		);
+		final List<GameTeam> teams = loadArenaTeams(id);
 
-		final Arena arena = new Arena(id, name, enabled, centerLocation, minPlayers, maxPlayers);
-
-
-		return new Arena(id, name, centerLocation, minPlayers);
+		final Arena arena = new Arena(id, name, enabled, centerLocation, minPlayers, maxPlayers, teams);
+		return arena;
 	}
 
-	private List<GameTeam> loadArenaTeams() {
-		final File file = new File(pluginFile, this.id + ".yml");
+	private static List<GameTeam> loadArenaTeams(final String id) {
+		final File file = new File(pluginFile, id + ".yml");
 		if (!file.exists()) return null;
 
 		final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 		final List<GameTeam> teams = new ArrayList<>();
 
-		final String world = config.getString(this.id + ".world", "world");
-		final ConfigurationSection section = config.getConfigurationSection(this.id + ".teams");
+		final String world = config.getString(id + ".world", "world");
+		final ConfigurationSection section = config.getConfigurationSection(id + ".teams");
 		if (section == null) {
 			Bukkit.getLogger().info("No teams found in the config.");
 			return teams;

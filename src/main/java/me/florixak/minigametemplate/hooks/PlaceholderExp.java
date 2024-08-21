@@ -2,6 +2,7 @@ package me.florixak.minigametemplate.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.florixak.minigametemplate.MinigameTemplate;
+import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
@@ -145,7 +146,8 @@ public class PlaceholderExp extends PlaceholderExpansion {
 				}
 
 				if (placeholder.equals("team")) {
-					return TextUtils.color(gamePlayer.getTeam().getDisplayName());
+					if (gamePlayer.hasTeam()) return TextUtils.color(gamePlayer.getTeam().getDisplayName());
+					else return Messages.TEAM_NONE.toString();
 				}
 
 				if (placeholder.equals("kit")) {
@@ -173,7 +175,7 @@ public class PlaceholderExp extends PlaceholderExpansion {
 		}
 
 		if (placeholder.equals("scoreboard_footer")) {
-			return Bukkit.getServer().getName();
+			return TextUtils.color(this.plugin.getGameManager().getConfigManager().getFile(ConfigType.SCOREBOARD).getConfig().getString("scoreboard.footer"));
 		}
 
 

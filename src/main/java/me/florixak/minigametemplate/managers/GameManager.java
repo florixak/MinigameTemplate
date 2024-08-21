@@ -39,7 +39,9 @@ public class GameManager {
 	private final PlayerManager playerManager;
 	private final PlayerDataManager playerDataManager;
 	private final PlayerQuestDataManager playerQuestDataManager;
+	private final WorldManager worldManager;
 	private final ArenaManager arenaManager;
+	private final GameItemManager gameItemManager;
 	private final KitsManager kitsManager;
 	private final PerksManager perksManager;
 	private final QuestManager questManager;
@@ -51,7 +53,6 @@ public class GameManager {
 	private final BorderManager borderManager;
 	private final SoundManager soundManager;
 	private final LobbyManager lobbyManager;
-	private final WorldManager worldManager;
 	private final DamageTrackerManager damageTrackerManager;
 
 	private MySQL mysql;
@@ -68,6 +69,9 @@ public class GameManager {
 		this.playerManager = new PlayerManager(this);
 		this.playerDataManager = new PlayerDataManager();
 		this.playerQuestDataManager = new PlayerQuestDataManager();
+		this.worldManager = new WorldManager();
+		this.lobbyManager = new LobbyManager(this);
+		this.gameItemManager = new GameItemManager(this);
 		this.kitsManager = new KitsManager(this);
 		this.perksManager = new PerksManager(this);
 		this.questManager = new QuestManager(this);
@@ -78,8 +82,6 @@ public class GameManager {
 		this.tasksManager = new TasksManager(this);
 		this.borderManager = new BorderManager();
 		this.soundManager = new SoundManager();
-		this.lobbyManager = new LobbyManager(this);
-		this.worldManager = new WorldManager();
 		this.damageTrackerManager = new DamageTrackerManager();
 		this.arenaManager = new ArenaManager(this);
 
@@ -162,6 +164,8 @@ public class GameManager {
 		this.questManager.onDisable();
 		this.leaderboardManager.onDisable();
 		this.damageTrackerManager.onDisable();
+		this.arenaManager.onDisable();
+		this.gameItemManager.onDisable();
 		disconnectDatabase();
 	}
 }

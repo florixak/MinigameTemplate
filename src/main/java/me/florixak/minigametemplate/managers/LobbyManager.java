@@ -1,16 +1,9 @@
 package me.florixak.minigametemplate.managers;
 
-import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.config.ConfigType;
-import me.florixak.minigametemplate.game.player.GamePlayer;
-import me.florixak.minigametemplate.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
 
 public class LobbyManager {
 
@@ -18,14 +11,10 @@ public class LobbyManager {
 	private final FileConfiguration config;
 	private final String lobbyName;
 
-	private final HashMap<Integer, ItemStack> lobbyMap = new HashMap<>();
-
 	public LobbyManager(final GameManager gameManager) {
 		this.gameManager = gameManager;
 		this.config = gameManager.getConfigManager().getFile(ConfigType.SETTINGS).getConfig();
-		this.lobbyName = this.config.getString("settings.lobby.waiting.world", "world");
-
-		loadLobbyItems();
+		this.lobbyName = this.config.getString("settings.lobby.world", "world");
 		checkLobbies();
 	}
 
@@ -68,31 +57,5 @@ public class LobbyManager {
 				(float) this.config.getDouble("settings.lobby.yaw"),
 				(float) this.config.getDouble("settings.lobby.pitch")
 		);
-	}
-
-	private void loadLobbyItems() {
-		final ConfigurationSection section = this.config.getConfigurationSection("settings.inventories");
-		if (section == null) return;
-		for (final String selector : section.getKeys(false)) {
-			if (selector.matches("next|next-item|previous|previous-item|back|back-item|close|close-item")) continue;
-			final String displayName = section.getString(selector + ".display-name");
-			final String material = section.getString(selector + ".display-item", "BARRIER").toUpperCase();
-			final ItemStack item = XMaterial.matchXMaterial(material).get().parseItem();
-			final int slot = section.getInt(selector + ".slot");
-			final ItemStack newItem = ItemUtils.createItem(item.getType(), displayName, 1, null);
-			if (slot < 0 || slot > 8) continue;
-			this.lobbyMap.put(slot, newItem);
-		}
-	}
-
-	public void giveLobbyItems(final GamePlayer gamePlayer) {
-		if (this.lobbyMap.isEmpty()) return;
-		for (final int slot : this.lobbyMap.keySet()) {
-			gamePlayer.getInventory().setItem(slot, this.lobbyMap.get(slot));
-		}
-	}
-
-	public void onDisable() {
-		this.lobbyMap.clear();
 	}
 }

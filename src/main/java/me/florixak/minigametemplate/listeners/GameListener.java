@@ -1,6 +1,5 @@
 package me.florixak.minigametemplate.listeners;
 
-import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.managers.GameManager;
@@ -124,14 +123,12 @@ public class GameListener implements Listener {
 		final GamePlayer gamePlayer = this.playerManager.getGamePlayer(player.getUniqueId());
 		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
-			if (arena.isWaiting() || arena.isStarting() || arena.isEnding()) {
+			if (!arena.isPlaying()) {
 				event.setCancelled(true);
-				gamePlayer.sendMessage(Messages.CANT_PLACE.toString());
 				return;
 			}
 		} else {
 			event.setCancelled(true);
-
 		}
 	}
 
@@ -141,9 +138,8 @@ public class GameListener implements Listener {
 		final GamePlayer gamePlayer = this.playerManager.getGamePlayer(player.getUniqueId());
 		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
-			if (arena.isWaiting() || arena.isStarting() || arena.isEnding()) {
+			if (!arena.isPlaying()) {
 				event.setCancelled(true);
-				gamePlayer.sendMessage(Messages.CANT_PLACE.toString());
 				return;
 			}
 		} else {
@@ -163,9 +159,8 @@ public class GameListener implements Listener {
 		final GamePlayer gamePlayer = this.playerManager.getGamePlayer(p.getUniqueId());
 		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
-			if (arena.isWaiting() || arena.isStarting() || arena.isEnding()) {
+			if (!arena.isPlaying()) {
 				event.setCancelled(true);
-				gamePlayer.sendMessage(Messages.CANT_PLACE.toString());
 				return;
 			} else {
 				p.setFoodLevel(20);

@@ -5,36 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2fa52811-7c51-417c-8700-0097a2a19a25" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/commands/JoinCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/commands/LeaveCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/tasks/BoardsCheckTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/arenas/arena1.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/arenas/arena2.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/GameItemManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/commands/MinigameCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/commands/MinigameCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/config/ConfigManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/config/ConfigManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/config/ConfigType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/config/ConfigType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/GameValues.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/GameValues.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/Arena.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/Arena.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/ArenaManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/ArenaManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/teams/GameTeam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/teams/GameTeam.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/TeamsMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/TeamsMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/WaitingArenasMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/WaitingArenasMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/player/GamePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/player/GamePlayer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/hooks/PlaceholderExp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/hooks/PlaceholderExp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/EntityListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/EntityListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/PlayerListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/PlayerListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/GameListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/GameListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/GameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/GameManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/KitsManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/KitsManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/LobbyManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/LobbyManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/TasksManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/TasksManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/boards/ScoreboardManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/boards/ScoreboardManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/boards/TabManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/boards/TablistManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/boards/TablistManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/boards/TablistManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/player/PlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/player/PlayerManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/utils/text/TextUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/utils/text/TextUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/arenas.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/messages.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/messages.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/scoreboard.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/scoreboard.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,18 +48,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Maven.MinigameTemplate [clean,install].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;I:/Programming/Java/Minecraft/UHC-Revamp&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.saveactions&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.MinigameTemplate [clean,install].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "I:/Programming/Java/Minecraft/UHC-Revamp",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "Errors"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="I:\Programming\Java\Minecraft\Templates\MinigameTemplate\src\main\java\me\florixak\minigametemplate\hooks" />
