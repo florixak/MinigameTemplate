@@ -3,7 +3,11 @@ package me.florixak.minigametemplate.listeners;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
-import me.florixak.minigametemplate.gui.menu.*;
+import me.florixak.minigametemplate.gui.menu.inGame.KitsMenu;
+import me.florixak.minigametemplate.gui.menu.inGame.PerksMenu;
+import me.florixak.minigametemplate.gui.menu.inGame.QuestsMenu;
+import me.florixak.minigametemplate.gui.menu.inGame.TeamsMenu;
+import me.florixak.minigametemplate.gui.menu.lobby.StatisticsMenu;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Material;
@@ -29,34 +33,35 @@ public class MenuItemsInteractListener implements Listener {
 		final GamePlayer uhcPlayer = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
 		final ItemStack item = p.getInventory().getItemInHand();
 
-		if (!this.gameManager.getArenaManager().isPlayerInArena(uhcPlayer)) return;
-		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(uhcPlayer);
+		if (this.gameManager.getArenaManager().isPlayerInArena(uhcPlayer)) {
+			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(uhcPlayer);
 
-		if (arena.isWaiting() || arena.isStarting()) {
-			if (item == null || item.getItemMeta() == null || item.getType() == Material.AIR || item.getItemMeta().getDisplayName() == null)
-				return;
+			if (arena.isWaiting() || arena.isStarting()) {
+				if (item == null || item.getItemMeta() == null || item.getType() == Material.AIR || item.getItemMeta().getDisplayName() == null)
+					return;
 
-			if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+				if (event.getAction() == Action.RIGHT_CLICK_AIR) {
 
-				if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
-						TextUtils.color(GameValues.INVENTORY.TEAMS_TITLE))) {
-					new TeamsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
-				}
-				if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
-						TextUtils.color(GameValues.INVENTORY.KITS_TITLE))) {
-					new KitsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
-				}
-				if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
-						TextUtils.color(GameValues.INVENTORY.PERKS_TITLE))) {
-					new PerksMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
-				}
-				if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
-						TextUtils.color(GameValues.INVENTORY.STATS_TITLE))) {
-					new StatisticsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
-				}
-				if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
-						TextUtils.color(GameValues.INVENTORY.QUESTS_TITLE))) {
-					new QuestsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
+					if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
+							TextUtils.color(GameValues.INVENTORY.TEAMS_TITLE))) {
+						new TeamsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
+					}
+					if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
+							TextUtils.color(GameValues.INVENTORY.KITS_TITLE))) {
+						new KitsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
+					}
+					if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
+							TextUtils.color(GameValues.INVENTORY.PERKS_TITLE))) {
+						new PerksMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
+					}
+					if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
+							TextUtils.color(GameValues.INVENTORY.STATS_TITLE))) {
+						new StatisticsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
+					}
+					if (item.getItemMeta().getDisplayName().equalsIgnoreCase(
+							TextUtils.color(GameValues.INVENTORY.QUESTS_TITLE))) {
+						new QuestsMenu(this.gameManager.getMenuManager().getMenuUtils(uhcPlayer)).open();
+					}
 				}
 			}
 		}

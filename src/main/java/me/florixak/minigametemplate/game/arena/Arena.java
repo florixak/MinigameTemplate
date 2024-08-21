@@ -108,7 +108,7 @@ public class Arena {
 
 	public void start() {
 		setArenaState(ArenaState.STARTING);
-		this.startingTask.runTaskTimer(this.gameManager.getPlugin(), 0, 20);
+		this.startingTask.runTaskTimer(MinigameTemplate.getInstance(), 0, 20);
 	}
 
 	public void stopStarting() {
@@ -135,6 +135,7 @@ public class Arena {
 				Utils.broadcast(PAPI.setPlaceholders(null, Messages.GAME_STARTING.toString()));
 				break;
 			case INGAME:
+				preparePlayers();
 				Utils.broadcast(PAPI.setPlaceholders(null, Messages.GAME_STARTED.toString()));
 				break;
 			case ENDING:
@@ -192,6 +193,13 @@ public class Arena {
 				.collect(Collectors.toSet());
 	}
 
+	private void preparePlayers() {
+		teleportTeams();
+		this.players.forEach(gamePlayer -> {
+			gameManager.getPlayerManager().setPlayerForGame(gamePlayer);
+		});
+	}
+
 	public Set<GamePlayer> getOnlinePlayers() {
 		return this.players.stream()
 				.filter(GamePlayer::isOnline)
@@ -217,6 +225,10 @@ public class Arena {
 
 	public Set<GameTeam> getAliveTeams() {
 		return this.teams.stream().filter(GameTeam::isAlive).collect(Collectors.toSet());
+	}
+
+	public void teleportTeams() {
+		this.teams.forEach(team -> team.getMembers().forEach(gamePlayer -> gamePlayer.teleport(team.getSpawnLocation())));
 	}
 
 	public void joinRandomTeam(final GamePlayer gamePlayer) {

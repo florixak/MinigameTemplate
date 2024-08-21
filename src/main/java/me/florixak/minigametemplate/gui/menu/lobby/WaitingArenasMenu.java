@@ -1,4 +1,4 @@
-package me.florixak.minigametemplate.gui.menu;
+package me.florixak.minigametemplate.gui.menu.lobby;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.config.Messages;
@@ -12,23 +12,23 @@ import me.florixak.minigametemplate.utils.ItemUtils;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class InGameArenasMenu extends PaginatedMenu {
+public class WaitingArenasMenu extends PaginatedMenu {
 
 	private final GameManager gameManager = GameManager.getInstance();
-	private final List<Arena> arenaList = this.gameManager.getArenaManager().getInGameArenas();
+	private final List<Arena> arenaList = this.gameManager.getArenaManager().getNotInGameArenas();
 	private final GamePlayer gamePlayer;
 
-	public InGameArenasMenu(final MenuUtils menuUtils) {
-		super(menuUtils, GameValues.INVENTORY.KITS_TITLE);
+	public WaitingArenasMenu(final MenuUtils menuUtils) {
+		super(menuUtils, "Select an Arena");
 		this.gamePlayer = menuUtils.getGamePlayer();
+
 	}
 
 	@Override
 	public int getSlots() {
-		return GameValues.INVENTORY.KITS_SLOTS;
+		return 45;
 	}
 
 	@Override
@@ -43,10 +43,6 @@ public class InGameArenasMenu extends PaginatedMenu {
 		} else if (event.getCurrentItem().getType().equals(XMaterial.DARK_OAK_BUTTON.parseMaterial())) {
 			handlePaging(event, this.arenaList);
 		} else {
-			if (!this.gameManager.getArenaManager().isPlayerInArena(this.gamePlayer)) {
-				this.gamePlayer.sendMessage(Messages.CANT_USE_NOW.toString());
-				return;
-			}
 			handleArenaSelection(event);
 		}
 
@@ -59,19 +55,7 @@ public class InGameArenasMenu extends PaginatedMenu {
 
 		for (int i = getStartIndex(); i < getEndIndex(); i++) {
 			final Arena arena = this.arenaList.get(i);
-			final List<String> lore = new ArrayList<>();
-
-			if (this.gameManager.getArenaManager().isPlayerInArena(this.gamePlayer)
-					&& this.gameManager.getArenaManager().getPlayerArena(this.gamePlayer).equals(arena)) {
-				lore.add(" ");
-				lore.add("You are here!");
-			} else {
-				lore.add(" ");
-				lore.add("Click to spectate!");
-			}
-
-			arenaDisplayItem = ItemUtils.createItem(XMaterial.MAP.parseMaterial(), "&c" + arena.getName() + " (In Game)", 1, lore);
-			ItemUtils.addGlow(arenaDisplayItem);
+			arenaDisplayItem = ItemUtils.createItem(XMaterial.MAP.parseMaterial(), arena.getName(), 1, arena.getLore());
 
 			this.inventory.setItem(i - getStartIndex(), arenaDisplayItem);
 		}
@@ -79,12 +63,24 @@ public class InGameArenasMenu extends PaginatedMenu {
 
 	@Override
 	public void open() {
+		if (!GameValues.KITS.ENABLED) {
+			this.gamePlayer.sendMessage(Messages.KITS_DISABLED.toString());
+			return;
+		}
 		super.open();
 	}
 
 	private void handleArenaSelection(final InventoryClickEvent event) {
 		final Arena arena = this.arenaList.get(event.getSlot());
 		close();
+		this.gamePlayer.sendMessage("Clicking on " + arena.getName());
 
+		if (this.gameManager.getArenaManager().isPlayerInArena(this.gamePlayer)) {
+			final Arena currentArena = this.gameManager.getArenaManager().getPlayerArena(this.gamePlayer);
+			currentArena.leave(this.gamePlayer);
+			currentArena.broadcast(Messages.ARENA_LEAVE.toString().replace("%player%", this.gamePlayer.getPlayer().getName()));
+		}
+		arena.join(this.gamePlayer);
+		arena.broadcast(Messages.ARENA_JOIN.toString().replace("%player%", this.gamePlayer.getPlayer().getName()));
 	}
 }

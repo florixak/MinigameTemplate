@@ -1,4 +1,4 @@
-package me.florixak.minigametemplate.gui.menu;
+package me.florixak.minigametemplate.gui.menu.shop;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.config.Messages;

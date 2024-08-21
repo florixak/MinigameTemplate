@@ -169,33 +169,7 @@ public class GameValues {
 	}
 
 	public static class InventoryConfig {
-		public final String TEAMS_TITLE = getConfigString("settings.inventories.teams.display-name", "Teams");
-		public final String KITS_TITLE = getConfigString("settings.inventories.kits.display-name", "Kits");
-		public final String PERKS_TITLE = getConfigString("settings.inventories.perks.display-name", "Perks");
-		public final String STATS_TITLE = getConfigString("settings.inventories.statistics.display-name", "Statistics");
-		public final String QUESTS_TITLE = getConfigString("settings.inventories.quests.display-name", "Quests");
 
-		public final boolean CONFIRM_PURCHASE_ENABLED = getConfigBoolean("settings.inventories.confirm-purchase.enabled", true);
-		public final String CONFIRM_PURCHASE_NAME = getConfigString("settings.inventories.confirm-purchase.confirm", "&aConfirm");
-		public final String CANCEL_PURCHASE_NAME = getConfigString("settings.inventories.confirm-purchase.cancel", "&cCancel");
-		public final String CONFIRM_PURCHASE_ITEM = getConfigString("settings.inventories.confirm-purchase.confirm-item", "BARRIER");
-		public final String CANCEL_PURCHASE_ITEM = getConfigString("settings.inventories.confirm-purchase.cancel-item", "BARRIER");
-
-		public final String BACK_TITLE = getConfigString("settings.inventories.back", "&7Back");
-		public final String BACK_ITEM = getConfigString("settings.inventories.back-item", "DARK_OAK_BUTTON");
-		public final String NEXT_TITLE = getConfigString("settings.inventories.next", "&7Next");
-		public final String NEXT_ITEM = getConfigString("settings.inventories.next-item", "DARK_OAK_BUTTON");
-		public final String PREVIOUS_TITLE = getConfigString("settings.inventories.previous", "&7Previous");
-		public final String PREVIOUS_ITEM = getConfigString("settings.inventories.previous-item", "DARK_OAK_BUTTON");
-		public final String CLOSE_TITLE = getConfigString("settings.inventories.close", "&cClose");
-		public final String CLOSE_ITEM = getConfigString("settings.inventories.close-item", "BARRIER");
-
-		public final int KITS_SLOTS = getConfigInt("settings.inventories.kits.slots", 45);
-		public final int PERKS_SLOTS = getConfigInt("settings.inventories.perks.slots", 45);
-		public final int STATS_SLOTS = getConfigInt("settings.inventories.statistics.slots", 45);
-		public final int TEAMS_SLOTS = getConfigInt("settings.inventories.teams.slots", 45);
-		public final int CONFIRM_PURCHASE_SLOTS = getConfigInt("settings.inventories.confirm-purchase.slots", 9);
-		public final int QUESTS_SLOTS = getConfigInt("settings.inventories.quests.slots", 45);
 	}
 
 	public static class ScoreboardConfig {

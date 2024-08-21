@@ -5,21 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2fa52811-7c51-417c-8700-0097a2a19a25" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/GameItemManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/shop/KitsShopMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/shop/PerksShopMenu.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/shop/ShopMenu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/commands/MinigameCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/commands/MinigameCommand.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/GameValues.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/GameValues.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/Arena.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/Arena.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/ArenaManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/ArenaManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/player/GamePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/player/GamePlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/hooks/PlaceholderExp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/hooks/PlaceholderExp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/GameListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/GameListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/GameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/GameManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/LobbyManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/LobbyManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/boards/TablistManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/boards/TablistManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/player/PlayerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/managers/player/PlayerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/player/PlayerData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/player/PlayerData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/ConfirmPurchaseMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/shop/ConfirmPurchaseMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/InGameArenasMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/lobby/InGameArenasMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/KitsMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/inGame/KitsMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/PerksMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/inGame/PerksMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/QuestsMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/inGame/QuestsMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/StatisticsMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/lobby/StatisticsMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/TeamsMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/inGame/TeamsMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/WaitingArenasMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/lobby/WaitingArenasMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/MenuItemsInteractListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/MenuItemsInteractListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/scoreboard.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/scoreboard.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +61,7 @@
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "Errors"
+    "settings.editor.selected.configurable": "settings.saveactions"
   }
 }]]></component>
   <component name="RecentsManager">

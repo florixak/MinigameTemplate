@@ -1,4 +1,4 @@
-package me.florixak.minigametemplate.gui.menu;
+package me.florixak.minigametemplate.gui.menu.inGame;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.config.Messages;
@@ -8,6 +8,7 @@ import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.gui.PaginatedMenu;
+import me.florixak.minigametemplate.gui.menu.shop.ConfirmPurchaseMenu;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.ItemUtils;
 import org.bukkit.event.inventory.InventoryClickEvent;

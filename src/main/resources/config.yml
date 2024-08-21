@@ -230,7 +230,7 @@ settings:
       quests: 45 # Number of slots for quests menus
 
     # Available menu - teams, kits, perks, custom-crafts, statistics
-  items:
+  game-items:
     lobby:
       COMPASS:
         enabled: true # Enable statistics menu
