@@ -50,6 +50,22 @@ public class GameItemManager {
 		loadItems(section, this.inGameItemsMap);
 	}
 
+	public ItemStack getLobbyItem(final int slot) {
+		return this.lobbyItemsMap.get(slot);
+	}
+
+	public void executeLobbyItem(final int slot) {
+		final ItemStack item = getLobbyItem(slot);
+		if (item == null) return;
+		if (item.getType() == XMaterial.AIR.parseMaterial()) return;
+
+
+	}
+
+	public ItemStack getInGameItem(final int slot) {
+		return this.inGameItemsMap.get(slot);
+	}
+
 	private void loadItems(final ConfigurationSection section, final HashMap<Integer, ItemStack> map) {
 		if (section == null) return;
 		for (final String selector : section.getKeys(false)) {

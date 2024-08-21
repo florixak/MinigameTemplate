@@ -12,12 +12,12 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
-public class GameListener implements Listener {
+public class ArenaListener implements Listener {
 
 	private final GameManager gameManager;
 	private final PlayerManager playerManager;
 
-	public GameListener(final GameManager gameManager) {
+	public ArenaListener(final GameManager gameManager) {
 		this.gameManager = gameManager;
 		this.playerManager = gameManager.getPlayerManager();
 	}

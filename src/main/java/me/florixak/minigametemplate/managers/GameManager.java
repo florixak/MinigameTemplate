@@ -113,7 +113,7 @@ public class GameManager {
 		final List<Listener> listeners = new ArrayList<>();
 
 		listeners.add(new PlayerListener(this));
-		listeners.add(new GameListener(this));
+		listeners.add(new ArenaListener(this));
 		listeners.add(new InventoryClickListener(this));
 		listeners.add(new MenuItemsInteractListener(this));
 		listeners.add(new EntityListener(this));
