@@ -80,9 +80,9 @@ public class PlayerManager {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
 			arena.leave(gamePlayer);
 		}
-		this.gameManager.getScoreboardManager().removeScoreboard(gamePlayer.getPlayer());
 		this.gameManager.getPlayerQuestDataManager().removePlayerData(gamePlayer);
 		this.gameManager.getPlayerDataManager().removePlayerData(gamePlayer);
+		this.gameManager.getScoreboardManager().removeScoreboard(gamePlayer.getPlayer());
 		getPlayers().remove(gamePlayer);
 	}
 

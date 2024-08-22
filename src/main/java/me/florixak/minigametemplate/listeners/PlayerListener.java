@@ -41,7 +41,7 @@ public class PlayerListener implements Listener {
 		this.gameManager.getScoreboardManager().setScoreboard(p);
 		this.gameManager.getPlayerManager().setPlayerAtLobby(gamePlayer);
 
-		Utils.broadcast(PAPI.setPlaceholders(p, Messages.GAME_JOIN.toString()));
+		Utils.broadcast(PAPI.setPlaceholders(p, Messages.LOBBY_JOIN.toString()));
 	}
 
 	@EventHandler

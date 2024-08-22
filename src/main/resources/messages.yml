@@ -39,7 +39,7 @@ Messages:
     uhc-level:
       level-up: "&a[LEVEL UP] &f%previous-uhc-level% → %new-uhc-level%"
 
-  game:
+  arena:
     solo: "SOLO"
     teams: "TEAMS"
 
@@ -64,44 +64,53 @@ Messages:
     already-in-team: "&c[!] &fYou are already in this team!"
     not-in-team: "&c[!] &fYou are not in any team!"
     defeated: "&6[!] &cTeam %minigame_team% &cwas defeated!"
-    none: "None"
-    solo: "Solo"
+    scoreboard:
+      none: "None"
     no-friendly-fire: "&c[!] &fFriendly fire is disabled!"
     no-free-team: "&c[!] &fAll teams are full! So you have become spectator!"
 
   kits:
     selected: "&a[!] &fKit %minigame_kit% &fwas selected!"
     disabled: "&c[!] &fKits are currently disabled!"
-    cost: "&fCost: &e%cost% %minigame_currency%"
-    inventory-selected: "&aSelected"
-    inventory-click-to-select: "&eClick to select"
-    scoreboard-disabled: "Disabled"
-    selected-none: "None"
-    money-deduct-info: "&e[!] &fCoins for kit will be deducted after game starts!"
-    money-deduct: "&e[!] &f%previous_money% - %kit_cost% = %money% %minigame_currency% (kit %minigame_kit%&f)"
-
-  statistics:
-    reset-all: "&a[!] &fAll statistics have been reset!"
-    reset: "&a[!] &fStatistics for %minigame_player% have been reset!"
+    scoreboard:
+      selected-none: "None"
+      disabled: "Disabled"
+    selection:
+      click-to-select: "&eClick to select"
+      selected: "&aSelected"
+    shop:
+      cost: "&fCost: &e%cost% %minigame_currency%"
+      click-to-buy: "&eClick to buy"
+      money-deduct: "&e[!] &f%previous_money% - %kit-cost% = %money% %minigame_currency% (Kit %minigame_kit%&f)"
+      money-deduct-after-start: "&e[!] &fMoney for kit will be deducted after game starts!"
+    received: "&a[!] &fYou have received %minigame_kit%!"
 
   perks:
     selected: "&a[!] &fPerk %minigame_perk% &fwas selected!"
     disabled: "&c[!] &fPerks are currently disabled!"
-    cost: "&fCost: &e%cost% %minigame_currency%"
-    inventory-selected: "&aSelected"
-    inventory-click-to-select: "&eClick to select"
-    scoreboard-disabled: "Disabled"
-    selected-none: "None"
-    money-deduct-info: "&e[!] &fMoney for kit will be deducted after game starts!"
-    money-deduct: "&e[!] &f%previous_money% - %perk-cost% = %money% %minigame_currency% (Perk %minigame_perk%&f)"
+    scoreboard:
+      selected-none: "None"
+      disabled: "Disabled"
+    selection:
+      click-to-select: "&eClick to select"
+      selected: "&aSelected"
+    shop:
+      cost: "&fCost: &e%cost% %minigame_currency%"
+      click-to-buy: "&eClick to buy"
+      money-deduct: "&e[!] &f%previous_money% - %perk-cost% = %money% %minigame_currency% (Perk %minigame_perk%&f)"
+      money-deduct-after-start: "&e[!] &fMoney for kit will be deducted after game starts!"
     received:
       effect: "&a[!] &fObtained %effect% %effect_level% for %effect_duration% seconds!"
       item: "&a[!] &fYou got lucky! You have received %item%!"
       bonus: "&a[!] &f+%bonus_coins% %currency%, +%bonus_exp% UHC exp and +%bonus_exp% exp!"
-
+  
   quests:
     completed: "&a[!] &fYou have completed the quest &f%quest%&f!"
     reward: "&a[!] &fYou have received %reward% %minigame_currency% and %exp% exp!"
+
+  statistics:
+    reset-all: "&a[!] &fAll statistics have been reset!"
+    reset: "&a[!] &fStatistics for %minigame_player% have been reset!"
 
   revive:
     you-revived: "&a[!] &fYou have been revived!"

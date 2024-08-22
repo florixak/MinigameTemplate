@@ -9,6 +9,7 @@ import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.ItemUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class StatisticsMenu extends Menu {
@@ -22,12 +23,12 @@ public class StatisticsMenu extends Menu {
 
 	@Override
 	public String getMenuName() {
-		return TextUtils.color(GameValues.INVENTORY.STATS_TITLE);
+		return TextUtils.color("Statistics");
 	}
 
 	@Override
 	public int getSlots() {
-		return GameValues.INVENTORY.STATS_SLOTS;
+		return 45;
 	}
 
 	@Override
@@ -54,7 +55,7 @@ public class StatisticsMenu extends Menu {
 		getInventory().setItem(GameValues.STATISTICS.TOP_GAMES_PLAYED_SLOT, LeaderboardType.GAMES_PLAYED.getTopStatsDisplayItem());
 
 		this.inventory.setItem(getSlots() - 5, ItemUtils.createItem(
-				XMaterial.matchXMaterial(GameValues.INVENTORY.CLOSE_ITEM).get().parseMaterial(),
+				XMaterial.matchXMaterial(Material.BARRIER).parseMaterial(),
 				TextUtils.color(GameValues.INVENTORY.CLOSE_TITLE),
 				1,
 				null));

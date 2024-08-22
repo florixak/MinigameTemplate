@@ -54,11 +54,11 @@ public class GameItemManager {
 		return this.lobbyItemsMap.get(slot);
 	}
 
-	public void executeLobbyItem(final int slot) {
-		final ItemStack item = getLobbyItem(slot);
-		if (item == null) return;
-		if (item.getType() == XMaterial.AIR.parseMaterial()) return;
+	public void executeLobbyItem(final GamePlayer gamePlayer) {
+		final ItemStack clickedItem = gamePlayer.getPlayer().getInventory().getItemInHand();
+		if (clickedItem.equals(getLobbyItem(gamePlayer.getInventory().getHeldItemSlot()))) {
 
+		}
 
 	}
 

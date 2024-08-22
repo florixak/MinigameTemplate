@@ -2,7 +2,6 @@ package me.florixak.minigametemplate.gui.menu.inGame;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.config.Messages;
-import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.game.quests.Quest;
 import me.florixak.minigametemplate.gui.MenuUtils;
@@ -29,7 +28,7 @@ public class QuestsMenu extends PaginatedMenu {
 
 	@Override
 	public int getSlots() {
-		return GameValues.INVENTORY.QUESTS_SLOTS;
+		return 45;
 	}
 
 	@Override

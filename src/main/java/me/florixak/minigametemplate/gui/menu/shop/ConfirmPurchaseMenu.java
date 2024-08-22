@@ -2,7 +2,6 @@ package me.florixak.minigametemplate.gui.menu.shop;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.config.Messages;
-import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.kits.Kit;
 import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.game.player.GamePlayer;
@@ -11,6 +10,7 @@ import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.ItemUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class ConfirmPurchaseMenu extends Menu {
@@ -34,7 +34,7 @@ public class ConfirmPurchaseMenu extends Menu {
 
 	@Override
 	public int getSlots() {
-		return GameValues.INVENTORY.CONFIRM_PURCHASE_SLOTS;
+		return 35;
 	}
 
 	@Override
@@ -63,16 +63,17 @@ public class ConfirmPurchaseMenu extends Menu {
 		this.moneyToWithdraw = this.kitToBuy != null ? this.kitToBuy.getCost() : this.perkToBuy.getCost();
 
 		this.inventory.setItem(11, ItemUtils.createItem(
-				XMaterial.matchXMaterial(GameValues.INVENTORY.CONFIRM_PURCHASE_ITEM).get().parseMaterial(),
-				TextUtils.color(GameValues.INVENTORY.CONFIRM_PURCHASE_NAME
+				XMaterial.matchXMaterial(Material.EMERALD).parseMaterial(),
+				TextUtils.color("Confirm purchase of &6%cost% %currency%"
 						.replace("%cost%", String.valueOf(this.moneyToWithdraw))
 						.replace("%currency%", Messages.CURRENCY.toString())),
 				1,
 				null)
 		);
+
 		this.inventory.setItem(15, ItemUtils.createItem(
-				XMaterial.matchXMaterial(GameValues.INVENTORY.CANCEL_PURCHASE_ITEM).get().parseMaterial(),
-				TextUtils.color(GameValues.INVENTORY.CANCEL_PURCHASE_NAME),
+				XMaterial.matchXMaterial(Material.REDSTONE).parseMaterial(),
+				TextUtils.color("Cancel purchase of &6%cost% %currency%"),
 				1,
 				null)
 		);

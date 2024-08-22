@@ -39,31 +39,36 @@ public class GameValues {
 
 
 	public static final int ERROR_INT_VALUE = -1;
+	public static final double ERROR_DOUBLE_VALUE = -1.0;
+	public static final String ERROR_ITEM = "BARRIER";
 
 	public static final String WORLD_NAME = "world";
 
-	public static final GameSettings GAME = new GameSettings();
+	public static final ArenaConfig ARENA = new ArenaConfig();
 	public static final ChatConfig CHAT = new ChatConfig();
 	public static final BorderConfig BORDER = new BorderConfig();
+	public static final TeamConfig TEAMS = new TeamConfig();
 	public static final KitConfig KITS = new KitConfig();
 	public static final PerkConfig PERKS = new PerkConfig();
+	public static final QuestConfig QUESTS = new QuestConfig();
 	public static final StatisticsConfig STATISTICS = new StatisticsConfig();
 	public static final RewardConfig REWARDS = new RewardConfig();
-	public static final InventoryConfig INVENTORY = new InventoryConfig();
-	public static final TablistConfig TABLIST = new TablistConfig();
 	public static final ActivityRewardConfig ACTIVITY_REWARDS = new ActivityRewardConfig();
-	public static final AddonConfig ADDONS = new AddonConfig();
+	public static final InventoryConfig INVENTORY = new InventoryConfig();
 	public static final ScoreboardConfig SCOREBOARD = new ScoreboardConfig();
+	public static final TablistConfig TABLIST = new TablistConfig();
+	public static final AddonConfig ADDONS = new AddonConfig();
 	public static final TitleConfig TITLE = new TitleConfig();
 	public static final BungeeCordConfig BUNGEECORD = new BungeeCordConfig();
-	public static final QuestConfig QUESTS = new QuestConfig();
 	public static final Sounds SOUNDS = new Sounds();
 	public static final Database DATABASE = new Database();
+	public static final Countdowns COUNTDOWNS = new Countdowns();
+
 
 	private GameValues() {
 	}
 
-	public static class GameSettings {
+	public static class ArenaConfig {
 		public final boolean EXPLOSIONS_DISABLED = getConfigBoolean("settings.game.no-explosions", true);
 		public final boolean PROJECTILE_HIT_HP_ENABLED = getConfigBoolean("settings.game.projectile-hit-hp", false);
 		public final boolean SPAWN_MONSTERS = getConfigBoolean("settings.game.spawn-monsters", false);
@@ -75,11 +80,36 @@ public class GameValues {
 	public static class KitConfig {
 		public final boolean ENABLED = getConfigBoolean("settings.kits.enabled", true);
 		public final boolean BOUGHT_FOREVER = getConfigBoolean("settings.kits.bought-forever", true);
+
+		public final String KITS_SELECTION_TITLE = getConfigString("settings.kits.select.title", "Select Kit");
+		public final int KITS_SELECTION_SLOTS = getConfigInt("settings.kits.select.slots", 27);
+		public final String KITS_SELECTION_ITEM = getConfigString("settings.kits.select.item", ERROR_ITEM);
+
+		public final String KIT_SHOP_TITLE = getConfigString("settings.kits.shop.title", "Kits Shop");
+		public final int KIT_SHOP_SLOTS = getConfigInt("settings.kits.kits.shop.slots", 27);
+		public final String KIT_SHOP_ITEM = getConfigString("settings.kits.shop.item", ERROR_ITEM);
 	}
 
 	public static class PerkConfig {
 		public final boolean ENABLED = getConfigBoolean("settings.perks.enabled", true);
 		public final boolean BOUGHT_FOREVER = getConfigBoolean("settings.perks.bought-forever", true);
+
+		public final String PERKS_SELECTION_TITLE = getConfigString("settings.perks.select.title", "Select Perk");
+		public final int PERKS_SELECTION_SLOTS = getConfigInt("settings.perks.select.slots", 27);
+		public final String PERKS_SELECTION_ITEM = getConfigString("settings.perks.select.item", ERROR_ITEM);
+
+		public final String PERKS_SHOP_TITLE = getConfigString("settings.perks.shop.title", "Perks Shop");
+		public final int PERKS_SHOP_SLOTS = getConfigInt("settings.perks.shop.slots", 27);
+		public final String PERKS_SHOP_ITEM = getConfigString("settings.perks.shop.item", ERROR_ITEM);
+	}
+
+	public static class TeamConfig {
+		public final boolean ENABLED = getConfigBoolean("settings.teams.enabled", true);
+		public final boolean FRIENDLY_FIRE = getConfigBoolean("settings.teams.friendly-fire", true);
+
+		public final String TEAM_SELECTION_TITLE = getConfigString("settings.teams.select.title", "Select Team");
+		public final int TEAM_SELECTION_SLOTS = getConfigInt("settings.teams.select.slots", 27);
+		public final String TEAM_SELECTION_ITEM = getConfigString("settings.teams.select.item", ERROR_ITEM);
 	}
 
 	public static class Countdowns {
@@ -169,6 +199,30 @@ public class GameValues {
 	}
 
 	public static class InventoryConfig {
+
+		// Titles
+		public final String CLOSE_TITLE = getConfigString("settings.inventory.close-title", "Close");
+		public final String NEXT_TITLE = getConfigString("settings.inventory.next-title", "Next");
+		public final String PREVIOUS_TITLE = getConfigString("settings.inventory.previous-title", "Previous");
+
+		public final int ARENA_SLOTS = getConfigInt("settings.inventory.arena-slots", 27);
+		public final int STATISTICS_SLOTS = getConfigInt("settings.inventory.statistics-slots", 27);
+		public final int SHOP_SLOTS = getConfigInt("settings.inventory.shop-slots", 27);
+		public final int QUESTS_SLOTS = getConfigInt("settings.inventory.quests-slots", 27);
+
+		// Items
+		public final String CLOSE_ITEM = getConfigString("settings.inventory.close-item", "BARRIER");
+		public final String NEXT_ITEM = getConfigString("settings.inventory.next-item", "DARK_OAK_BUTTON");
+		public final String PREVIOUS_ITEM = getConfigString("settings.inventory.previous-item", "DARK_OAK_BUTTON");
+
+		public final String ARENA_ITEM = getConfigString("settings.inventory.arena-item", "DIAMOND_SWORD");
+		public final String STATISTICS_ITEM = getConfigString("settings.inventory.statistics-item", "BOOK");
+		public final String SHOP_ITEM = getConfigString("settings.inventory.shop-item", "EMERALD");
+		public final String QUESTS_ITEM = getConfigString("settings.inventory.quests-item", "BOOKSHELF");
+
+		// Inventory Enabled
+		public final boolean CONFIRM_PURCHASE_ENABLED = getConfigBoolean("settings.inventory.confirm-purchase.enabled", true);
+
 
 	}
 

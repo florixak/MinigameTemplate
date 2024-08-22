@@ -5,6 +5,7 @@ import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.utils.ItemUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.List;
@@ -58,16 +59,16 @@ public abstract class PaginatedMenu extends Menu {
 	public void addMenuBorder() {
 		if (this.currentPage > 0)
 			this.inventory.setItem(getSlots() - 6,
-					ItemUtils.createItem(XMaterial.matchXMaterial(GameValues.INVENTORY.PREVIOUS_ITEM).get().parseMaterial(),
+					ItemUtils.createItem(XMaterial.matchXMaterial(Material.DARK_OAK_BUTTON).parseMaterial(),
 							TextUtils.color(GameValues.INVENTORY.PREVIOUS_TITLE), 1, null));
 
 		this.inventory.setItem(getSlots() - 5,
-				ItemUtils.createItem(XMaterial.matchXMaterial(GameValues.INVENTORY.CLOSE_ITEM).get().parseMaterial(),
+				ItemUtils.createItem(XMaterial.matchXMaterial(Material.BARRIER).parseMaterial(),
 						TextUtils.color(GameValues.INVENTORY.CLOSE_TITLE), 1, null));
 
 		if (this.currentPage < getMaxPages() - 1)
 			this.inventory.setItem(getSlots() - 4,
-					ItemUtils.createItem(XMaterial.matchXMaterial(GameValues.INVENTORY.NEXT_ITEM).get().parseMaterial(),
+					ItemUtils.createItem(XMaterial.matchXMaterial(Material.DARK_OAK_BUTTON).parseMaterial(),
 							TextUtils.color(GameValues.INVENTORY.NEXT_TITLE), 1, null));
 	}
 
@@ -77,9 +78,9 @@ public abstract class PaginatedMenu extends Menu {
 
 	public void handlePaging(final InventoryClickEvent event, final List<?> recipesList) {
 		if (event.getCurrentItem().getItemMeta() == null) return;
-		if (event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(TextUtils.color(GameValues.INVENTORY.PREVIOUS_TITLE))) {
+		if (event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(TextUtils.color("Previous"))) {
 			handlePrevious();
-		} else if (event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(TextUtils.color(GameValues.INVENTORY.NEXT_TITLE))) {
+		} else if (event.getCurrentItem().getItemMeta().getDisplayName().equalsIgnoreCase(TextUtils.color("Next"))) {
 			handleNext(recipesList);
 		}
 	}

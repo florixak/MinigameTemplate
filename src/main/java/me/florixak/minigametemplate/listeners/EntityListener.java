@@ -109,7 +109,7 @@ public class EntityListener implements Listener {
 				return;
 			}
 		} else if (event.getEntity() instanceof Monster || event.getEntity() instanceof Slime) {
-			if (GameValues.GAME.MONSTERS_ATTACK) return;
+			if (GameValues.ARENA.MONSTERS_ATTACK) return;
 			event.setCancelled(true);
 		}
 	}
@@ -121,7 +121,7 @@ public class EntityListener implements Listener {
 //			return;
 //		}
 		if (event.getEntity() instanceof Monster || event.getEntity() instanceof Slime) {
-			if (GameValues.GAME.SPAWN_MONSTERS) return;
+			if (GameValues.ARENA.SPAWN_MONSTERS) return;
 			if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL) {
 				event.setCancelled(true);
 			}
@@ -134,6 +134,6 @@ public class EntityListener implements Listener {
 //			event.setCancelled(true);
 //			return;
 //		}
-		if (GameValues.GAME.EXPLOSIONS_DISABLED) event.setCancelled(true);
+		if (GameValues.ARENA.EXPLOSIONS_DISABLED) event.setCancelled(true);
 	}
 }

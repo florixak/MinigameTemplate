@@ -11,6 +11,7 @@ import me.florixak.minigametemplate.gui.PaginatedMenu;
 import me.florixak.minigametemplate.gui.menu.shop.ConfirmPurchaseMenu;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.ItemUtils;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,13 +24,13 @@ public class KitsMenu extends PaginatedMenu {
 	private final GamePlayer gamePlayer;
 
 	public KitsMenu(final MenuUtils menuUtils) {
-		super(menuUtils, GameValues.INVENTORY.KITS_TITLE);
+		super(menuUtils, GameValues.KITS.KITS_TITLE);
 		this.gamePlayer = menuUtils.getGamePlayer();
 	}
 
 	@Override
 	public int getSlots() {
-		return GameValues.INVENTORY.KITS_SLOTS;
+		return GameValues.KITS.KITS_SLOTS;
 	}
 
 	@Override
@@ -39,9 +40,11 @@ public class KitsMenu extends PaginatedMenu {
 
 	@Override
 	public void handleMenuClicks(final InventoryClickEvent event) {
-		if (event.getCurrentItem().getType().equals(XMaterial.BARRIER.parseMaterial())) {
+		final Material clickedItem = event.getCurrentItem().getType();
+		if (clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.CLOSE_ITEM).get().parseMaterial())) {
 			close();
-		} else if (event.getCurrentItem().getType().equals(XMaterial.DARK_OAK_BUTTON.parseMaterial())) {
+		} else if (clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.NEXT_ITEM).get().parseMaterial())
+				|| clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.PREVIOUS_ITEM).get().parseMaterial())) {
 			handlePaging(event, this.kitsList);
 		} else {
 			if (!this.gameManager.getArenaManager().isPlayerInArena(this.gamePlayer)) {

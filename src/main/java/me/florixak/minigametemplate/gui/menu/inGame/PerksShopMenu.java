@@ -11,26 +11,28 @@ import me.florixak.minigametemplate.gui.PaginatedMenu;
 import me.florixak.minigametemplate.gui.menu.shop.ConfirmPurchaseMenu;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.ItemUtils;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class PerksMenu extends PaginatedMenu {
+public class PerksShopMenu extends PaginatedMenu {
 
 	private final GamePlayer uhcPlayer;
 	private final List<Perk> perksList;
 
-	public PerksMenu(final MenuUtils menuUtils) {
-		super(menuUtils, GameValues.INVENTORY.PERKS_TITLE);
+	public PerksShopMenu(final MenuUtils menuUtils) {
+		super(menuUtils, GameValues.PERKS.PERKS_SHOP_TITLE);
 		this.uhcPlayer = menuUtils.getGamePlayer();
-		this.perksList = GameManager.getInstance().getPerksManager().getPerks();
+		this.perksList = GameManager.getInstance().getPerksManager().getPerks().stream().filter(perk -> !this.uhcPlayer.getPlayerData().hasPerkBought(perk)).collect(Collectors.toList());
 	}
 
 	@Override
 	public int getSlots() {
-		return GameValues.INVENTORY.PERKS_SLOTS;
+		return GameValues.PERKS.PERKS_SHOP_SLOTS;
 	}
 
 	@Override
@@ -40,9 +42,11 @@ public class PerksMenu extends PaginatedMenu {
 
 	@Override
 	public void handleMenuClicks(final InventoryClickEvent event) {
-		if (event.getCurrentItem().getType().equals(XMaterial.BARRIER.parseMaterial())) {
+		final Material clickedItem = event.getCurrentItem().getType();
+		if (clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.CLOSE_ITEM).get().parseMaterial())) {
 			close();
-		} else if (event.getCurrentItem().getType().equals(XMaterial.DARK_OAK_BUTTON.parseMaterial())) {
+		} else if (clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.NEXT_ITEM).get().parseMaterial())
+				|| clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.PREVIOUS_ITEM).get().parseMaterial())) {
 			handlePaging(event, this.perksList);
 		} else {
 			handlePerkSelection(event);
@@ -59,19 +63,15 @@ public class PerksMenu extends PaginatedMenu {
 			final Perk perk = this.perksList.get(i);
 			final List<String> lore = new ArrayList<>();
 
-			if (this.uhcPlayer.hasPerk() && this.uhcPlayer.getPerk().equals(perk)) {
-				lore.add(Messages.PERKS_INV_SELECTED.toString());
+//			if (this.uhcPlayer.hasPerk() && this.uhcPlayer.getPerk().equals(perk)) {
+//				lore.add(Messages.PERKS_INV_SELECTED.toString());
+//			} else {
+			if (!GameValues.PERKS.BOUGHT_FOREVER) {
+				lore.add(perk.getFormattedCost());
 			} else {
-				if (!GameValues.PERKS.BOUGHT_FOREVER) {
-					lore.add(perk.getFormattedCost());
-				} else {
-					if (this.uhcPlayer.getPlayerData().hasPerkBought(perk) || this.uhcPlayer.hasPermission(Permissions.PERKS_FREE.getPerm()) || perk.isFree()) {
-						lore.add(Messages.PERKS_INV_CLICK_TO_SELECT.toString());
-					} else {
-						lore.add(perk.getFormattedCost());
-					}
-				}
+				lore.add(perk.getFormattedCost());
 			}
+//			}
 
 			lore.addAll(perk.getDescription());
 
@@ -84,8 +84,8 @@ public class PerksMenu extends PaginatedMenu {
 
 	@Override
 	public void open() {
-		if (!GameValues.KITS.ENABLED) {
-			this.uhcPlayer.sendMessage(Messages.KITS_DISABLED.toString());
+		if (!GameValues.PERKS.ENABLED) {
+			this.uhcPlayer.sendMessage(Messages.PERKS_DISABLED.toString());
 			return;
 		}
 		super.open();
@@ -95,24 +95,16 @@ public class PerksMenu extends PaginatedMenu {
 		final Perk selectedPerk = this.perksList.get(event.getSlot());
 		close();
 
-		if (!GameValues.PERKS.BOUGHT_FOREVER) {
-			if (!selectedPerk.isFree() && this.uhcPlayer.getPlayerData().getMoney() < selectedPerk.getCost() && !this.uhcPlayer.hasPermission(Permissions.PERKS_FREE.getPerm())) {
-				this.uhcPlayer.sendMessage(Messages.NO_MONEY.toString());
-				return;
-			}
+		if (this.uhcPlayer.getPlayerData().hasPerkBought(selectedPerk) || this.uhcPlayer.hasPermission(Permissions.PERKS_FREE.getPerm()) || selectedPerk.isFree()) {
 			this.uhcPlayer.setPerk(selectedPerk);
-			this.uhcPlayer.sendMessage(Messages.PERKS_MONEY_DEDUCT_INFO.toString());
 		} else {
-			if (this.uhcPlayer.getPlayerData().hasPerkBought(selectedPerk) || this.uhcPlayer.hasPermission(Permissions.PERKS_FREE.getPerm()) || selectedPerk.isFree()) {
-				this.uhcPlayer.setPerk(selectedPerk);
+			if (GameValues.INVENTORY.CONFIRM_PURCHASE_ENABLED) {
+				this.menuUtils.setSelectedPerkToBuy(selectedPerk);
+				new ConfirmPurchaseMenu(this.menuUtils).open();
 			} else {
-				if (GameValues.INVENTORY.CONFIRM_PURCHASE_ENABLED) {
-					this.menuUtils.setSelectedPerkToBuy(selectedPerk);
-					new ConfirmPurchaseMenu(this.menuUtils).open();
-				} else {
-					this.uhcPlayer.getPlayerData().buyPerk(selectedPerk);
-				}
+				this.uhcPlayer.getPlayerData().buyPerk(selectedPerk);
 			}
 		}
+
 	}
 }

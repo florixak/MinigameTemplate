@@ -95,6 +95,7 @@ public class Arena {
 	}
 
 	public void leaveAll() {
+		this.players.forEach(gamePlayer -> gameManager.getPlayerManager().setPlayerAtLobby(gamePlayer));
 		this.players.clear();
 	}
 
