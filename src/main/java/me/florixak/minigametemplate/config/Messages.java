@@ -64,8 +64,7 @@ public enum Messages {
 	TEAM_ALREADY_IN("teams.already-in-team"),
 	TEAM_NOT_IN("teams.not-in-team"),
 	TEAM_DEFEATED("teams.defeated"),
-	TEAM_NONE("teams.none"),
-	TEAM_SOLO("teams.solo"),
+	TEAM_NONE("teams.scoreboard.none"),
 	TEAM_NO_FRIENDLY_FIRE("teams.no-friendly-fire"),
 	TEAM_NO_FREE("teams.no-free-team"),
 

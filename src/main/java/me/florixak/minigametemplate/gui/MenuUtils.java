@@ -2,8 +2,7 @@ package me.florixak.minigametemplate.gui;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.florixak.minigametemplate.game.kits.Kit;
-import me.florixak.minigametemplate.game.perks.Perk;
+import me.florixak.minigametemplate.game.gameItems.BuyableItem;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import org.bukkit.entity.Player;
 
@@ -14,8 +13,7 @@ public class MenuUtils {
 	private final GamePlayer gamePlayer;
 	private final Player owner;
 
-	private Kit selectedKitToBuy;
-	private Perk selectedPerkToBuy;
+	private BuyableItem toBuy;
 
 	public MenuUtils(final GamePlayer gamePlayer) {
 		this.gamePlayer = gamePlayer;

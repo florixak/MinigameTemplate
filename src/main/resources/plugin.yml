@@ -1,7 +1,7 @@
 name: MinigameTemplate
 version: '${project.version}'
 main: me.florixak.minigametemplate.MinigameTemplate
-api-version: '1.21'
+api-version: '1.13'
 author: FloriXak
 description: A template for creating minigames.
 softdepend: [ PlaceholderAPI, ProtocolLib, Vault, DecentHolograms, LuckPerms ]
@@ -10,6 +10,9 @@ commands:
   minigame:
     description: Main command for MinigameTemplate.
     aliases: [ mgt ]
+  arena:
+    description: Arena command for MinigameTemplate.
+    aliases: [ mgta ]
   join:
     description: Join the minigame.
   leave:

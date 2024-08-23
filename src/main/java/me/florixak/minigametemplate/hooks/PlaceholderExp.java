@@ -152,12 +152,12 @@ public class PlaceholderExp extends PlaceholderExpansion {
 
 				if (placeholder.equals("kit")) {
 					if (gamePlayer.hasKit()) return TextUtils.color(gamePlayer.getKit().getDisplayName());
-					else return Messages.KITS_SELECTED_NONE.toString();
+					else return Messages.KITS_SCOREBOARD_SELECTED_NONE.toString();
 				}
 
 				if (placeholder.equals("perk")) {
 					if (gamePlayer.hasPerk()) return TextUtils.color(gamePlayer.getPerk().getDisplayName());
-					else return Messages.PERKS_SELECTED_NONE.toString();
+					else return Messages.PERKS_SCOREBOARD_SELECTED_NONE.toString();
 				}
 			}
 		}

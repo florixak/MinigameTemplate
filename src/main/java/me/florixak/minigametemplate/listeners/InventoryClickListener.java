@@ -29,13 +29,14 @@ public class InventoryClickListener implements Listener {
 		final Player player = (Player) event.getWhoClicked();
 		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(player.getUniqueId());
 
+		event.setCancelled(true);
+
 		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
-			if (!arena.isPlaying()) {
-				event.setCancelled(true);
+			if (arena.isPlaying()) {
+				event.setCancelled(false);
 			}
 		}
-
 		final InventoryHolder holder = event.getInventory().getHolder();
 		if (holder instanceof Menu) {
 			event.setCancelled(true);

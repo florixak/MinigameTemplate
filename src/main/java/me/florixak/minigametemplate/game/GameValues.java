@@ -199,7 +199,6 @@ public class GameValues {
 	}
 
 	public static class InventoryConfig {
-
 		// Titles
 		public final String CLOSE_TITLE = getConfigString("settings.inventory.close-title", "Close");
 		public final String NEXT_TITLE = getConfigString("settings.inventory.next-title", "Next");
@@ -222,7 +221,6 @@ public class GameValues {
 
 		// Inventory Enabled
 		public final boolean CONFIRM_PURCHASE_ENABLED = getConfigBoolean("settings.inventory.confirm-purchase.enabled", true);
-
 
 	}
 

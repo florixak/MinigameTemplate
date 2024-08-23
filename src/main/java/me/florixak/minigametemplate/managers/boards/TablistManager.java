@@ -7,7 +7,6 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import eu.decentsoftware.holograms.api.utils.PAPI;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.game.GameValues;
-import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.text.TextUtils;
@@ -21,32 +20,34 @@ public class TablistManager {
 		this.gameManager = gameManager;
 	}
 
-	public void setPlayerList() {
-		if (GameValues.TABLIST.LOBBY_ENABLED) {
-			for (final GamePlayer gamePlayer : this.gameManager.getPlayerManager().getPlayersInLobby()) {
-				final Player player = gamePlayer.getPlayer();
-				final String header = GameValues.TABLIST.LOBBY_HEADER;
-				final String footer = GameValues.TABLIST.LOBBY_FOOTER;
-				final String tablist = GameValues.TABLIST.LOBBY_PLAYER_LIST;
-
-				setHeaderAndFooter(player, header, footer);
-				setPlayerListName(player, tablist);
-			}
+	public void setPlayerList(final GamePlayer gamePlayer) {
+		final Player player = gamePlayer.getPlayer();
+		if (gamePlayer.isLobby()) {
+			if (GameValues.TABLIST.LOBBY_ENABLED) setLobbyTablist(player);
+		} else if (GameValues.TABLIST.INGAME_ENABLED) {
+			setInGameTablist(player);
+		} else {
+			if (GameValues.TABLIST.LOBBY_ENABLED) setLobbyTablist(player);
 		}
+	}
 
-		if (GameValues.TABLIST.INGAME_ENABLED) {
-			for (final GamePlayer gamePlayer : this.gameManager.getPlayerManager().getPlayersInArenas()) {
-				final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
-				for (final GamePlayer player : arena.getPlayers()) {
-					final String header = GameValues.TABLIST.INGAME_HEADER;
-					final String footer = GameValues.TABLIST.INGAME_FOOTER;
-					final String tablist = GameValues.TABLIST.INGAME_PLAYER_LIST;
+	private void setTablist(final Player player, final String header, final String footer, final String tablist) {
+		setHeaderAndFooter(player, header, footer);
+		setPlayerListName(player, tablist);
+	}
 
-					setHeaderAndFooter(player.getPlayer(), header, footer);
-					setPlayerListName(player.getPlayer(), tablist);
-				}
-			}
-		}
+	private void setLobbyTablist(final Player player) {
+		final String header = GameValues.TABLIST.LOBBY_HEADER;
+		final String footer = GameValues.TABLIST.LOBBY_FOOTER;
+		final String tablist = GameValues.TABLIST.LOBBY_PLAYER_LIST;
+		setTablist(player, header, footer, tablist);
+	}
+
+	private void setInGameTablist(final Player player) {
+		final String header = GameValues.TABLIST.INGAME_HEADER;
+		final String footer = GameValues.TABLIST.INGAME_FOOTER;
+		final String tablist = GameValues.TABLIST.INGAME_PLAYER_LIST;
+		setTablist(player, header, footer, tablist);
 	}
 
 	private void setHeaderAndFooter(final Player player, final String header, final String footer) {

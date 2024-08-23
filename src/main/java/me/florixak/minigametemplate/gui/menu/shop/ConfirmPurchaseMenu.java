@@ -2,8 +2,7 @@ package me.florixak.minigametemplate.gui.menu.shop;
 
 import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.config.Messages;
-import me.florixak.minigametemplate.game.kits.Kit;
-import me.florixak.minigametemplate.game.perks.Perk;
+import me.florixak.minigametemplate.game.gameItems.BuyableItem;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.gui.Menu;
 import me.florixak.minigametemplate.gui.MenuUtils;
@@ -16,15 +15,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public class ConfirmPurchaseMenu extends Menu {
 
 	private final GamePlayer uhcPlayer;
-	private final Kit kitToBuy;
-	private final Perk perkToBuy;
-	private double moneyToWithdraw = 0;
+	private final BuyableItem toBuy;
 
 	public ConfirmPurchaseMenu(final MenuUtils menuUtils) {
 		super(menuUtils);
 		this.uhcPlayer = menuUtils.getGamePlayer();
-		this.kitToBuy = menuUtils.getSelectedKitToBuy();
-		this.perkToBuy = menuUtils.getSelectedPerkToBuy();
+		this.toBuy = menuUtils.getToBuy();
 	}
 
 	@Override
@@ -43,15 +39,9 @@ public class ConfirmPurchaseMenu extends Menu {
 		this.uhcPlayer.getPlayer().closeInventory();
 
 		if (event.getSlot() == 11) {
-			if (this.kitToBuy != null) {
-				this.uhcPlayer.getPlayerData().buyKit(this.menuUtils.getSelectedKitToBuy());
-				this.menuUtils.setSelectedKitToBuy(null);
-			} else if (this.perkToBuy != null) {
-				this.uhcPlayer.getPlayerData().buyPerk(this.menuUtils.getSelectedPerkToBuy());
-				this.menuUtils.setSelectedPerkToBuy(null);
-			} else {
-				this.uhcPlayer.getPlayerData().withdrawMoney(0);
-			}
+			if (this.toBuy == null) return;
+			this.uhcPlayer.getPlayerData().buy(this.toBuy);
+			this.menuUtils.setToBuy(null);
 		} else if (event.getSlot() == 15) {
 			this.uhcPlayer.sendMessage(Messages.CANCELLED_PURCHASE.toString());
 			GameManager.getInstance().getSoundManager().playPurchaseCancelSound(this.uhcPlayer.getPlayer());
@@ -60,12 +50,12 @@ public class ConfirmPurchaseMenu extends Menu {
 
 	@Override
 	public void setMenuItems() {
-		this.moneyToWithdraw = this.kitToBuy != null ? this.kitToBuy.getCost() : this.perkToBuy.getCost();
+		if (this.toBuy == null) return;
 
 		this.inventory.setItem(11, ItemUtils.createItem(
 				XMaterial.matchXMaterial(Material.EMERALD).parseMaterial(),
 				TextUtils.color("Confirm purchase of &6%cost% %currency%"
-						.replace("%cost%", String.valueOf(this.moneyToWithdraw))
+						.replace("%cost%", String.valueOf(this.toBuy.getCost()))
 						.replace("%currency%", Messages.CURRENCY.toString())),
 				1,
 				null)

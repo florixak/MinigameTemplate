@@ -29,7 +29,7 @@ public class InGameArenasMenu extends PaginatedMenu {
 
 	@Override
 	public int getSlots() {
-		return GameValues.INVENTORY.ARENA_SLOTS;
+		return 45;
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class PerkItem {
 	public void giveItem(final GamePlayer gamePlayer) {
 		final int num = RandomUtils.randomInteger(1, 100);
 		if (num > this.chance) return;
-		gamePlayer.sendMessage(Messages.PERKS_ITEM_RECEIVED.toString().replace("%item%", this.displayName));
+		gamePlayer.sendMessage(Messages.PERKS_RECEIVED_ITEM.toString().replace("%item%", this.displayName));
 		gamePlayer.getPlayer().getInventory().addItem(this.item);
 	}
 }

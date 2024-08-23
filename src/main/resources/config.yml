@@ -78,6 +78,57 @@ settings:
     yaw: 0.0 # Yaw of the lobby spawn
     pitch: 0.0 # Pitch of the lobby spawn
 
+  game-items:
+    lobby:
+      arena-selector:
+        enabled: true # Enable arena menu
+        display-name: "&fArenas" # Display name for arena menu
+        display-item: COMPASS # Item for arena menu
+        slot: 0 # Slot for statistics menu
+      shop:
+        enabled: true # Enable shop menu
+        display-name: "&fShop" # Display name for shop menu
+        display-item: EMERALD # Item for shop menu
+        slot: 3 # Slot for shop menu
+      profile:
+        enabled: true # Enable statistics menu
+        display-name: "&fProfile" # Display name for statistics menu
+        display-item: PLAYER_HEAD
+        slot: 4 # Slot for statistics menu
+      cosmetics:
+        enabled: true # Enable cosmetics menu
+        display-name: "&fCosmetics" # Display name for cosmetics menu
+        display-item: ENDER_CHEST # Item for cosmetics menu
+        slot: 5 # Slot for cosmetics menu
+
+    in-game:
+      team-selector:
+        enabled: true # Enable teams menu
+        display-name: "&fTeams&8" # Display name for teams menu
+        display-item: WHITE_WOOL # Item for teams menu
+        slot: 0 # Slot for teams menu
+      kits-selector:
+        enabled: true # Enable kits menu
+        display-name: "&fKits&8" # Display name for kits menu
+        display-item: CHEST # Item for kits menu
+        slot: 1 # Slot for kits menu
+      perks-selector:
+        enabled: true # Enable perks menu
+        display-name: "&fPerks&8" # Display name for perks menu
+        display-item: ENCHANTED_BOOK # Item for perks menu
+        slot: 2 # Slot for perks menu
+      quests:
+        enabled: true # Enable quests menu
+        display-name: "&fQuests&8" # Display name for quests menu
+        display-item: BOOK # Item for quests menu
+        slot: 4 # Slot for quests menu
+      leave:
+        enabled: true # Enable quests menu
+        display-name: "&cLeave&8" # Display name for quests menu
+        display-item: RED_BED # Item for quests menu
+        slot: 8 # Slot for quests menu
+
+
   # Statistics settings
   statistics:
     # Starting money for each player
@@ -230,46 +281,6 @@ settings:
       quests: 45 # Number of slots for quests menus
 
     # Available menu - teams, kits, perks, custom-crafts, statistics
-  game-items:
-    lobby:
-      COMPASS:
-        enabled: true # Enable statistics menu
-        display-name: "&fArenas" # Display name for statistics menu
-        slot: 0 # Slot for statistics menu
-      CHEST:
-        enabled: true # Enable shop menu
-        display-name: "&fShop" # Display name for shop menu
-        slot: 3 # Slot for shop menu
-      PLAYER_HEAD:
-        enabled: true # Enable statistics menu
-        display-name: "&fProfile" # Display name for statistics menu
-        slot: 4 # Slot for statistics menu
-      ENDER_CHEST:
-        enabled: true # Enable cosmetics menu
-        display-name: "&fCosmetics" # Display name for cosmetics menu
-        slot: 5 # Slot for cosmetics menu
-
-    in-game:
-      WHITE_WOOL:
-        enabled: true # Enable teams menu
-        display-name: "&fTeams&8" # Display name for teams menu
-        slot: 0 # Slot for teams menu
-      IRON_PICKAXE:
-        enabled: true # Enable kits menu
-        display-name: "&fKits&8" # Display name for kits menu
-        slot: 1 # Slot for kits menu
-      BOW:
-        enabled: true # Enable perks menu
-        display-name: "&fPerks&8" # Display name for perks menu
-        slot: 2 # Slot for perks menu
-      BOOK:
-        enabled: true # Enable quests menu
-        display-name: "&fQuests&8" # Display name for quests menu
-        slot: 4 # Slot for quests menu
-      BED:
-        enabled: true # Enable quests menu
-        display-name: "&cLeave&8" # Display name for quests menu
-        slot: 8 # Slot for quests menu
 
   title:
     enabled: true # Enable title messages like victory or lose

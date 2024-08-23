@@ -29,10 +29,11 @@ public class SQLGetter {
 			ps = this.conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + this.table + " "
 					+ "(uuid VARCHAR(100) PRIMARY KEY,"
 					+ "name VARCHAR(100),"
-					+ "money DECIMAL(24,2) DEFAULT " + 0 + ","
-					+ "level INT(100) DEFAULT " + 0 + ","
+					+ "money DECIMAL(24,2) DEFAULT " + GameValues.STATISTICS.STARTING_MONEY + ","
+					+ "tokens INT(100) DEFAULT " + GameValues.STATISTICS.STARTING_TOKENS + ","
+					+ "level INT(100) DEFAULT " + GameValues.STATISTICS.FIRST_LEVEL + ","
 					+ "exp DECIMAL(24,2) DEFAULT 0,"
-					+ "required_exp DECIMAL(24,2) DEFAULT " + 100 + ","
+					+ "required_exp DECIMAL(24,2) DEFAULT " + GameValues.STATISTICS.FIRST_REQUIRED_EXP + ","
 					+ "games_played INT(100) DEFAULT 0,"
 					+ "wins INT(100) DEFAULT 0,"
 					+ "losses INT(100) DEFAULT 0,"
@@ -41,7 +42,8 @@ public class SQLGetter {
 					+ "assists INT(100) DEFAULT 0,"
 					+ "deaths INT(100) DEFAULT 0,"
 					+ "kits VARCHAR(100) DEFAULT '',"
-					+ "perks VARCHAR(100) DEFAULT '')"
+					+ "perks VARCHAR(100) DEFAULT '',"
+					+ "cosmetics VARCHAR(100) DEFAULT '')"
 			);
 			ps.executeUpdate();
 		} catch (final SQLException e) {
@@ -123,6 +125,34 @@ public class SQLGetter {
 			e.printStackTrace();
 		}
 		return 0.00;
+	}
+
+	public void setTokens(final UUID uuid, final int tokens) {
+		try {
+			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET tokens=? WHERE uuid=?");
+			ps.setInt(1, tokens);
+			ps.setString(2, uuid.toString());
+
+			ps.executeUpdate();
+
+		} catch (final SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int getTokens(final UUID uuid) {
+		try {
+			final PreparedStatement ps = this.conn.prepareStatement("SELECT tokens FROM " + this.table + " WHERE uuid=?");
+			ps.setString(1, uuid.toString());
+
+			final ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getInt("tokens");
+			}
+		} catch (final SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 	public void addLevel(final UUID uuid) {

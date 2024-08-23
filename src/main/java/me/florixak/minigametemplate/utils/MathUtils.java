@@ -80,6 +80,20 @@ public class MathUtils {
 	}
 
 	/**
+	 * Calculates the arithmetic mean (average) of a set of values.
+	 *
+	 * @param values the values to calculate the mean of
+	 * @return the arithmetic mean of the values
+	 */
+	public static double arithmeticMean(final double... values) {
+		double sum = 0;
+		for (final double value : values) {
+			sum += value;
+		}
+		return sum / values.length;
+	}
+
+	/**
 	 * Performs a raytrace between two points.
 	 *
 	 * @param x0 the starting x-coordinate

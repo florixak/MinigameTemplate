@@ -36,7 +36,7 @@ public class PerkEffect {
 
 	public void giveEffect(final GamePlayer gamePlayer) {
 		gamePlayer.addEffect(XPotion.matchXPotion(this.effectType.getType()), this.effectType.getDuration(), getFormattedAmplifier());
-		gamePlayer.sendMessage(Messages.PERKS_EFFECT_RECEIVED.toString()
+		gamePlayer.sendMessage(Messages.PERKS_RECEIVED_EFFECT.toString()
 				.replace("%effect%", getDisplayName())
 				.replace("%effect-duration%", String.valueOf(getDuration()))
 				.replace("%effect-level%", String.valueOf(getFormattedAmplifier())));

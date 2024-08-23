@@ -44,7 +44,7 @@ public class PerkBonus {
 
 		gamePlayer.getPlayerData().depositMoney(randomCoins);
 		gamePlayer.getPlayerData().addExp(randomExp);
-		gamePlayer.sendMessage(Messages.PERKS_BONUS_RECEIVED.toString().replace("%coins%", TextUtils.formatToOneDecimal(randomCoins)).replace("%exp%", TextUtils.formatToOneDecimal(randomExp)));
+		gamePlayer.sendMessage(Messages.PERKS_RECEIVED_BONUS.toString().replace("%coins%", TextUtils.formatToOneDecimal(randomCoins)).replace("%exp%", TextUtils.formatToOneDecimal(randomExp)));
 	}
 
 }

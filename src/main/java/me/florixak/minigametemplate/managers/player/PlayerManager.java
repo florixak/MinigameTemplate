@@ -2,10 +2,8 @@ package me.florixak.minigametemplate.managers.player;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import eu.decentsoftware.holograms.api.utils.PAPI;
 import lombok.Getter;
 import me.florixak.minigametemplate.MinigameTemplate;
-import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
@@ -91,16 +89,16 @@ public class PlayerManager {
 	}
 
 	public List<GamePlayer> getPlayersInLobby() {
-		return getPlayers().stream().filter(gamePlayer -> gamePlayer.getState() == PlayerState.LOBBY).collect(Collectors.toList());
+		return getPlayers().stream().filter(GamePlayer::isLobby).collect(Collectors.toList());
 	}
 
 	public List<GamePlayer> getPlayersInArenas() {
-		return getPlayers().stream().filter(gamePlayer -> gamePlayer.getState() != PlayerState.LOBBY).collect(Collectors.toList());
+		return getPlayers().stream().filter(GamePlayer::isInArena).collect(Collectors.toList());
 	}
 
-
-	public void setPlayerAtLobby(final GamePlayer gamePlayer) {
+	public void setPlayerForLobby(final GamePlayer gamePlayer) {
 		final Player p = gamePlayer.getPlayer();
+		gamePlayer.setState(PlayerState.LOBBY);
 		p.setHealth(p.getMaxHealth());
 		p.setFoodLevel(20);
 		p.setExhaustion(0);
@@ -113,6 +111,14 @@ public class PlayerManager {
 
 		gamePlayer.clearPotions();
 		gamePlayer.clearInventory();
+		this.gameManager.getGameItemManager().giveItems(gamePlayer);
+	}
+
+	public void setPlayerForWaiting(final GamePlayer gamePlayer, final Arena arena) {
+		if (arena == null) return;
+		gamePlayer.setState(PlayerState.WAITING);
+		gamePlayer.setGameMode(GameMode.ADVENTURE);
+		gamePlayer.teleport(arena.getWaitingLocation());
 		this.gameManager.getGameItemManager().giveItems(gamePlayer);
 	}
 
@@ -133,14 +139,6 @@ public class PlayerManager {
 		}
 
 		if (gamePlayer.hasKit()) {
-			if (!GameValues.KITS.BOUGHT_FOREVER) {
-				gamePlayer.getPlayerData().withdrawMoney(gamePlayer.getKit().getCost());
-				gamePlayer.sendMessage(PAPI.setPlaceholders(gamePlayer.getPlayer(), Messages.KITS_MONEY_DEDUCT.toString()
-						.replace("%previous-money%", String.valueOf((gamePlayer.getPlayerData()).getMoney() + gamePlayer.getKit().getCost()))
-						.replace("%current-money%", String.valueOf(gamePlayer.getPlayerData().getMoney())
-						))
-				);
-			}
 			gamePlayer.getKit().giveKit(gamePlayer);
 		}
 	}

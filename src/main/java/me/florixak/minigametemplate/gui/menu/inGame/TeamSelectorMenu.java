@@ -18,14 +18,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeamsMenu extends PaginatedMenu {
+public class TeamSelectorMenu extends PaginatedMenu {
 
 	private final GameManager gameManager = GameManager.getInstance();
 	private final Arena arena;
 	private final GamePlayer gamePlayer;
 	private final List<GameTeam> teamsList;
 
-	public TeamsMenu(final MenuUtils menuUtils) {
+	public TeamSelectorMenu(final MenuUtils menuUtils) {
 		super(menuUtils, GameValues.TEAMS.TEAM_SELECTION_TITLE);
 		this.gamePlayer = menuUtils.getGamePlayer();
 		this.arena = this.gameManager.getArenaManager().getPlayerArena(this.gamePlayer);

@@ -50,9 +50,12 @@ public class ArenaManager {
 	}
 
 	public void createArena(final String id, final String name, final Location centerLocation, final int minPlayers) {
+		if (existsArena(id) || existsArena(name)) {
+			Bukkit.getLogger().info("Arena already exists.");
+			return;
+		}
 		final Arena arena = new Arena(id, name, centerLocation, minPlayers);
 		this.arenas.add(arena);
-		Bukkit.getLogger().info("Created arena: " + arena.toString());
 	}
 
 	public boolean enableArena(final Player player, final Arena arena) {

@@ -2,6 +2,7 @@ package me.florixak.minigametemplate.game.arena;
 
 import eu.decentsoftware.holograms.api.utils.PAPI;
 import lombok.Getter;
+import lombok.Setter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
@@ -16,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,23 +29,27 @@ import java.util.stream.Collectors;
 @Getter
 public class Arena {
 
-	private static final GameManager gameManager = GameManager.getInstance();
-	private static final File pluginFile = new File(MinigameTemplate.getInstance().getDataFolder(), "arenas");
+	protected static final GameManager gameManager = GameManager.getInstance();
+	protected static final File pluginFile = new File(MinigameTemplate.getInstance().getDataFolder(), "arenas");
 
-	private final String id;
-	private final String name;
-	private boolean enabled;
-	private int maxPlayers;
-	private final int minPlayers;
-	private final List<GameTeam> teams;
-	private final Location centerLocation;
+	protected final String id;
+	protected final String name;
+	protected boolean enabled;
+	protected int maxPlayers;
+	protected final int minPlayers;
+	protected final Location centerLocation;
+	@Setter
+	protected Location waitingLocation;
+	@Setter
+	protected Location endingLocation;
+	protected final List<GameTeam> teams;
 
-	private final List<GamePlayer> players = new ArrayList<>();
+	protected final List<GamePlayer> players = new ArrayList<>();
 
-	private final ArenaCheckTask arenaCheckTask = new ArenaCheckTask(this);
-	private final StartingTask startingTask = new StartingTask(this);
+	protected final ArenaCheckTask arenaCheckTask = new ArenaCheckTask(this);
+	protected final StartingTask startingTask = new StartingTask(this);
 
-	private ArenaState arenaState = ArenaState.WAITING;
+	protected ArenaState arenaState = ArenaState.WAITING;
 
 	public Arena(final String id, final String name, final Location centerLocation, final int minPlayers) {
 		this.id = id;
@@ -52,6 +58,8 @@ public class Arena {
 		this.enabled = false;
 		this.maxPlayers = 0;
 		this.centerLocation = centerLocation;
+		this.waitingLocation = centerLocation;
+		this.endingLocation = centerLocation;
 		this.teams = new ArrayList<>();
 	}
 
@@ -59,6 +67,8 @@ public class Arena {
 				 final String name,
 				 final boolean enabled,
 				 final Location centerLocation,
+				 final Location waitingLocation,
+				 final Location endingLocation,
 				 final int minPlayers,
 				 final int maxPlayers,
 				 final List<GameTeam> teams) {
@@ -68,6 +78,8 @@ public class Arena {
 		this.minPlayers = minPlayers;
 		this.maxPlayers = maxPlayers;
 		this.centerLocation = centerLocation;
+		this.waitingLocation = waitingLocation;
+		this.endingLocation = endingLocation;
 		this.teams = teams;
 
 		if (enabled)
@@ -79,9 +91,22 @@ public class Arena {
 		this.maxPlayers += team.getSize();
 	}
 
+	public void removeTeam(final GameTeam team) {
+		this.teams.remove(team);
+		this.maxPlayers -= team.getSize();
+	}
+
+	public GameTeam getTeam(final String name) {
+		return this.teams.stream().filter(team -> team.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+	}
+
 	public void join(final GamePlayer gamePlayer) {
+		if (isFull()) {
+			gamePlayer.sendMessage(Messages.ARENA_FULL.toString());
+			return;
+		}
 		this.players.add(gamePlayer);
-		gameManager.getGameItemManager().giveItems(gamePlayer);
+		gameManager.getPlayerManager().setPlayerForWaiting(gamePlayer, this);
 	}
 
 	public void joinAsSpectator(final GamePlayer gamePlayer) {
@@ -91,11 +116,11 @@ public class Arena {
 
 	public void leave(final GamePlayer gamePlayer) {
 		this.players.remove(gamePlayer);
-		gameManager.getPlayerManager().setPlayerAtLobby(gamePlayer);
+		gameManager.getPlayerManager().setPlayerForLobby(gamePlayer);
 	}
 
 	public void leaveAll() {
-		this.players.forEach(gamePlayer -> gameManager.getPlayerManager().setPlayerAtLobby(gamePlayer));
+		this.players.forEach(gamePlayer -> gameManager.getPlayerManager().setPlayerForLobby(gamePlayer));
 		this.players.clear();
 	}
 
@@ -121,7 +146,13 @@ public class Arena {
 	}
 
 	public void end() {
-		setArenaState(ArenaState.ENDING);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				setArenaState(ArenaState.RESTARTING);
+				Bukkit.getServer().shutdown();
+			}
+		}.runTaskLater(MinigameTemplate.getInstance(), 20 * 10);
 	}
 
 	public void setArenaState(final ArenaState arenaState) {
@@ -133,19 +164,21 @@ public class Arena {
 			case WAITING:
 				break;
 			case STARTING:
-				Utils.broadcast(PAPI.setPlaceholders(null, Messages.GAME_STARTING.toString()));
+				Utils.broadcast(PAPI.setPlaceholders(null, Messages.ARENA_STARTING.toString()));
 				break;
 			case INGAME:
 				preparePlayers();
-				Utils.broadcast(PAPI.setPlaceholders(null, Messages.GAME_STARTED.toString()));
+				Utils.broadcast(PAPI.setPlaceholders(null, Messages.ARENA_STARTED.toString()));
 				break;
 			case ENDING:
 				setWinner();
 				Utils.broadcast(PAPI.setPlaceholders(null, "%winner% is WINNER!".replace("%winner%", getWinner())));
-				Utils.broadcast(PAPI.setPlaceholders(null, Messages.GAME_ENDED.toString()));
+				Utils.broadcast(PAPI.setPlaceholders(null, Messages.ARENA_ENDED.toString()));
+				end();
 				break;
 			case RESTARTING:
 				leaveAll();
+				reset();
 				// kick all players, reset arena, etc.
 				break;
 		}
@@ -178,8 +211,8 @@ public class Arena {
 		if (enabled)
 			this.arenaCheckTask.runTaskTimer(MinigameTemplate.getInstance(), 0L, 20L);
 		else {
-			this.arenaCheckTask.cancel();
-			this.startingTask.cancel();
+			if (Bukkit.getScheduler().isCurrentlyRunning(this.arenaCheckTask.getTaskId())) this.arenaCheckTask.cancel();
+			if (Bukkit.getScheduler().isCurrentlyRunning(this.startingTask.getTaskId())) this.startingTask.cancel();
 		}
 	}
 
@@ -312,14 +345,30 @@ public class Arena {
 
 		config.set(this.id + ".name", this.name);
 		config.set(this.id + ".enabled", this.enabled);
+
 		config.set(this.id + ".min-players", this.minPlayers);
 		config.set(this.id + ".max-players", this.maxPlayers);
-		config.set(this.id + ".world", this.centerLocation.getWorld().getName());
+
+		config.set(this.id + ".center-location.world", this.centerLocation.getWorld().getName());
 		config.set(this.id + ".center-location.x", this.centerLocation.getX());
 		config.set(this.id + ".center-location.y", this.centerLocation.getY());
 		config.set(this.id + ".center-location.z", this.centerLocation.getZ());
 		config.set(this.id + ".center-location.yaw", this.centerLocation.getYaw());
 		config.set(this.id + ".center-location.pitch", this.centerLocation.getPitch());
+
+		config.set(this.id + ".waiting-location.world", this.waitingLocation.getWorld().getName());
+		config.set(this.id + ".waiting-location.x", this.waitingLocation.getX());
+		config.set(this.id + ".waiting-location.y", this.waitingLocation.getY());
+		config.set(this.id + ".waiting-location.z", this.waitingLocation.getZ());
+		config.set(this.id + ".waiting-location.yaw", this.waitingLocation.getYaw());
+		config.set(this.id + ".waiting-location.pitch", this.waitingLocation.getPitch());
+
+		config.set(this.id + ".ending-location.world", this.endingLocation.getWorld().getName());
+		config.set(this.id + ".ending-location.x", this.endingLocation.getX());
+		config.set(this.id + ".ending-location.y", this.endingLocation.getY());
+		config.set(this.id + ".ending-location.z", this.endingLocation.getZ());
+		config.set(this.id + ".ending-location.yaw", this.endingLocation.getYaw());
+		config.set(this.id + ".ending-location.pitch", this.endingLocation.getPitch());
 
 		final ConfigurationSection teamsSection = config.createSection(this.id + ".teams");
 		for (final GameTeam team : this.teams) {
@@ -370,18 +419,13 @@ public class Arena {
 		final boolean enabled = section.getBoolean("enabled");
 		final int maxPlayers = section.getInt("max-players");
 		final int minPlayers = section.getInt("min-players");
-		final Location centerLocation = new Location(
-				Bukkit.getWorld(section.getString("world")),
-				section.getDouble("center-location.x"),
-				section.getDouble("center-location.y"),
-				section.getDouble("center-location.z"),
-				(float) section.getDouble("center-location.yaw"),
-				(float) section.getDouble("center-location.pitch")
-		);
+		final Location centerLocation = getLocationFromConfig(section, "center");
+		final Location waitingLocation = getLocationFromConfig(section, "waiting-location");
+		final Location endingLocation = getLocationFromConfig(section, "ending-location");
+
 		final List<GameTeam> teams = loadArenaTeams(id);
 
-		final Arena arena = new Arena(id, name, enabled, centerLocation, minPlayers, maxPlayers, teams);
-		return arena;
+		return new Arena(id, name, enabled, centerLocation, waitingLocation, endingLocation, minPlayers, maxPlayers, teams);
 	}
 
 	private static List<GameTeam> loadArenaTeams(final String id) {
@@ -391,7 +435,7 @@ public class Arena {
 		final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 		final List<GameTeam> teams = new ArrayList<>();
 
-		final String world = config.getString(id + ".world", "world");
+		final String world = config.getString(id + "center.world", "world");
 		final ConfigurationSection section = config.getConfigurationSection(id + ".teams");
 		if (section == null) {
 			Bukkit.getLogger().info("No teams found in the config.");
@@ -411,5 +455,20 @@ public class Arena {
 			Bukkit.getLogger().info("Loaded team: " + team.toString());
 		}
 		return teams;
+	}
+
+	private static Location getLocationFromConfig(final ConfigurationSection section, final String path) {
+		final String world = section.getString(path + ".world", "world");
+		final double x = section.getDouble(path + ".x");
+		final double y = section.getDouble(path + ".y");
+		final double z = section.getDouble(path + ".z");
+		final float yaw = (float) section.getDouble(path + ".yaw");
+		final float pitch = (float) section.getDouble(path + ".pitch");
+		return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+	}
+
+	public void reset() {
+		this.players.clear();
+		this.arenaState = ArenaState.WAITING;
 	}
 }

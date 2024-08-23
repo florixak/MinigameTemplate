@@ -1,42 +1,59 @@
-'arena1':
-  name: "Arena 1"
+arena1:
+  name: '&cArena1'
   enabled: true
-  world: "world"
   min-players: 2
-  center:
-    x: 0
-    y: 0
-    z: 0
+  max-players: 16
+  center-location:
+    world: lobby
+    x: 0.0
+    y: 5.0
+    z: 0.0
+    yaw: 0.0
+    pitch: 0.0
+  waiting-location:
+    world: lobby
+    x: 0.0
+    y: 25.0
+    z: 0.0
+    yaw: 0.0
+    pitch: 0.0
+  ending-location:
+    world: lobby
+    x: 0.0
+    y: 15.0
+    z: 0.0
+    yaw: 0.0
+    pitch: 0.0
   teams:
-    '&cRed':
+    green:
       size: 4
       spawn-location:
-        x: 0
-        y: 0
-        z: 0
-        yaw: 0
-        pitch: 0
-    '&cGreen':
+        x: 5.0159333078651915
+        y: 4.0
+        z: 39.82730093697528
+        yaw: -12.077964
+        pitch: 17.282742
+    red:
       size: 4
       spawn-location:
-        x: 0
-        y: 0
-        z: 0
-        yaw: 0
-        pitch: 0
-    '&cBlue':
+        x: 1.2575410212151539
+        y: 4.0
+        z: 34.204832341285844
+        yaw: -198.78572
+        pitch: 8.474537
+    blue:
       size: 4
       spawn-location:
-        x: 0
-        y: 0
-        z: 0
-        yaw: 0
-        pitch: 0
-    '&cYellow':
+        x: -14.49112770766212
+        y: 4.0
+        z: 27.9779143032722
+        yaw: -271.98782
+        pitch: 5.071359
+    yellow:
       size: 4
       spawn-location:
-        x: 0
-        y: 0
-        z: 0
-        yaw: 0
-        pitch: 0
+        x: -26.64450847763696
+        y: 4.0
+        z: 37.44788816727507
+        yaw: -311.42407
+        pitch: 4.604268

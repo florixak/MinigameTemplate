@@ -2,10 +2,7 @@ package me.florixak.minigametemplate.managers;
 
 import lombok.Getter;
 import me.florixak.minigametemplate.MinigameTemplate;
-import me.florixak.minigametemplate.commands.AnvilCommand;
-import me.florixak.minigametemplate.commands.JoinCommand;
-import me.florixak.minigametemplate.commands.LeaveCommand;
-import me.florixak.minigametemplate.commands.MinigameCommand;
+import me.florixak.minigametemplate.commands.*;
 import me.florixak.minigametemplate.config.ConfigManager;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.game.GameValues;
@@ -94,6 +91,7 @@ public class GameManager {
 
 	private void registerCommands() {
 		registerCommand("minigame", new MinigameCommand(this));
+		registerCommand("arena", new ArenaCommand(this));
 		registerCommand("join", new JoinCommand(this));
 		registerCommand("leave", new LeaveCommand(this));
 		registerCommand("anvil", new AnvilCommand(this));
@@ -115,7 +113,6 @@ public class GameManager {
 		listeners.add(new PlayerListener(this));
 		listeners.add(new ArenaListener(this));
 		listeners.add(new InventoryClickListener(this));
-		listeners.add(new MenuItemsInteractListener(this));
 		listeners.add(new EntityListener(this));
 		if (!MinigameTemplate.useOldMethods()) listeners.add(new AnvilClickListener());
 

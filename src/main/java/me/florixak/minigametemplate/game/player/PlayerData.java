@@ -6,6 +6,7 @@ import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.gameItems.BuyableItem;
 import me.florixak.minigametemplate.game.kits.Kit;
 import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.managers.GameManager;
@@ -27,6 +28,7 @@ public class PlayerData {
 	private final GamePlayer gamePlayer;
 	private String playerName;
 	private double money;
+	private int tokens;
 	private int level;
 	private double exp;
 	private double requiredExp;
@@ -83,6 +85,7 @@ public class PlayerData {
 
 		playerData.set(path + ".name", this.gamePlayer.getName());
 		playerData.set(path + ".money", GameValues.STATISTICS.STARTING_MONEY);
+		playerData.set(path + ".tokens", GameValues.STATISTICS.STARTING_TOKENS);
 		playerData.set(path + ".level", GameValues.STATISTICS.FIRST_LEVEL);
 		playerData.set(path + ".exp", 0);
 		playerData.set(path + ".required-exp", GameValues.STATISTICS.FIRST_REQUIRED_EXP);
@@ -171,9 +174,34 @@ public class PlayerData {
 		gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 	}
 
-	private boolean hasEnoughMoney(final double amount) {
+	public boolean hasEnoughMoney(final double amount) {
 		return getMoney() >= amount;
 	}
+
+	public void depositTokens(final int amount) {
+		this.tokens += amount;
+		if (gameManager.isDatabaseConnected()) {
+			gameManager.getData().setTokens(this.gamePlayer.getUuid(), this.tokens);
+			return;
+		}
+		playerData.set("player-data." + this.gamePlayer.getUuid() + ".tokens", this.tokens);
+		gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
+	}
+
+	public void withdrawTokens(final int amount) {
+		this.tokens -= amount;
+		if (gameManager.isDatabaseConnected()) {
+			gameManager.getData().setTokens(this.gamePlayer.getUuid(), this.tokens);
+			return;
+		}
+		playerData.set("player-data." + this.gamePlayer.getUuid() + ".tokens", this.tokens);
+		gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
+	}
+
+	public boolean hasEnoughTokens(final int amount) {
+		return this.tokens >= amount;
+	}
+
 
 	public int getGamesPlayed() {
 		return (this.wins + this.losses);
@@ -275,27 +303,6 @@ public class PlayerData {
 		gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 	}
 
-	public void buyKit(final Kit kit) {
-		if (!kit.isFree() && !hasEnoughMoney(kit.getCost())) {
-			this.gamePlayer.sendMessage(Messages.NO_MONEY.toString());
-			gameManager.getSoundManager().playPurchaseCancelSound(this.gamePlayer.getPlayer());
-			return;
-		}
-		this.boughtKitsList.add(kit);
-		withdrawMoney(kit.getCost());
-		saveKits();
-		final String kitCost = String.valueOf(kit.getCost());
-		final String money = String.valueOf(getMoney());
-		final String prevMoney = String.valueOf(this.gamePlayer.getPlayerData().getMoney() + kit.getCost());
-		this.gamePlayer.sendMessage(Messages.KITS_MONEY_DEDUCT.toString(), "%previous-money%", prevMoney, "%money%", money, "%kit%", kit.getDisplayName(), "%kit-cost%", kitCost);
-		this.gamePlayer.setKit(kit);
-		gameManager.getSoundManager().playSelectBuySound(this.gamePlayer.getPlayer());
-	}
-
-	public boolean hasKitBought(final Kit kit) {
-		return this.boughtKitsList.contains(kit);
-	}
-
 	private void loadBoughtKits() {
 		final List<String> kitsInString;
 		if (gameManager.isDatabaseConnected()) {
@@ -309,7 +316,7 @@ public class PlayerData {
 		}
 	}
 
-	private void saveKits() {
+	public void saveKits() {
 		final List<String> kitsNameList = this.boughtKitsList.stream().map(Kit::getName).collect(Collectors.toList());
 
 		if (gameManager.isDatabaseConnected()) {
@@ -320,27 +327,6 @@ public class PlayerData {
 
 		playerData.set("player-data." + this.gamePlayer.getUuid() + ".kits", kitsNameList);
 		gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
-	}
-
-	public void buyPerk(final Perk perk) {
-		if (!perk.isFree() && !hasEnoughMoney(perk.getCost())) {
-			this.gamePlayer.sendMessage(Messages.NO_MONEY.toString());
-			gameManager.getSoundManager().playPurchaseCancelSound(this.gamePlayer.getPlayer());
-			return;
-		}
-		this.boughtPerksList.add(perk);
-		withdrawMoney(perk.getCost());
-		savePerks();
-		final String perkCost = String.valueOf(perk.getCost());
-		final String money = String.valueOf(getMoney());
-		final String prevMoney = String.valueOf(this.gamePlayer.getPlayerData().getMoney() + perk.getCost());
-		this.gamePlayer.sendMessage(Messages.PERKS_MONEY_DEDUCT.toString().toString(), "%previous-money%", prevMoney, "%money%", money, "%perk%", perk.getDisplayName(), "%perk-cost%", perkCost);
-		this.gamePlayer.setPerk(perk);
-		gameManager.getSoundManager().playSelectBuySound(this.gamePlayer.getPlayer());
-	}
-
-	public boolean hasPerkBought(final Perk perk) {
-		return this.boughtPerksList.contains(perk);
 	}
 
 	private void loadBoughtPerks() {
@@ -358,7 +344,7 @@ public class PlayerData {
 		}
 	}
 
-	private void savePerks() {
+	public void savePerks() {
 		final List<String> perksNameList = this.boughtPerksList.stream().map(Perk::getName).collect(Collectors.toList());
 
 		if (gameManager.isDatabaseConnected()) {
@@ -368,6 +354,19 @@ public class PlayerData {
 
 		playerData.set("player-data." + this.gamePlayer.getUuid() + ".perks", perksNameList);
 		gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
+	}
+
+	public void buy(final BuyableItem item) {
+		item.buy(this.gamePlayer);
+	}
+
+	public boolean hasBought(final BuyableItem item) {
+		if (item instanceof Kit) {
+			return this.boughtKitsList.contains(item);
+		} else if (item instanceof Perk) {
+			return this.boughtPerksList.contains(item);
+		}
+		return false;
 	}
 
 	/*public long getTimePlayed() {

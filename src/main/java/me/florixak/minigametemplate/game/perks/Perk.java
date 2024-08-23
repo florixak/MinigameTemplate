@@ -2,7 +2,9 @@ package me.florixak.minigametemplate.game.perks;
 
 import lombok.Getter;
 import me.florixak.minigametemplate.config.Messages;
+import me.florixak.minigametemplate.game.gameItems.BuyableItem;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class Perk {
+public class Perk extends BuyableItem {
+
+	private static final GameManager gameManager = GameManager.getInstance();
 
 	private final String name;
 	private final ItemStack displayItem;
@@ -35,7 +39,7 @@ public class Perk {
 	}
 
 	public String getFormattedCost() {
-		return Messages.PERKS_COST.toString().replace("%cost%", String.valueOf(getCost()));
+		return Messages.PERKS_SHOP_COST.toString().replace("%cost%", String.valueOf(getCost()));
 	}
 
 	public boolean isFree() {
@@ -103,6 +107,13 @@ public class Perk {
 				bonus.giveBonus(gamePlayer);
 			}
 		}
+	}
+
+	public void buy(final GamePlayer gamePlayer) {
+		super.buy(gamePlayer);
+		gamePlayer.getPlayerData().getBoughtPerksList().add(this);
+		gamePlayer.getPlayerData().savePerks();
+		gameManager.getSoundManager().playSelectBuySound(gamePlayer.getPlayer());
 	}
 
 	@Override

@@ -4,7 +4,9 @@ import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.XPotion;
 import lombok.Getter;
 import me.florixak.minigametemplate.config.Messages;
+import me.florixak.minigametemplate.game.gameItems.BuyableItem;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.ItemUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.enchantments.Enchantment;
@@ -17,7 +19,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class Kit {
+public class Kit extends BuyableItem {
+
+	private static final GameManager gameManager = GameManager.getInstance();
 
 	private final String name;
 	private final String displayName;
@@ -44,7 +48,7 @@ public class Kit {
 	}
 
 	public String getFormattedCost() {
-		return Messages.KITS_COST.toString().replace("%cost%", String.valueOf(getCost()));
+		return Messages.KITS_SHOP_COST.toString().replace("%cost%", String.valueOf(getCost()));
 	}
 
 	public void giveKit(final GamePlayer gamePlayer) {
@@ -53,6 +57,13 @@ public class Kit {
 		for (final ItemStack item : getItems()) {
 			p.getInventory().addItem(item);
 		}
+	}
+
+	public void buy(final GamePlayer gamePlayer) {
+		super.buy(gamePlayer);
+		gamePlayer.getPlayerData().getBoughtKitsList().add(this);
+		gamePlayer.getPlayerData().saveKits();
+		gameManager.getSoundManager().playSelectBuySound(gamePlayer.getPlayer());
 	}
 
 	private List<String> setLore() {

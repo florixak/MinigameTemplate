@@ -1,12 +1,14 @@
 package me.florixak.minigametemplate.managers;
 
-import me.florixak.minigametemplate.tasks.BoardsCheckTask;
+import me.florixak.minigametemplate.tasks.ScoreboardUpdateTask;
+import me.florixak.minigametemplate.tasks.TablistUpdateTask;
 
 public class TasksManager {
 
 	private final GameManager gameManager;
 
-	private BoardsCheckTask boardsCheckTask;
+	private ScoreboardUpdateTask scoreboardUpdateTask;
+	private TablistUpdateTask tablistUpdateTask;
 
 	public TasksManager(final GameManager gameManager) {
 		this.gameManager = gameManager;
@@ -14,9 +16,13 @@ public class TasksManager {
 	}
 
 	public void startTasks() {
-		if (this.boardsCheckTask != null) this.boardsCheckTask.cancel();
-		this.boardsCheckTask = new BoardsCheckTask(this.gameManager);
-		this.boardsCheckTask.runTaskTimer(this.gameManager.getPlugin(), 0, 20);
+		if (this.scoreboardUpdateTask != null) this.scoreboardUpdateTask.cancel();
+		this.scoreboardUpdateTask = new ScoreboardUpdateTask(this.gameManager);
+		this.scoreboardUpdateTask.runTaskTimer(this.gameManager.getPlugin(), 0, 20);
+
+		if (this.tablistUpdateTask != null) this.tablistUpdateTask.cancel();
+		this.tablistUpdateTask = new TablistUpdateTask(this.gameManager);
+		this.tablistUpdateTask.runTaskTimer(this.gameManager.getPlugin(), 0, 20);
 	}
 
 }
