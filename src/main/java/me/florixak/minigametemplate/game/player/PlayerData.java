@@ -15,7 +15,10 @@ import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PlayerData {
@@ -27,8 +30,6 @@ public class PlayerData {
 	private final GamePlayer gamePlayer;
 	@Getter
 	private String name;
-	@Getter
-	private UUID uuid;
 	private double money = GameValues.STATISTICS.STARTING_MONEY;
 	@Getter
 	private int tokens = GameValues.STATISTICS.STARTING_TOKENS;
@@ -64,9 +65,6 @@ public class PlayerData {
 				this.plugin.getVaultHook().deposit(this.gamePlayer.getName(), GameValues.STATISTICS.STARTING_MONEY);
 			}
 		}
-
-		this.uuid = this.gamePlayer.getUuid();
-		this.name = this.gamePlayer.getName();
 
 		if (this.gameManager.isDatabaseConnected()) {
 			this.gameManager.getData().createPlayer(this.gamePlayer.getPlayer());
@@ -433,21 +431,21 @@ public class PlayerData {
 	/* Getters & Setters */
 	private int getIntData(final DataType type, final int defaultValue) {
 		if (this.gameManager.isDatabaseConnected()) {
-			return this.gameManager.getData().getInt(this.uuid, type.getDatabasePath());
+			return this.gameManager.getData().getInt(this.gamePlayer.getUuid(), type.getDatabasePath());
 		}
 		return this.playerData.getInt("player-data." + this.gamePlayer.getUuid() + "." + type.toString(), defaultValue);
 	}
 
 	private String getStringData(final DataType type, final String defaultValue) {
 		if (this.gameManager.isDatabaseConnected()) {
-			return this.gameManager.getData().getString(this.uuid, type.getDatabasePath());
+			return this.gameManager.getData().getString(this.gamePlayer.getUuid(), type.getDatabasePath());
 		}
 		return this.playerData.getString("player-data." + this.gamePlayer.getUuid() + "." + type.toString(), defaultValue);
 	}
 
 	private double getDoubleData(final DataType type, final double defaultValue) {
 		if (this.gameManager.isDatabaseConnected()) {
-			return this.gameManager.getData().getDouble(this.uuid, type.getDatabasePath());
+			return this.gameManager.getData().getDouble(this.gamePlayer.getUuid(), type.getDatabasePath());
 		}
 		return this.playerData.getDouble("player-data." + this.gamePlayer.getUuid() + "." + type.toString(), defaultValue);
 	}

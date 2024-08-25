@@ -6,6 +6,7 @@ import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.gui.Gui;
+import me.florixak.minigametemplate.gui.GuiType;
 import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.gui.PaginatedMenu;
 import me.florixak.minigametemplate.managers.GameManager;
@@ -28,12 +29,17 @@ public class ArenasMenu extends PaginatedMenu {
 
 	@Override
 	public String getMenuName() {
-		return "Select an Arena";
+		return format(getGui().getTitle());
+	}
+
+	@Override
+	public int getSlots() {
+		return getGui().getSlots();
 	}
 
 	@Override
 	public Gui getGui() {
-		return null;
+		return this.guiManager.getGui(GuiType.ARENA_SELECTOR.getKey());
 	}
 
 	@Override

@@ -37,7 +37,7 @@ public class InGameArenasMenu extends PaginatedMenu {
 
 	@Override
 	public Gui getGui() {
-		return this.guiManager.getGui(GuiType.ARENA_SELECTOR.getKey());
+		return this.guiManager.getGui(GuiType.IN_GAME_ARENA_SELECTOR.getKey());
 	}
 
 	@Override

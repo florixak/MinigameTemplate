@@ -53,7 +53,10 @@ public class GuiManager {
 			final String displayName = itemSection.getString("display-name");
 			final Material mat = XMaterial.matchXMaterial(material).get().parseMaterial();
 			final List<String> lore = itemSection.getStringList("display-lore");
-			final ItemStack item = ItemUtils.createItem(mat, displayName, 1, lore);
+			final short durability = (short) itemSection.getInt("display-item-durability", 0);
+			final int amount = itemSection.getInt("display-item-amount", 1);
+			final ItemStack item = ItemUtils.createItem(mat, displayName, amount, lore);
+			item.setDurability(durability);
 			this.guiItem.put(key, item);
 			Bukkit.getLogger().info("Loaded item: " + key);
 		}
@@ -92,8 +95,11 @@ public class GuiManager {
 			final String displayName = invSection.getString("display-name", " ");
 			final Material material = XMaterial.matchXMaterial(displayItem).get().parseMaterial();
 			final List<String> lore = invSection.getStringList("display-lore");
-			final ItemStack displayItemStack = ItemUtils.createItem(material, displayName, 1, lore);
-			final int displaySlot = invSection.getInt("display-slot", -1);
+			final short durability = (short) invSection.getInt("display-item-durability", 0);
+			final int amount = invSection.getInt("display-item-amount", 1);
+			final ItemStack displayItemStack = ItemUtils.createItem(material, displayName, amount, lore);
+			displayItemStack.setDurability(durability);
+			final int displaySlot = invSection.getInt("hotbar-slot", -1);
 
 			final Gui gui = new Gui(enabled, title, slots, displayItemStack, displaySlot);
 			this.guis.put(key, gui);

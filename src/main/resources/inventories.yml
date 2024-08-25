@@ -22,7 +22,8 @@ inventories:
         - "&7Click to close."
     filler:
       display-name: " "
-      display-item: AIR
+      display-item: GRAY_STAINED_GLASS_PANE
+      display-item-durability: 7
     confirm:
       display-name: "&aConfirm"
       display-item: EMERALD_BLOCK
@@ -42,7 +43,7 @@ inventories:
       slots: 45
       display-name: "&6Arenas"
       display-item: COMPASS
-      display-slot: 0
+      hotbar-slot: 0
       display-lore:
         - "&7Click to join an arena."
 
@@ -52,7 +53,7 @@ inventories:
       slots: 45
       display-name: "&6In-Game Arenas"
       display-item: CLOCK
-      display-slot: -1
+      hotbar-slot: -1
       display-lore:
         - "&7Click to spectate an arena."
 
@@ -60,9 +61,9 @@ inventories:
       enabled: true
       title: "&6Profile"
       slots: 45
-      display-name: "&6Profile"
+      display-name: "&6My Profile"
       display-item: PLAYER_HEAD
-      display-slot: 4
+      hotbar-slot: 4
       display-lore:
         - "&7Click to view your profile."
 
@@ -72,7 +73,7 @@ inventories:
       slots: 45
       display-name: "&6Leaderboards"
       display-item: DIAMOND
-      display-slot: -1
+      hotbar-slot: -1
       display-lore:
         - "&7Click to view leaderboards."
 
@@ -82,7 +83,7 @@ inventories:
       slots: 45
       display-name: "&6Shop"
       display-item: EMERALD
-      display-slot: 3
+      hotbar-slot: 3
       display-lore:
         - "&7Click to view the shop."
 
@@ -92,7 +93,7 @@ inventories:
       slots: 45
       display-name: "&6Cosmetics"
       display-item: ENDER_CHEST
-      display-slot: -1
+      hotbar-slot: -1
       display-lore:
         - "&7Click to view cosmetics."
 
@@ -102,7 +103,7 @@ inventories:
       slots: 45
       display-name: "&6Kits"
       display-item: CHEST
-      display-slot: -1
+      hotbar-slot: -1
       display-lore:
         - "&7Click to view kits."
 
@@ -112,7 +113,7 @@ inventories:
       slots: 45
       display-name: "&6Perks"
       display-item: ENCHANTED_BOOK
-      display-slot: -1
+      hotbar-slot: -1
       display-lore:
         - "&7Click to view perks."
 
@@ -122,7 +123,7 @@ inventories:
       slots: 45
       display-name: "&6Quests"
       display-item: BOOK
-      display-slot: 5
+      hotbar-slot: 5
       display-lore:
         - "&7Click to view your quests."
 
@@ -135,10 +136,10 @@ inventories:
     toggle-player-hider:
       enabled: true
       title: "&6Toggle Player Hider"
-      slots: 27
       display-name: "&6Toggle Player Hider"
       display-item: LIME_DYE
-      display-slot: 7
+      display-item-durability: 10
+      hotbar-slot: 7
       display-lore:
         - "&7Click to toggle player hider."
 
@@ -152,7 +153,7 @@ inventories:
       slots: 36
       display-name: "&6Teams"
       display-item: WHITE_WOOL
-      display-slot: 0
+      hotbar-slot: 0
       display-lore:
         - "&7Click to join a team."
 
@@ -162,7 +163,7 @@ inventories:
       slots: 45
       display-name: "&6Kits"
       display-item: CHEST
-      display-slot: 1
+      hotbar-slot: 1
       display-lore:
         - "&7Click to select a kit."
 
@@ -172,7 +173,7 @@ inventories:
       slots: 45
       display-name: "&6Perks"
       display-item: ENCHANTED_BOOK
-      display-slot: 2
+      hotbar-slot: 2
       display-lore:
         - "&7Click to select a perk."
 
@@ -182,7 +183,7 @@ inventories:
       slots: 45
       display-name: "&6Cosmetics"
       display-item: ENDER_CHEST
-      display-slot: 5
+      hotbar-slot: 5
       display-lore:
         - "&7Click to select a cosmetic."
 
@@ -192,7 +193,7 @@ inventories:
       slots: 45
       display-name: "&6Quests"
       display-item: BOOK
-      display-slot: 4
+      hotbar-slot: 4
       display-lore:
         - "&7Click to view your quests."
 
@@ -203,6 +204,6 @@ inventories:
       slots: 27
       display-name: "&6Leave Arena"
       display-item: RED_BED
-      display-slot: 8
+      hotbar-slot: 8
       display-lore:
         - "&7Click to view perks."

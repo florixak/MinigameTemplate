@@ -81,6 +81,7 @@ public class PlayerManager {
 		this.gameManager.getPlayerQuestDataManager().removePlayerData(gamePlayer);
 		this.gameManager.getPlayerDataManager().removePlayerData(gamePlayer);
 		this.gameManager.getScoreboardManager().removeScoreboard(gamePlayer.getPlayer());
+		this.gameManager.getMenuManager().removeMenuUtils(gamePlayer);
 		getPlayers().remove(gamePlayer);
 	}
 

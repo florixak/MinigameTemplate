@@ -161,7 +161,7 @@ public class Arena {
 	}
 
 	public void disable() {
-		leaveAll();
+		kickAll();
 		setEnabled(false);
 	}
 
@@ -214,22 +214,15 @@ public class Arena {
 	}
 
 	public void leave(final GamePlayer gamePlayer) {
+		if (isPlaying()) gamePlayer.die(true);
 		gamePlayer.reset();
-		this.players.remove(gamePlayer);
 		this.gameManager.getPlayerManager().setPlayerForLobby(gamePlayer);
 	}
 
-	public void leaveAll() {
+	public void kickAll() {
 		final List<GamePlayer> players = new ArrayList<>(this.players);
 		players.forEach(this::leave);
 		this.players.clear();
-	}
-
-	public Set<GamePlayer> getAlivePlayers() {
-		return this.players.stream()
-				.filter(GamePlayer::isAlive)
-				.filter(GamePlayer::isOnline)
-				.collect(Collectors.toSet());
 	}
 
 	private void preparePlayers() {
@@ -245,6 +238,20 @@ public class Arena {
 				.collect(Collectors.toSet());
 	}
 
+	public Set<GamePlayer> getAlivePlayers() {
+		return getOnlinePlayers().stream()
+				.filter(GamePlayer::isAlive)
+				.collect(Collectors.toSet());
+	}
+
+	public Set<GamePlayer> getDeadPlayers() {
+		return this.players.stream().filter(GamePlayer::isDead).collect(Collectors.toSet());
+	}
+
+	public Set<GamePlayer> getSpectatorPlayers() {
+		return getOnlinePlayers().stream().filter(GamePlayer::isSpectator).collect(Collectors.toSet());
+	}
+
 	public GamePlayer getRandomPlayer() {
 		return RandomUtils.randomOnlinePlayer(getOnlinePlayers().stream().collect(Collectors.toList()));
 	}
@@ -253,15 +260,6 @@ public class Arena {
 		final List<GamePlayer> onlineListWithoutPerm = getPlayers().stream().filter(GamePlayer::isOnline).filter(gamePlayer -> !gamePlayer.hasPermission(perm)).collect(Collectors.toList());
 		return RandomUtils.randomOnlinePlayer(onlineListWithoutPerm);
 	}
-
-	public List<GamePlayer> getDeadPlayers() {
-		return this.players.stream().filter(GamePlayer::isDead).filter(GamePlayer::isOnline).collect(Collectors.toList());
-	}
-
-	public List<GamePlayer> getSpectatorPlayers() {
-		return this.players.stream().filter(GamePlayer::isSpectator).filter(GamePlayer::isOnline).collect(Collectors.toList());
-	}
-
 
 	/* Teams */
 	public Set<GameTeam> getAliveTeams() {

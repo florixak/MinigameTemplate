@@ -209,9 +209,9 @@ public class GamePlayer {
 		}
 	}
 
-	public void die() {
+	public void die(final boolean leave) {
 		setState(PlayerState.DEAD);
-
+		if (leave) return;
 		getPlayer().spigot().respawn();
 
 		getPlayer().setHealth(getPlayer().getMaxHealth());

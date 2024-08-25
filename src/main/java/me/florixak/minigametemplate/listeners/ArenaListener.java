@@ -133,7 +133,11 @@ public class ArenaListener implements Listener {
 
 		final Player p = event.getPlayer();
 		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
+
 		if (!this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) return;
+		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
+
+		if (arena.isPlaying()) return;
 		final ItemStack item = gamePlayer.getInventory().getItemInHand();
 
 		if (item.getType() == Material.AIR || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName())
