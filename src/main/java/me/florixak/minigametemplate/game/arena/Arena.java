@@ -44,6 +44,7 @@ public class Arena {
 	@Setter
 	protected Location endingLocation;
 	protected final List<GameTeam> teams;
+	protected boolean solo = false;
 
 	protected final List<GamePlayer> players = new ArrayList<>();
 
@@ -84,6 +85,10 @@ public class Arena {
 		this.endingLocation = endingLocation;
 		this.teams = teams;
 
+		if (checkIfAllTeamSizeOne()) {
+			this.solo = true;
+		}
+
 		if (enabled) {
 			this.arenaCheckTask = new ArenaCheckTask(this);
 			this.arenaCheckTask.runTaskTimer(MinigameTemplate.getInstance(), 0L, 20L);
@@ -91,74 +96,8 @@ public class Arena {
 
 	}
 
-	public void addTeam(final GameTeam team) {
-		this.teams.add(team);
-		this.maxPlayers += team.getSize();
-	}
 
-	public void removeTeam(final GameTeam team) {
-		this.teams.remove(team);
-		this.maxPlayers -= team.getSize();
-	}
-
-	public GameTeam getTeam(final String name) {
-		return this.teams.stream().filter(team -> team.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
-	}
-
-	public void join(final GamePlayer gamePlayer) {
-		if (isFull()) {
-			gamePlayer.sendMessage(Messages.ARENA_FULL.toString());
-			return;
-		}
-		this.players.add(gamePlayer);
-		this.gameManager.getPlayerManager().setPlayerForWaiting(gamePlayer, this);
-	}
-
-	public void joinAsSpectator(final GamePlayer gamePlayer) {
-		gamePlayer.setSpectator();
-		this.players.add(gamePlayer);
-	}
-
-	public void leave(final GamePlayer gamePlayer) {
-		gamePlayer.reset();
-		this.players.remove(gamePlayer);
-		this.gameManager.getPlayerManager().setPlayerForLobby(gamePlayer);
-	}
-
-	public void leaveAll() {
-		final List<GamePlayer> players = new ArrayList<>(this.players);
-		players.forEach(this::leave);
-		this.players.clear();
-	}
-
-	public boolean isFull() {
-		return this.players.size() >= this.maxPlayers;
-	}
-
-	public boolean canStart() {
-		return this.players.size() >= this.minPlayers;
-	}
-
-	public void start() {
-		setArenaState(ArenaState.STARTING);
-		this.startingTask = new StartingTask(this);
-		this.startingTask.runTaskTimer(MinigameTemplate.getInstance(), 0, 20);
-	}
-
-	public void stopStarting() {
-		this.arenaCheckTask.cancel();
-	}
-
-	public boolean canEnd() {
-		return this.players.size() <= 1 && this.arenaState == ArenaState.INGAME;
-	}
-
-	public void end() {
-		setArenaState(ArenaState.ENDING);
-		this.endingTask = new EndingTask(this);
-		this.endingTask.runTaskTimer(this.gameManager.getPlugin(), 0, 20);
-	}
-
+	/* Arena State */
 	public void setArenaState(final ArenaState arenaState) {
 		if (this.arenaState == arenaState) return;
 
@@ -178,6 +117,7 @@ public class Arena {
 				setWinner();
 				Utils.broadcast(PAPIUtils.setArenaPlaceholders(null, this, "%arena_winner% is the WINNER!"));
 				Utils.broadcast(PAPI.setPlaceholders(null, Messages.ARENA_ENDED.toString()));
+				saveAndShowStatistics();
 				end();
 				break;
 			case RESTARTING:
@@ -225,8 +165,64 @@ public class Arena {
 		setEnabled(false);
 	}
 
+	public boolean isFull() {
+		return this.players.size() >= this.maxPlayers;
+	}
+
+	public boolean canStart() {
+		return this.players.size() >= this.minPlayers;
+	}
+
+	public void start() {
+		setArenaState(ArenaState.STARTING);
+		this.startingTask = new StartingTask(this);
+		this.startingTask.runTaskTimer(MinigameTemplate.getInstance(), 0, 20);
+	}
+
+	public void stopStarting() {
+		this.arenaCheckTask.cancel();
+	}
+
+	public boolean canEnd() {
+		return this.players.size() <= 1 && this.arenaState == ArenaState.INGAME;
+	}
+
+	public void end() {
+		setArenaState(ArenaState.ENDING);
+		this.endingTask = new EndingTask(this);
+		this.endingTask.runTaskTimer(this.gameManager.getPlugin(), 0, 20);
+	}
+
+
+	/* Players */
 	public boolean isPlayerIn(final GamePlayer player) {
 		return this.players.contains(player);
+	}
+
+	public void join(final GamePlayer gamePlayer) {
+		if (isFull()) {
+			gamePlayer.sendMessage(Messages.ARENA_FULL.toString());
+			return;
+		}
+		this.players.add(gamePlayer);
+		this.gameManager.getPlayerManager().setPlayerForWaiting(gamePlayer, this);
+	}
+
+	public void joinAsSpectator(final GamePlayer gamePlayer) {
+		gamePlayer.setSpectator();
+		this.players.add(gamePlayer);
+	}
+
+	public void leave(final GamePlayer gamePlayer) {
+		gamePlayer.reset();
+		this.players.remove(gamePlayer);
+		this.gameManager.getPlayerManager().setPlayerForLobby(gamePlayer);
+	}
+
+	public void leaveAll() {
+		final List<GamePlayer> players = new ArrayList<>(this.players);
+		players.forEach(this::leave);
+		this.players.clear();
 	}
 
 	public Set<GamePlayer> getAlivePlayers() {
@@ -266,6 +262,8 @@ public class Arena {
 		return this.players.stream().filter(GamePlayer::isSpectator).filter(GamePlayer::isOnline).collect(Collectors.toList());
 	}
 
+
+	/* Teams */
 	public Set<GameTeam> getAliveTeams() {
 		return this.teams.stream().filter(GameTeam::isAlive).collect(Collectors.toSet());
 	}
@@ -284,6 +282,22 @@ public class Arena {
 		team.addMember(gamePlayer);
 	}
 
+	public void addTeam(final GameTeam team) {
+		this.teams.add(team);
+		this.maxPlayers += team.getSize();
+	}
+
+	public void removeTeam(final GameTeam team) {
+		this.teams.remove(team);
+		this.maxPlayers -= team.getSize();
+	}
+
+	public GameTeam getTeam(final String name) {
+		return this.teams.stream().filter(team -> team.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+	}
+
+
+	/* Winner */
 	public GameTeam getWinnerTeam() {
 		return this.teams.stream().filter(GameTeam::isWinner).findFirst().orElse(null);
 	}
@@ -304,6 +318,8 @@ public class Arena {
 		return getWinnerTeam().getDisplayName();
 	}
 
+
+	/* Arena Methods */
 	public void broadcast(final String message) {
 		getOnlinePlayers().forEach(player -> player.sendMessage(message));
 	}
@@ -364,6 +380,17 @@ public class Arena {
 		file.delete();
 	}
 
+	private void saveAndShowStatistics() {
+		for (final GamePlayer gamePlayer : this.players) {
+			if (getArenaMode().equalsIgnoreCase("Solo")) {
+				gamePlayer.getPlayerData().saveSoloStatistics();
+			} else {
+				gamePlayer.getPlayerData().saveTeamsStatistics();
+			}
+			gamePlayer.getPlayerData().showStatistics();
+		}
+	}
+
 	public void saveToFile() {
 		final File file = new File(pluginFile, this.id + ".yml");
 		if (!file.exists()) {
@@ -419,6 +446,16 @@ public class Arena {
 			e.printStackTrace();
 		}
 	}
+
+	private boolean checkIfAllTeamSizeOne() {
+		for (final GameTeam team : this.teams) {
+			if (team.getSize() != 1) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	@Override
 	public boolean equals(final Object obj) {

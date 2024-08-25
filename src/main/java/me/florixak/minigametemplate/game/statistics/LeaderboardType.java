@@ -44,7 +44,7 @@ public enum LeaderboardType {
 	}
 
 	public String getDatabaseType() {
-		return this.type;
+		return this.type.replace("-", "_");
 	}
 
 	public String getHologramName() {

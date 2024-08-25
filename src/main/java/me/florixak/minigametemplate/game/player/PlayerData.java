@@ -6,13 +6,17 @@ import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.cosmetics.Cosmetic;
+import me.florixak.minigametemplate.game.gameItems.BuyableItem;
+import me.florixak.minigametemplate.game.kits.Kit;
+import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.text.TextUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerData {
 
@@ -22,11 +26,14 @@ public class PlayerData {
 
 	private final GamePlayer gamePlayer;
 	@Getter
+	private String name;
+	@Getter
+	private UUID uuid;
 	private double money = GameValues.STATISTICS.STARTING_MONEY;
 	@Getter
 	private int tokens = GameValues.STATISTICS.STARTING_TOKENS;
 	@Getter
-	private double exp = 0;
+	private double exp;
 	@Getter
 	private int level = GameValues.STATISTICS.STARTING_LEVEL;
 	@Getter
@@ -34,6 +41,9 @@ public class PlayerData {
 
 	private final Map<DataType, Integer> soloStats = new HashMap<>();
 	private final Map<DataType, Integer> teamsStats = new HashMap<>();
+	private final List<Kit> boughtKitsList = new ArrayList<>();
+	private final List<Perk> boughtPerksList = new ArrayList<>();
+	private final List<Cosmetic> boughtCosmeticsList = new ArrayList<>();
 
 	public PlayerData(final GamePlayer gamePlayer) {
 		this.gamePlayer = gamePlayer;
@@ -55,12 +65,16 @@ public class PlayerData {
 			}
 		}
 
+		this.uuid = this.gamePlayer.getUuid();
+		this.name = this.gamePlayer.getName();
+
 		if (this.gameManager.isDatabaseConnected()) {
 			this.gameManager.getData().createPlayer(this.gamePlayer.getPlayer());
 			return;
 		}
 
 		final String path = "player-data." + this.gamePlayer.getUuid();
+		this.playerData.set(path + ".name", this.gamePlayer.getName());
 		this.playerData.set(path + ".money", GameValues.STATISTICS.STARTING_MONEY);
 		this.playerData.set(path + ".tokens", GameValues.STATISTICS.STARTING_TOKENS);
 		this.playerData.set(path + ".level", GameValues.STATISTICS.STARTING_LEVEL);
@@ -68,25 +82,27 @@ public class PlayerData {
 		this.playerData.set(path + ".required-exp", GameValues.STATISTICS.STARTING_REQUIRED_EXP);
 
 		for (final DataType type : DataType.values()) {
-			this.playerData.set(path + ".solo." + type.toString(), 0);
-			this.playerData.set(path + ".teams." + type.toString(), 0);
+			if (!type.toString().contains("solo") && !type.toString().contains("teams")) continue;
+			this.playerData.set(path + "." + type.toString(), 0);
 		}
 		this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 	}
 
 	private void loadData() {
+		this.name = getStringData(DataType.NAME, this.gamePlayer.getName());
+		this.money = getDoubleData(DataType.MONEY, GameValues.STATISTICS.STARTING_MONEY);
+		this.tokens = getIntData(DataType.TOKENS, GameValues.STATISTICS.STARTING_TOKENS);
+		this.level = getIntData(DataType.LEVEL, GameValues.STATISTICS.STARTING_LEVEL);
+		this.exp = getDoubleData(DataType.EXP, 0);
+		this.requiredExp = getDoubleData(DataType.REQUIRED_EXP, GameValues.STATISTICS.STARTING_REQUIRED_EXP);
 
 		for (final DataType type : DataType.values()) {
-			this.soloStats.put(type, getIntData(type, 0, "solo"));
-			this.teamsStats.put(type, getIntData(type, 0, "teams"));
+			this.soloStats.put(type, getIntData(type, 0));
+			this.teamsStats.put(type, getIntData(type, 0));
 		}
-	}
 
-	private int getIntData(final DataType type, final int defaultValue, final String category) {
-		if (this.gameManager.isDatabaseConnected()) {
-			return this.gameManager.getData().getIntData(type, this.gamePlayer.getUuid());
-		}
-		return this.playerData.getInt("player-data." + this.gamePlayer.getUuid() + "." + category + "." + type.toString(), defaultValue);
+		loadBoughtKits();
+		loadBoughtPerks();
 	}
 
 	private boolean hasData() {
@@ -118,7 +134,16 @@ public class PlayerData {
 		if (this.gameManager.isDatabaseConnected()) {
 //			this.gameManager.getData().setStat(this.gamePlayer.getUuid(), type, value);
 		} else {
-			this.playerData.set("player-data." + this.gamePlayer.getUuid() + "." + type.toString(), value);
+			final String path = "player-data." + this.gamePlayer.getUuid() + "." + type.toString();
+			if (value instanceof Integer) {
+				this.playerData.set(path, (Integer) value);
+			} else if (value instanceof Double) {
+				this.playerData.set(path, (Double) value);
+			} else if (value instanceof String) {
+				this.playerData.set(path, (String) value);
+			} else {
+				this.playerData.set(path, value);
+			}
 			this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 		}
 	}
@@ -130,56 +155,6 @@ public class PlayerData {
 			this.playerData.set("player-data." + this.gamePlayer.getUuid() + "." + category + "." + type.toString(), value);
 			this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 		}
-	}
-
-	public void saveSoloStatistics() {
-		addGameResult("solo");
-		if (this.gamePlayer.getKills() > 0)
-			setSoloStat(DataType.SOLO_KILLS, getSoloStat(DataType.SOLO_KILLS) + this.gamePlayer.getKills());
-		if (this.gamePlayer.getAssists() > 0)
-			setSoloStat(DataType.SOLO_ASSISTS, getSoloStat(DataType.SOLO_ASSISTS) + this.gamePlayer.getAssists());
-		if (this.gamePlayer.isDead())
-			setSoloStat(DataType.SOLO_DEATHS, getSoloStat(DataType.SOLO_DEATHS) + 1);
-
-		if (this.gamePlayer.getKills() > this.getIntData(DataType.SOLO_KILLSTREAK, 0, "solo")) {
-			setSoloStat(DataType.SOLO_KILLSTREAK, this.gamePlayer.getKills());
-			this.gamePlayer.sendMessage(PAPI.setPlaceholders(this.gamePlayer.getPlayer(), Messages.KILLSTREAK_NEW.toString()));
-		}
-
-		double money = this.gamePlayer.getMoneyForGameResult() + this.gamePlayer.getMoneyForKills() + this.gamePlayer.getMoneyForAssists() + this.gamePlayer.getMoneyForActivity();
-		double uhcExp = this.gamePlayer.getExpForGameResult() + this.gamePlayer.getExpForKills() + this.gamePlayer.getExpForAssists() + this.gamePlayer.getExpForActivity();
-		money *= GameValues.REWARDS.MULTIPLIER;
-		uhcExp *= GameValues.REWARDS.MULTIPLIER;
-
-		setGamesPlayed("solo");
-		depositMoney(money);
-		addExp(uhcExp);
-		this.gameManager.getPlayerQuestDataManager().getPlayerData(this.gamePlayer).savePlayerQuestData();
-	}
-
-	public void saveTeamsStatistics() {
-		addGameResult("teams");
-		if (this.gamePlayer.getKills() > 0)
-			setTeamsStat(DataType.TEAMS_KILLS, getTeamsStat(DataType.TEAMS_KILLS) + this.gamePlayer.getKills());
-		if (this.gamePlayer.getAssists() > 0)
-			setTeamsStat(DataType.TEAMS_ASSISTS, getTeamsStat(DataType.TEAMS_ASSISTS) + this.gamePlayer.getAssists());
-		if (this.gamePlayer.isDead())
-			setTeamsStat(DataType.TEAMS_DEATHS, getTeamsStat(DataType.TEAMS_DEATHS) + 1);
-
-		if (this.gamePlayer.getKills() > this.getIntData(DataType.TEAMS_KILLSTREAK, 0, "teams")) {
-			setTeamsStat(DataType.TEAMS_KILLSTREAK, this.gamePlayer.getKills());
-			this.gamePlayer.sendMessage(PAPI.setPlaceholders(this.gamePlayer.getPlayer(), Messages.KILLSTREAK_NEW.toString()));
-		}
-
-		double money = this.gamePlayer.getMoneyForGameResult() + this.gamePlayer.getMoneyForKills() + this.gamePlayer.getMoneyForAssists() + this.gamePlayer.getMoneyForActivity();
-		double uhcExp = this.gamePlayer.getExpForGameResult() + this.gamePlayer.getExpForKills() + this.gamePlayer.getExpForAssists() + this.gamePlayer.getExpForActivity();
-		money *= GameValues.REWARDS.MULTIPLIER;
-		uhcExp *= GameValues.REWARDS.MULTIPLIER;
-
-		setGamesPlayed("teams");
-		depositMoney(money);
-		addExp(uhcExp);
-		this.gameManager.getPlayerQuestDataManager().getPlayerData(this.gamePlayer).savePlayerQuestData();
 	}
 
 	private void addGameResult(final String category) {
@@ -203,6 +178,7 @@ public class PlayerData {
 			setTeamsStat(DataType.TEAMS_GAMES_PLAYED, getTeamsStat(DataType.TEAMS_WINS) + getTeamsStat(DataType.TEAMS_LOSSES));
 	}
 
+	/* Money & Tokens */
 	public double getMoney() {
 		if (this.plugin.getVaultHook().hasEconomy()) {
 			return this.plugin.getVaultHook().getBalance(this.gamePlayer.getPlayer());
@@ -242,6 +218,7 @@ public class PlayerData {
 		saveStat(DataType.TOKENS, this.tokens);
 	}
 
+	/* Activity Rewards */
 	public void addActivityRewards() {
 		final double money = GameValues.ACTIVITY_REWARDS.MONEY;
 		final double uhcExp = GameValues.ACTIVITY_REWARDS.EXP;
@@ -255,6 +232,7 @@ public class PlayerData {
 		this.gamePlayer.sendMessage(Messages.REWARDS_ACTIVITY.toString().replace("%money%", String.valueOf(money)).replace("%uhc-exp%", String.valueOf(uhcExp)));
 	}
 
+	/* Leveling System */
 	public void addExp(final double amount) {
 		this.exp += amount;
 		saveStat(DataType.EXP, this.exp);
@@ -268,10 +246,11 @@ public class PlayerData {
 		final int newLevel = this.level;
 		this.requiredExp = setRequiredExp();
 
-		saveStat(DataType.LEVEL, this.level);
-		saveStat(DataType.REQUIRED_EXP, this.requiredExp);
-		saveStat(DataType.EXP, (int) this.exp);
-		saveStat(DataType.REQUIRED_EXP, this.requiredExp);
+		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".level", this.level);
+		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".required-exp", this.requiredExp);
+		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".exp", (int) this.exp);
+		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".required-exp", this.requiredExp);
+		this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 
 		final double reward = GameValues.REWARDS.BASE_REWARD * GameValues.REWARDS.REWARD_COEFFICIENT * this.level;
 		depositMoney(reward);
@@ -294,6 +273,57 @@ public class PlayerData {
 		}
 	}
 
+	/* Statistics */
+	public void saveSoloStatistics() {
+		addGameResult("solo");
+		if (this.gamePlayer.getKills() > 0)
+			setSoloStat(DataType.SOLO_KILLS, getSoloStat(DataType.SOLO_KILLS) + this.gamePlayer.getKills());
+		if (this.gamePlayer.getAssists() > 0)
+			setSoloStat(DataType.SOLO_ASSISTS, getSoloStat(DataType.SOLO_ASSISTS) + this.gamePlayer.getAssists());
+		if (this.gamePlayer.isDead())
+			setSoloStat(DataType.SOLO_DEATHS, getSoloStat(DataType.SOLO_DEATHS) + 1);
+
+		if (this.gamePlayer.getKills() > this.getIntData(DataType.SOLO_KILLSTREAK, 0)) {
+			setSoloStat(DataType.SOLO_KILLSTREAK, this.gamePlayer.getKills());
+			this.gamePlayer.sendMessage(PAPI.setPlaceholders(this.gamePlayer.getPlayer(), Messages.KILLSTREAK_NEW.toString()));
+		}
+
+		double money = this.gamePlayer.getMoneyForGameResult() + this.gamePlayer.getMoneyForKills() + this.gamePlayer.getMoneyForAssists() + this.gamePlayer.getMoneyForActivity();
+		double uhcExp = this.gamePlayer.getExpForGameResult() + this.gamePlayer.getExpForKills() + this.gamePlayer.getExpForAssists() + this.gamePlayer.getExpForActivity();
+		money *= GameValues.REWARDS.MULTIPLIER;
+		uhcExp *= GameValues.REWARDS.MULTIPLIER;
+
+		setGamesPlayed("solo");
+		depositMoney(money);
+		addExp(uhcExp);
+		this.gameManager.getPlayerQuestDataManager().getPlayerData(this.gamePlayer).savePlayerQuestData();
+	}
+
+	public void saveTeamsStatistics() {
+		addGameResult("teams");
+		if (this.gamePlayer.getKills() > 0)
+			setTeamsStat(DataType.TEAMS_KILLS, getTeamsStat(DataType.TEAMS_KILLS) + this.gamePlayer.getKills());
+		if (this.gamePlayer.getAssists() > 0)
+			setTeamsStat(DataType.TEAMS_ASSISTS, getTeamsStat(DataType.TEAMS_ASSISTS) + this.gamePlayer.getAssists());
+		if (this.gamePlayer.isDead())
+			setTeamsStat(DataType.TEAMS_DEATHS, getTeamsStat(DataType.TEAMS_DEATHS) + 1);
+
+		if (this.gamePlayer.getKills() > this.getIntData(DataType.TEAMS_KILLSTREAK, 0)) {
+			setTeamsStat(DataType.TEAMS_KILLSTREAK, this.gamePlayer.getKills());
+			this.gamePlayer.sendMessage(PAPI.setPlaceholders(this.gamePlayer.getPlayer(), Messages.KILLSTREAK_NEW.toString()));
+		}
+
+		double money = this.gamePlayer.getMoneyForGameResult() + this.gamePlayer.getMoneyForKills() + this.gamePlayer.getMoneyForAssists() + this.gamePlayer.getMoneyForActivity();
+		double uhcExp = this.gamePlayer.getExpForGameResult() + this.gamePlayer.getExpForKills() + this.gamePlayer.getExpForAssists() + this.gamePlayer.getExpForActivity();
+		money *= GameValues.REWARDS.MULTIPLIER;
+		uhcExp *= GameValues.REWARDS.MULTIPLIER;
+
+		setGamesPlayed("teams");
+		depositMoney(money);
+		addExp(uhcExp);
+		this.gameManager.getPlayerQuestDataManager().getPlayerData(this.gamePlayer).savePlayerQuestData();
+	}
+
 	public void showStatistics() {
 		final List<String> rewards = this.gamePlayer.isWinner() ? Messages.REWARDS_WIN.toList() : Messages.REWARDS_LOSE.toList();
 
@@ -301,5 +331,124 @@ public class PlayerData {
 			message = PAPI.setPlaceholders(this.gamePlayer.getPlayer(), message);
 			this.gamePlayer.sendMessage(TextUtils.color(message));
 		}
+	}
+
+	/* Kits & Perks */
+	private void loadBoughtKits() {
+		final List<String> kitsInString;
+		if (this.gameManager.isDatabaseConnected()) {
+			kitsInString = this.gameManager.getData().getBoughtKits(this.gamePlayer.getUuid());
+
+
+		} else {
+			kitsInString = this.playerData.getStringList("player-data." + this.gamePlayer.getUuid() + ".kits");
+		}
+		for (final String kitName : kitsInString) {
+			final Kit kit = this.gameManager.getKitsManager().getKit(kitName);
+			if (kit != null) this.boughtKitsList.add(kit);
+		}
+	}
+
+	public void saveKits() {
+		final List<String> kitsNameList = this.boughtKitsList.stream().map(Kit::getName).collect(Collectors.toList());
+
+		if (this.gameManager.isDatabaseConnected()) {
+			this.gameManager.getData().setBoughtKits(this.gamePlayer.getUuid(), String.join(", ", kitsNameList));
+			Bukkit.getLogger().info("Saved kits: " + kitsNameList);
+			return;
+		}
+
+		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".kits", kitsNameList);
+		this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
+	}
+
+	private void loadBoughtPerks() {
+		final List<String> boughtPerksList;
+
+		if (this.gameManager.isDatabaseConnected()) {
+			boughtPerksList = this.gameManager.getData().getBoughtPerks(this.gamePlayer.getUuid());
+		} else {
+			boughtPerksList = this.playerData.getStringList("player-data." + this.gamePlayer.getUuid() + ".perks");
+		}
+
+
+		for (final String perkName : boughtPerksList) {
+			final Perk perk = this.gameManager.getPerksManager().getPerk(perkName);
+			if (perk != null) this.boughtPerksList.add(perk);
+
+		}
+
+
+	}
+
+	public void savePerks() {
+		final List<String> perksNameList = this.boughtPerksList.stream().map(Perk::getName).collect(Collectors.toList());
+
+		if (this.gameManager.isDatabaseConnected()) {
+			this.gameManager.getData().setBoughtPerks(this.gamePlayer.getUuid(), perksNameList.toString().replace("[", "").replace("]", ""));
+			return;
+		}
+
+		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".perks", perksNameList);
+		this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
+	}
+
+	public void buy(final BuyableItem item) {
+		if (item == null) return;
+		if (hasBought(item)) return;
+		if (!hasEnoughMoney(item.getCost())) {
+			this.gamePlayer.sendMessage(Messages.NO_MONEY.toString());
+			GameManager.getInstance().getSoundManager().playPurchaseCancelSound(this.gamePlayer.getPlayer());
+			return;
+		}
+		if (item instanceof Kit) {
+			final Kit kit = (Kit) item;
+			this.gamePlayer.sendMessage(Messages.KITS_SHOP_MONEY_DEDUCT.toString().replace("%kit%", kit.getDisplayName()));
+			this.boughtKitsList.add(kit);
+			saveKits();
+			withdrawAndPlaySound(kit.getCost());
+		} else if (item instanceof Perk) {
+			final Perk perk = (Perk) item;
+			this.gamePlayer.sendMessage(Messages.PERKS_SHOP_MONEY_DEDUCT.toString().replace("%perk%", perk.getDisplayName()));
+			this.boughtPerksList.add(perk);
+			savePerks();
+			withdrawAndPlaySound(perk.getCost());
+		}
+	}
+
+	private void withdrawAndPlaySound(final double amount) {
+		withdrawMoney(amount);
+		GameManager.getInstance().getSoundManager().playSelectBuySound(this.gamePlayer.getPlayer());
+	}
+
+	public boolean hasBought(final BuyableItem item) {
+		if (item instanceof Kit) {
+			return this.boughtKitsList.contains(item);
+		} else if (item instanceof Perk) {
+			return this.boughtPerksList.contains(item);
+		}
+		return false;
+	}
+
+	/* Getters & Setters */
+	private int getIntData(final DataType type, final int defaultValue) {
+		if (this.gameManager.isDatabaseConnected()) {
+			return this.gameManager.getData().getInt(this.uuid, type.getDatabasePath());
+		}
+		return this.playerData.getInt("player-data." + this.gamePlayer.getUuid() + "." + type.toString(), defaultValue);
+	}
+
+	private String getStringData(final DataType type, final String defaultValue) {
+		if (this.gameManager.isDatabaseConnected()) {
+			return this.gameManager.getData().getString(this.uuid, type.getDatabasePath());
+		}
+		return this.playerData.getString("player-data." + this.gamePlayer.getUuid() + "." + type.toString(), defaultValue);
+	}
+
+	private double getDoubleData(final DataType type, final double defaultValue) {
+		if (this.gameManager.isDatabaseConnected()) {
+			return this.gameManager.getData().getDouble(this.uuid, type.getDatabasePath());
+		}
+		return this.playerData.getDouble("player-data." + this.gamePlayer.getUuid() + "." + type.toString(), defaultValue);
 	}
 }

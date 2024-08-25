@@ -67,7 +67,7 @@ public class GamePlayer {
 
 	public String getName() {
 		if (Bukkit.getPlayer(this.name) == null) {
-			return this.playerData.getPlayerName();
+			return this.playerData.getName();
 		}
 		return this.name;
 	}

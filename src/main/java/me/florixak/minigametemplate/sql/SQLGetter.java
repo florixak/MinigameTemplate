@@ -34,20 +34,19 @@ public class SQLGetter {
 					+ "tokens INT(100) DEFAULT " + GameValues.STATISTICS.STARTING_TOKENS + ","
 					+ "level INT(100) DEFAULT " + GameValues.STATISTICS.STARTING_LEVEL + ","
 					+ "exp DECIMAL(24,2) DEFAULT 0,"
-					+ "required-exp DECIMAL(24,2) DEFAULT " + GameValues.STATISTICS.STARTING_REQUIRED_EXP + ","
-					+ "games-played INT(100) DEFAULT 0,"
-					+ "solo-wins INT(100) DEFAULT 0,"
-					+ "team-wins INT(100) DEFAULT 0,"
-					+ "solo-losses INT(100) DEFAULT 0,"
-					+ "team-losses INT(100) DEFAULT 0,"
-					+ "solo-kills INT(100) DEFAULT 0,"
-					+ "team-kills INT(100) DEFAULT 0,"
-					+ "solo-killstreak INT(100) DEFAULT 0,"
-					+ "team-killstreak INT(100) DEFAULT 0,"
-					+ "solo-assists INT(100) DEFAULT 0,"
-					+ "team-assists INT(100) DEFAULT 0,"
-					+ "solo-deaths INT(100) DEFAULT 0,"
-					+ "team-deaths INT(100) DEFAULT 0,"
+					+ "required_exp DECIMAL(24,2) DEFAULT " + GameValues.STATISTICS.STARTING_REQUIRED_EXP + ","
+					+ "solo_wins INT(100) DEFAULT 0,"
+					+ "team_wins INT(100) DEFAULT 0,"
+					+ "solo_losses INT(100) DEFAULT 0,"
+					+ "team_losses INT(100) DEFAULT 0,"
+					+ "solo_kills INT(100) DEFAULT 0,"
+					+ "team_kills INT(100) DEFAULT 0,"
+					+ "solo_killstreak INT(100) DEFAULT 0,"
+					+ "team_killstreak INT(100) DEFAULT 0,"
+					+ "solo_assists INT(100) DEFAULT 0,"
+					+ "team_assists INT(100) DEFAULT 0,"
+					+ "solo_deaths INT(100) DEFAULT 0,"
+					+ "team_deaths INT(100) DEFAULT 0,"
 					+ "kits VARCHAR(100) DEFAULT '',"
 					+ "perks VARCHAR(100) DEFAULT '',"
 					+ "cosmetics VARCHAR(100) DEFAULT '')"
@@ -91,175 +90,33 @@ public class SQLGetter {
 		return false;
 	}
 
-	public String getName(final UUID uuid) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT name FROM " + this.table + " WHERE uuid=?");
-			ps.setString(1, uuid.toString());
-
-			final ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				return rs.getString("name");
-			}
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
+	/* Economy Setters */
 	public void setMoney(final UUID uuid, final double money) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET money=? WHERE uuid=?");
-			ps.setDouble(1, money);
-			ps.setString(2, uuid.toString());
-
-			ps.executeUpdate();
-
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public double getMoney(final UUID uuid) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT money FROM " + this.table + " WHERE uuid=?");
-			ps.setString(1, uuid.toString());
-
-			final ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				return rs.getDouble("money");
-			}
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
-		return 0.00;
+		setDouble(uuid, DataType.MONEY.getDatabasePath(), money);
 	}
 
 	public void setTokens(final UUID uuid, final int tokens) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET tokens=? WHERE uuid=?");
-			ps.setInt(1, tokens);
-			ps.setString(2, uuid.toString());
-
-			ps.executeUpdate();
-
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
+		setInt(uuid, DataType.TOKENS.getDatabasePath(), tokens);
 	}
 
-	public int getTokens(final UUID uuid) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT tokens FROM " + this.table + " WHERE uuid=?");
-			ps.setString(1, uuid.toString());
-
-			final ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				return rs.getInt("tokens");
-			}
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
-		return 0;
-	}
-
+	/* Level Setters */
 	public void addLevel(final UUID uuid) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET level=? WHERE uuid=?");
-			ps.setInt(1, getLevel(uuid) + 1);
-			ps.setString(2, uuid.toString());
-
-			ps.executeUpdate();
-
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public int getLevel(final UUID uuid) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT level FROM " + this.table + " WHERE uuid=?");
-			ps.setString(1, uuid.toString());
-
-			final ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				return rs.getInt("level");
-			}
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
-		return 0;
+		setInt(uuid, DataType.LEVEL.getDatabasePath(), getInt(uuid, DataType.LEVEL.getDatabasePath()) + 1);
 	}
 
 	public void addExp(final UUID uuid, final double exp) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET exp=? WHERE uuid=?");
-			ps.setDouble(1, getExp(uuid) + exp);
-			ps.setString(2, uuid.toString());
-
-			ps.executeUpdate();
-
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public double getExp(final UUID uuid) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT exp FROM " + this.table + " WHERE uuid=?");
-			ps.setString(1, uuid.toString());
-
-			final ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				return rs.getInt("exp");
-			}
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
-		return 0;
+		setExp(uuid, getDouble(uuid, DataType.EXP.getDatabasePath()) + exp);
 	}
 
 	public void setExp(final UUID uuid, final double exp) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET exp=? WHERE uuid=?");
-			ps.setDouble(1, exp);
-			ps.setString(2, uuid.toString());
-
-			ps.executeUpdate();
-
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public double getRequiredExp(final UUID uuid) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT required_exp FROM " + this.table + " WHERE uuid=?");
-			ps.setString(1, uuid.toString());
-
-			final ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				return rs.getInt("required_exp");
-			}
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
-		return 0;
+		setDouble(uuid, DataType.EXP.getDatabasePath(), exp);
 	}
 
 	public void setRequiredExp(final UUID uuid, final double exp) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET required_exp=? WHERE uuid=?");
-			ps.setDouble(1, exp);
-			ps.setString(2, uuid.toString());
-
-			ps.executeUpdate();
-
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
+		setDouble(uuid, DataType.REQUIRED_EXP.getDatabasePath(), exp);
 	}
 
-
+	/* Kits */
 	public List<String> getBoughtKits(final UUID uuid) {
 		try {
 			final PreparedStatement ps = this.conn.prepareStatement("SELECT kits FROM " + this.table + " WHERE uuid=?");
@@ -278,14 +135,6 @@ public class SQLGetter {
 		return new ArrayList<>();
 	}
 
-	public void addBoughtKit(final UUID uuid, final String kit) {
-		final List<String> kits = getBoughtKits(uuid);
-		if (!kits.contains(kit)) {
-			kits.add(kit);
-			setBoughtKits(uuid, String.join(",", kits));
-		}
-	}
-
 	public void setBoughtKits(final UUID uuid, final String kits) {
 		try {
 			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET kits=? WHERE uuid=?");
@@ -298,6 +147,7 @@ public class SQLGetter {
 		}
 	}
 
+	/* Perks */
 	public List<String> getBoughtPerks(final UUID uuid) {
 		try {
 			final PreparedStatement ps = this.conn.prepareStatement("SELECT perks FROM " + this.table + " WHERE uuid=?");
@@ -316,14 +166,6 @@ public class SQLGetter {
 		return new ArrayList<>();
 	}
 
-	public void addBoughtPerk(final UUID uuid, final String perk) {
-		final List<String> perks = getBoughtPerks(uuid);
-		if (!perks.contains(perk)) {
-			perks.add(perk);
-			setBoughtPerks(uuid, String.join(",", perks));
-		}
-	}
-
 	public void setBoughtPerks(final UUID uuid, final String perks) {
 		try {
 			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET perks=? WHERE uuid=?");
@@ -336,6 +178,12 @@ public class SQLGetter {
 		}
 	}
 
+	/* Cosmetics */
+	public List<String> getBoughtCosmetics(final UUID uuid) {
+		return new ArrayList<>();
+	}
+
+	/* Statistics */
 	public Map<String, Integer> getTopStatistics(final String type) {
 		final Map<String, Integer> topStatistics = new HashMap<>();
 		try {
@@ -350,26 +198,15 @@ public class SQLGetter {
 		return topStatistics;
 	}
 
-	public void setStringData(DataType type, UUID uuid, String data) {
+	/* SQL GETTERS AND SETTERS */
+	public String getString(final UUID uuid, final String column) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET " + type.getConfigPath() + "=? WHERE uuid=?");
-			ps.setString(1, data);
-			ps.setString(2, uuid.toString());
-
-			ps.executeUpdate();
-		} catch (final SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public String getStringData(DataType type, UUID uuid) {
-		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT " + type.getConfigPath() + " FROM " + this.table + " WHERE uuid=?");
+			final PreparedStatement ps = this.conn.prepareStatement("SELECT " + column + " FROM " + this.table + " WHERE uuid=?");
 			ps.setString(1, uuid.toString());
 
 			final ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				return rs.getString(type.getConfigPath());
+				return rs.getString(column);
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
@@ -377,27 +214,27 @@ public class SQLGetter {
 		return null;
 	}
 
-
-	public void setIntData(DataType type, UUID uuid, int data) {
+	public void setString(final UUID uuid, final String column, final String value) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET " + type.getConfigPath() + "=? WHERE uuid=?");
-			ps.setInt(1, data);
+			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET " + column + "=? WHERE uuid=?");
+			ps.setString(1, value);
 			ps.setString(2, uuid.toString());
 
 			ps.executeUpdate();
+
 		} catch (final SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public int getIntData(DataType type, UUID uuid) {
+	public int getInt(final UUID uuid, final String column) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT " + type.getConfigPath() + " FROM " + this.table + " WHERE uuid=?");
+			final PreparedStatement ps = this.conn.prepareStatement("SELECT " + column + " FROM " + this.table + " WHERE uuid=?");
 			ps.setString(1, uuid.toString());
 
 			final ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				return rs.getInt(type.getConfigPath());
+				return rs.getInt(column);
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
@@ -405,31 +242,61 @@ public class SQLGetter {
 		return 0;
 	}
 
-	public void setDoubleData(DataType type, UUID uuid, double data) {
+	public void setInt(final UUID uuid, final String column, final int value) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET " + type.getConfigPath() + "=? WHERE uuid=?");
-			ps.setDouble(1, data);
+			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET " + column + "=? WHERE uuid=?");
+			ps.setInt(1, value);
 			ps.setString(2, uuid.toString());
 
 			ps.executeUpdate();
+
 		} catch (final SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public double getDoubleData(DataType type, UUID uuid) {
+	public double getDouble(final UUID uuid, final String column) {
 		try {
-			final PreparedStatement ps = this.conn.prepareStatement("SELECT " + type.getConfigPath() + " FROM " + this.table + " WHERE uuid=?");
+			final PreparedStatement ps = this.conn.prepareStatement("SELECT " + column + " FROM " + this.table + " WHERE uuid=?");
 			ps.setString(1, uuid.toString());
 
 			final ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				return rs.getDouble(type.getConfigPath());
+				return rs.getDouble(column);
 			}
 		} catch (final SQLException e) {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	public void setDouble(final UUID uuid, final String column, final double value) {
+		try {
+			final PreparedStatement ps = this.conn.prepareStatement("UPDATE " + this.table + " SET " + column + "=? WHERE uuid=?");
+			ps.setDouble(1, value);
+			ps.setString(2, uuid.toString());
+
+			ps.executeUpdate();
+
+		} catch (final SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public List<String> getList(final UUID uuid, final String column) {
+		try {
+			final PreparedStatement ps = this.conn.prepareStatement("SELECT " + column + " FROM " + this.table + " WHERE uuid=?");
+			ps.setString(1, uuid.toString());
+
+			final ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				final String list = rs.getString(column);
+				return Arrays.asList(list.split(", "));
+			}
+		} catch (final SQLException e) {
+			e.printStackTrace();
+		}
+		return new ArrayList<>();
 	}
 
 	public boolean isTableEmpty() {

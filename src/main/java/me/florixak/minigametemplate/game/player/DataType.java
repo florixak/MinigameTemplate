@@ -1,5 +1,8 @@
 package me.florixak.minigametemplate.game.player;
 
+import lombok.Getter;
+
+@Getter
 public enum DataType {
 
 	NAME("name"),
@@ -28,13 +31,16 @@ public enum DataType {
 
 
 	private final String configPath;
+	private final String databasePath;
 
 	DataType(final String configPath) {
 		this.configPath = configPath;
+		this.databasePath = configPath;
 	}
 
-	public String getConfigPath() {
-		return this.configPath;
+	DataType(final String configPath, final String databasePath) {
+		this.configPath = configPath;
+		this.databasePath = databasePath;
 	}
 
 	public static DataType getByName(final String name) {

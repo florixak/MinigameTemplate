@@ -5,6 +5,7 @@ import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.arena.Arena;
+import me.florixak.minigametemplate.game.player.DataType;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.utils.TimeUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
@@ -74,29 +75,45 @@ public class PlaceholderExp extends PlaceholderExpansion {
 				return TextUtils.formatToOneDecimal(gamePlayer.getPlayerData().getRequiredExp());
 			}
 
+			if (placeholder.equals("solo_games_played")) {
+				return String.valueOf(gamePlayer.getPlayerData().getTeamsStat(DataType.SOLO_GAMES_PLAYED));
+			}
+
+			if (placeholder.equals("teams_games_played")) {
+//				return String.valueOf(gamePlayer.getPlayerData().getTotalGamesPlayed());
+			}
+
 			if (placeholder.equals("total_games_played")) {
-				return String.valueOf(gamePlayer.getPlayerData().getGamesPlayed());
+				return String.valueOf(gamePlayer.getPlayerData().getTeamsStat(DataType.SOLO_WINS));
 			}
 
-			if (placeholder.equals("total_wins")) {
-				return String.valueOf(gamePlayer.getPlayerData().get());
+			if (placeholder.equals("solo_wins")) {
+				return String.valueOf(gamePlayer.getPlayerData().getSoloStat(DataType.SOLO_WINS));
 			}
 
-			if (placeholder.equals("total_kills")) {
-				return String.valueOf(gamePlayer.getPlayerData().getKills());
+			if (placeholder.equals("teams_wins")) {
+				return String.valueOf(gamePlayer.getPlayerData().getTeamsStat(DataType.SOLO_KILLS));
 			}
 
-			if (placeholder.equals("total_deaths")) {
-				return String.valueOf(gamePlayer.getPlayerData().getDeaths());
-			}
-
-			if (placeholder.equals("total_assists")) {
-				return String.valueOf(gamePlayer.getPlayerData().getAssists());
-			}
-
-			if (placeholder.equals("total_losses")) {
-				return String.valueOf(gamePlayer.getPlayerData().getLosses());
-			}
+//			if (placeholder.equals("total_wins")) {
+//				return String.valueOf(gamePlayer.getPlayerData().get());
+//			}
+//
+//			if (placeholder.equals("total_kills")) {
+//				return String.valueOf(gamePlayer.getPlayerData().getKills());
+//			}
+//
+//			if (placeholder.equals("total_deaths")) {
+//				return String.valueOf(gamePlayer.getPlayerData().getDeaths());
+//			}
+//
+//			if (placeholder.equals("total_assists")) {
+//				return String.valueOf(gamePlayer.getPlayerData().getAssists());
+//			}
+//
+//			if (placeholder.equals("total_losses")) {
+//				return String.valueOf(gamePlayer.getPlayerData().getLosses());
+//			}
 
 			if (placeholder.equals("completed_quests")) {
 				return String.valueOf(gamePlayer.getPlayerQuestData().getCompletedQuests().size());

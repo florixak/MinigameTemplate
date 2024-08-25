@@ -30,12 +30,12 @@ public class LeaderboardManager {
 	}
 
 	private void loadTopStatistics() {
-		this.topLists.put(LeaderboardType.WINS, getTotalTopOf(LeaderboardType.WINS));
-		this.topLists.put(LeaderboardType.KILLS, getTotalTopOf(LeaderboardType.KILLS));
-		this.topLists.put(LeaderboardType.ASSISTS, getTotalTopOf(LeaderboardType.ASSISTS));
-		this.topLists.put(LeaderboardType.DEATHS, getTotalTopOf(LeaderboardType.DEATHS));
-		this.topLists.put(LeaderboardType.LOSSES, getTotalTopOf(LeaderboardType.LOSSES));
-		this.topLists.put(LeaderboardType.KILLSTREAK, getTotalTopOf(LeaderboardType.KILLSTREAK));
+//		this.topLists.put(LeaderboardType.WINS, getTotalTopOf(LeaderboardType.WINS));
+//		this.topLists.put(LeaderboardType.KILLS, getTotalTopOf(LeaderboardType.KILLS));
+//		this.topLists.put(LeaderboardType.ASSISTS, getTotalTopOf(LeaderboardType.ASSISTS));
+//		this.topLists.put(LeaderboardType.DEATHS, getTotalTopOf(LeaderboardType.DEATHS));
+//		this.topLists.put(LeaderboardType.LOSSES, getTotalTopOf(LeaderboardType.LOSSES));
+//		this.topLists.put(LeaderboardType.KILLSTREAK, getTotalTopOf(LeaderboardType.KILLSTREAK));
 		this.topLists.put(LeaderboardType.UHC_LEVEL, getTotalTopOf(LeaderboardType.UHC_LEVEL));
 		this.topLists.put(LeaderboardType.GAMES_PLAYED, getTotalTopOf(LeaderboardType.GAMES_PLAYED));
 	}
