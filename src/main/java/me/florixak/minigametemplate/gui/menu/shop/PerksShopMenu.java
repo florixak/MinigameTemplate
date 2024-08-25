@@ -1,16 +1,15 @@
 package me.florixak.minigametemplate.gui.menu.shop;
 
-import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.Permissions;
 import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.gui.Gui;
+import me.florixak.minigametemplate.gui.GuiType;
 import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.gui.PaginatedMenu;
-import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.ItemUtils;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,20 +19,29 @@ import java.util.stream.Collectors;
 
 public class PerksShopMenu extends PaginatedMenu {
 
-	private final GameManager gameManager = GameManager.getInstance();
 	private final GamePlayer gamePlayer;
 	private final List<Perk> perksList;
 
 	public PerksShopMenu(final MenuUtils menuUtils) {
-		super(menuUtils, GameValues.PERKS.PERKS_SHOP_TITLE);
+		super(menuUtils);
 		this.gamePlayer = menuUtils.getGamePlayer();
 		this.perksList = this.gameManager.getPerksManager().getPerks().stream()
 				.filter(perk -> !this.gamePlayer.getPlayerData().hasBought(perk)).collect(Collectors.toList());
 	}
 
 	@Override
+	public String getMenuName() {
+		return format(getGui().getTitle());
+	}
+
+	@Override
 	public int getSlots() {
-		return GameValues.PERKS.PERKS_SHOP_SLOTS;
+		return getGui().getSlots();
+	}
+
+	@Override
+	public Gui getGui() {
+		return this.guiManager.getGui(GuiType.PERKS_SHOP.getKey());
 	}
 
 	@Override
@@ -43,14 +51,17 @@ public class PerksShopMenu extends PaginatedMenu {
 
 	@Override
 	public void handleMenuClicks(final InventoryClickEvent event) {
-		final Material clickedItem = event.getCurrentItem().getType();
-		if (clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.CLOSE_ITEM).get().parseMaterial())) {
+		final ItemStack clickedItem = event.getCurrentItem();
+		if (clickedItem.equals(this.guiManager.getItem("filler"))) {
+			event.setCancelled(true);
+		} else if (clickedItem.equals(this.guiManager.getItem("close"))) {
 			close();
-		} else if (clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.NEXT_ITEM).get().parseMaterial())
-				|| clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.PREVIOUS_ITEM).get().parseMaterial())) {
+		} else if (clickedItem.equals(this.guiManager.getItem("back"))) {
+			close();
+			new ShopMenu(this.menuUtils).open();
+		} else if (clickedItem.equals(this.guiManager.getItem("previous")) || clickedItem.equals(this.guiManager.getItem("next"))) {
 			handlePaging(event, this.perksList);
 		} else {
-			if (this.gameManager.getArenaManager().isPlayerInArena(this.gamePlayer)) return;
 			handlePerkSelection(event);
 		}
 
@@ -58,7 +69,7 @@ public class PerksShopMenu extends PaginatedMenu {
 
 	@Override
 	public void setMenuItems() {
-		addMenuBorder();
+		addMenuBorder(true);
 		ItemStack perkDisplayItem;
 
 		for (int i = getStartIndex(); i < getEndIndex(); i++) {
@@ -66,7 +77,7 @@ public class PerksShopMenu extends PaginatedMenu {
 			final List<String> lore = new ArrayList<>();
 
 			lore.add(perk.getFormattedCost());
-			lore.addAll(perk.getDescription());
+			lore.addAll(perk.getLore());
 
 			perkDisplayItem = ItemUtils.createItem(perk.getDisplayItem().getType(), perk.getDisplayName(), 1, lore);
 
@@ -81,6 +92,10 @@ public class PerksShopMenu extends PaginatedMenu {
 			this.gamePlayer.sendMessage(Messages.PERKS_DISABLED.toString());
 			return;
 		}
+		if (this.perksList.isEmpty()) {
+			this.gamePlayer.sendMessage("You have already bought all the perks!");
+			return;
+		}
 		super.open();
 	}
 
@@ -93,7 +108,7 @@ public class PerksShopMenu extends PaginatedMenu {
 				|| selectedPerk.isFree()) {
 			this.gamePlayer.getPlayerData().buy(selectedPerk);
 		} else {
-			if (GameValues.INVENTORY.CONFIRM_PURCHASE_ENABLED) {
+			if (this.guiManager.getGui(GuiType.PURCHASE_CONFIRM.getKey()).isEnabled()) {
 				this.menuUtils.setToBuy(selectedPerk);
 				new ConfirmPurchaseMenu(this.menuUtils).open();
 			} else {

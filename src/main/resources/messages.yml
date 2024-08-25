@@ -55,7 +55,22 @@ Messages:
 
     ended: "&c[!] &fGame has ended!"
     restarting: "%prefix% &fGame is restarting!"
-    full: "Game is full!"
+    full: "&c[!] Game is full!"
+
+    lore:
+      info:
+        - "&fPlayers: &e%arena_online%/&e%arena_max%"
+        - "&fMode: &e%arena_mode%"
+        - " "
+        - "&fState: &e%arena_state%"
+        - "&fTime left: &e%arena_seconds%"
+        - " "
+      join: "&eClick to join!"
+      in-game: "&6Click to spectate!"
+      full: "&cGame is full!"
+      restarting: "&cGame is restarting!"
+      disabled: "&cDisabled"
+      solo: "&eSolo"
 
   teams:
     join: "&a[!] &fJoined team %minigame_team%&f!"

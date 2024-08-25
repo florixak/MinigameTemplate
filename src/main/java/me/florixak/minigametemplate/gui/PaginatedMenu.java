@@ -1,11 +1,7 @@
 package me.florixak.minigametemplate.gui;
 
-import com.cryptomorin.xseries.XMaterial;
-import me.florixak.minigametemplate.game.GameValues;
-import me.florixak.minigametemplate.utils.ItemUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.List;
@@ -19,26 +15,26 @@ public abstract class PaginatedMenu extends Menu {
 
 	protected int index = 0;
 
-	public PaginatedMenu(final MenuUtils menuUtils, final String title) {
+	public PaginatedMenu(final MenuUtils menuUtils) {
 		super(menuUtils);
-		this.title = title;
 	}
 
 	@Override
 	public String getMenuName() {
-		return formattedMenuName();
+		return this.title;
 	}
 
-	private String formattedMenuName() {
+	public String format(final String title) {
 		if (getMaxPages() == 1) {
-			return TextUtils.color(this.title);
+			return TextUtils.color(title);
 		} else {
-			return TextUtils.color(this.title + " - " + (this.currentPage + 1) + " / " + getMaxPages());
+			return TextUtils.color(title + " - " + (this.currentPage + 1) + " / " + getMaxPages());
 		}
 	}
 
 	public int getMaxPages() {
-		return (int) Math.ceil((double) getItemsCount() / getMaxItemsPerPage());
+		final int maxPages = (int) Math.ceil((double) getItemsCount() / getMaxItemsPerPage());
+		return maxPages == 0 ? 1 : maxPages;
 	}
 
 	public abstract int getItemsCount();
@@ -56,20 +52,17 @@ public abstract class PaginatedMenu extends Menu {
 		return Math.min(getStartIndex() + getMaxItemsPerPage(), getItemsCount());
 	}
 
-	public void addMenuBorder() {
+	public void addMenuBorder(final boolean backItem) {
 		if (this.currentPage > 0)
-			this.inventory.setItem(getSlots() - 6,
-					ItemUtils.createItem(XMaterial.matchXMaterial(Material.DARK_OAK_BUTTON).parseMaterial(),
-							TextUtils.color(GameValues.INVENTORY.PREVIOUS_TITLE), 1, null));
+			this.inventory.setItem(getSlots() - 6, this.gameManager.getGuiManager().getItem("previous"));
 
-		this.inventory.setItem(getSlots() - 5,
-				ItemUtils.createItem(XMaterial.matchXMaterial(Material.BARRIER).parseMaterial(),
-						TextUtils.color(GameValues.INVENTORY.CLOSE_TITLE), 1, null));
+		this.inventory.setItem(getSlots() - 5, this.gameManager.getGuiManager().getItem("close"));
 
 		if (this.currentPage < getMaxPages() - 1)
-			this.inventory.setItem(getSlots() - 4,
-					ItemUtils.createItem(XMaterial.matchXMaterial(Material.DARK_OAK_BUTTON).parseMaterial(),
-							TextUtils.color(GameValues.INVENTORY.NEXT_TITLE), 1, null));
+			this.inventory.setItem(getSlots() - 4, this.gameManager.getGuiManager().getItem("next"));
+
+		if (backItem)
+			this.inventory.setItem(getSlots() - 9, this.gameManager.getGuiManager().getItem("back"));
 	}
 
 	private int getMaxItemsPerPage() {

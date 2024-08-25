@@ -16,15 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class KitsShopMenu extends PaginatedMenu {
+public class CosmeticsShopMenu extends PaginatedMenu {
 
 	private final GamePlayer gamePlayer;
-	private final List<Kit> kitsList;
+	private final List<Kit> cosmeticsList;
 
-	public KitsShopMenu(final MenuUtils menuUtils) {
+	public CosmeticsShopMenu(final MenuUtils menuUtils) {
 		super(menuUtils);
 		this.gamePlayer = menuUtils.getGamePlayer();
-		this.kitsList = this.gameManager.getKitsManager().getKitsList().stream()
+		this.cosmeticsList = this.gameManager.getKitsManager().getKitsList().stream()
 				.filter(kit -> !this.gamePlayer.getPlayerData().hasBought(kit)).collect(Collectors.toList());
 	}
 
@@ -40,12 +40,12 @@ public class KitsShopMenu extends PaginatedMenu {
 
 	@Override
 	public Gui getGui() {
-		return this.guiManager.getGui(GuiType.KITS_SHOP.getKey());
+		return this.guiManager.getGui(GuiType.COSMETICS_SHOP.getKey());
 	}
 
 	@Override
 	public int getItemsCount() {
-		return this.kitsList.size();
+		return this.cosmeticsList.size();
 	}
 
 	@Override
@@ -59,9 +59,9 @@ public class KitsShopMenu extends PaginatedMenu {
 			close();
 			new ShopMenu(this.menuUtils).open();
 		} else if (clickedItem.equals(this.guiManager.getItem("previous")) || clickedItem.equals(this.guiManager.getItem("next"))) {
-			handlePaging(event, this.kitsList);
+			handlePaging(event, this.cosmeticsList);
 		} else {
-			handleKitSelection(event);
+			handleCosmeticSelection(event);
 		}
 
 	}
@@ -72,7 +72,7 @@ public class KitsShopMenu extends PaginatedMenu {
 		ItemStack kitDisplayItem;
 
 		for (int i = getStartIndex(); i < getEndIndex(); i++) {
-			final Kit kit = this.kitsList.get(i);
+			final Kit kit = this.cosmeticsList.get(i);
 			final List<String> lore = new ArrayList<>();
 
 			lore.add(kit.getFormattedCost());
@@ -90,24 +90,29 @@ public class KitsShopMenu extends PaginatedMenu {
 			this.gamePlayer.sendMessage(Messages.KITS_DISABLED.toString());
 			return;
 		}
-		if (this.kitsList.isEmpty()) {
-			this.gamePlayer.sendMessage("You have already bought all the kits!");
+		if (this.cosmeticsList.isEmpty()) {
+			this.gamePlayer.sendMessage("You have already bought all the cosmetics!");
 			return;
 		}
 		super.open();
 	}
 
-	private void handleKitSelection(final InventoryClickEvent event) {
-		final Kit selectedKit = this.kitsList.get(event.getSlot());
-		close();
-
-		if (this.guiManager.getGui(GuiType.PURCHASE_CONFIRM.getKey()).isEnabled()) {
-			this.menuUtils.setToBuy(selectedKit);
-			new ConfirmPurchaseMenu(this.menuUtils).open();
-		} else {
-			this.gamePlayer.getPlayerData().buy(selectedKit);
-		}
-
+	private void handleCosmeticSelection(final InventoryClickEvent event) {
+//		final Cosmetic selectedCosmetic = this.kitsList.get(event.getSlot());
+//		close();
+//
+//		if (this.gamePlayer.getPlayerData().hasBought(selectedCosmetic)
+//				|| this.gamePlayer.hasPermission(Permissions.KITS_FREE.getPerm())
+//				|| selectedCosmetic.isFree()) {
+//			this.gamePlayer.getPlayerData().buy(selectedCosmetic);
+//		} else {
+//			if (this.guiManager.getGui(GuiType.PURCHASE_CONFIRM.getKey()).isEnabled()) {
+//				this.menuUtils.setToBuy(selectedCosmetic);
+//				new ConfirmPurchaseMenu(this.menuUtils).open();
+//			} else {
+//				this.gamePlayer.getPlayerData().buy(selectedCosmetic);
+//			}
+//		}
 
 	}
 }

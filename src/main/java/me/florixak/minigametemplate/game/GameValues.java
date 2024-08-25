@@ -1,68 +1,40 @@
 package me.florixak.minigametemplate.game;
 
-import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.managers.GameManager;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class GameValues {
 
 	private static final GameManager gameManager = GameManager.getInstance();
 	private static final FileConfiguration config = gameManager.getConfigManager().getFile(ConfigType.SETTINGS).getConfig();
 
-	public static final Set<Material> LEAVES = new HashSet<>();
-	public static final Set<Material> WOOD_LOGS = new HashSet<>();
-
-	static {
-		WOOD_LOGS.add(XMaterial.OAK_LOG.parseMaterial());
-		WOOD_LOGS.add(XMaterial.BIRCH_LOG.parseMaterial());
-		WOOD_LOGS.add(XMaterial.ACACIA_LOG.parseMaterial());
-		WOOD_LOGS.add(XMaterial.JUNGLE_LOG.parseMaterial());
-		WOOD_LOGS.add(XMaterial.SPRUCE_LOG.parseMaterial());
-		WOOD_LOGS.add(XMaterial.DARK_OAK_LOG.parseMaterial());
-
-		LEAVES.add(XMaterial.OAK_LEAVES.parseMaterial());
-		LEAVES.add(XMaterial.SPRUCE_LEAVES.parseMaterial());
-		LEAVES.add(XMaterial.BIRCH_LEAVES.parseMaterial());
-		LEAVES.add(XMaterial.JUNGLE_LEAVES.parseMaterial());
-		LEAVES.add(XMaterial.ACACIA_LEAVES.parseMaterial());
-		LEAVES.add(XMaterial.DARK_OAK_LEAVES.parseMaterial());
-		LEAVES.add(XMaterial.AZALEA_LEAVES.parseMaterial());
-		LEAVES.add(XMaterial.FLOWERING_AZALEA_LEAVES.parseMaterial());
-		LEAVES.add(XMaterial.MANGROVE_LEAVES.parseMaterial());
-	}
-
-
 	public static final int ERROR_INT_VALUE = -1;
 	public static final double ERROR_DOUBLE_VALUE = -1.0;
 	public static final String ERROR_ITEM = "BARRIER";
 
-	public static final String WORLD_NAME = "world";
-
 	public static final ArenaConfig ARENA = new ArenaConfig();
-	public static final ChatConfig CHAT = new ChatConfig();
-	public static final BorderConfig BORDER = new BorderConfig();
-	public static final TeamConfig TEAMS = new TeamConfig();
-	public static final KitConfig KITS = new KitConfig();
-	public static final PerkConfig PERKS = new PerkConfig();
+	public static final Countdowns COUNTDOWNS = new Countdowns();
+
+	public static final TeamsConfig TEAMS = new TeamsConfig();
+	public static final KitsConfig KITS = new KitsConfig();
+	public static final PerksConfig PERKS = new PerksConfig();
 	public static final QuestConfig QUESTS = new QuestConfig();
+
 	public static final StatisticsConfig STATISTICS = new StatisticsConfig();
 	public static final RewardConfig REWARDS = new RewardConfig();
 	public static final ActivityRewardConfig ACTIVITY_REWARDS = new ActivityRewardConfig();
-	public static final InventoryConfig INVENTORY = new InventoryConfig();
-	public static final ScoreboardConfig SCOREBOARD = new ScoreboardConfig();
-	public static final TablistConfig TABLIST = new TablistConfig();
-	public static final AddonConfig ADDONS = new AddonConfig();
+
 	public static final TitleConfig TITLE = new TitleConfig();
-	public static final BungeeCordConfig BUNGEECORD = new BungeeCordConfig();
+	public static final ChatConfig CHAT = new ChatConfig();
 	public static final Sounds SOUNDS = new Sounds();
+	public static final TablistConfig TABLIST = new TablistConfig();
+
 	public static final Database DATABASE = new Database();
-	public static final Countdowns COUNTDOWNS = new Countdowns();
+	public static final BungeeCordConfig BUNGEECORD = new BungeeCordConfig();
+	public static final AddonConfig ADDONS = new AddonConfig();
 
 
 	private GameValues() {
@@ -77,39 +49,16 @@ public class GameValues {
 		public final int STARTING_MESSAGE_AT = getConfigInt("settings.game.starting-message-at", 10);
 	}
 
-	public static class KitConfig {
+	public static class KitsConfig {
 		public final boolean ENABLED = getConfigBoolean("settings.kits.enabled", true);
-		public final boolean BOUGHT_FOREVER = getConfigBoolean("settings.kits.bought-forever", true);
-
-		public final String KITS_SELECTION_TITLE = getConfigString("settings.kits.select.title", "Select Kit");
-		public final int KITS_SELECTION_SLOTS = getConfigInt("settings.kits.select.slots", 27);
-		public final String KITS_SELECTION_ITEM = getConfigString("settings.kits.select.item", ERROR_ITEM);
-
-		public final String KIT_SHOP_TITLE = getConfigString("settings.kits.shop.title", "Kits Shop");
-		public final int KIT_SHOP_SLOTS = getConfigInt("settings.kits.kits.shop.slots", 27);
-		public final String KIT_SHOP_ITEM = getConfigString("settings.kits.shop.item", ERROR_ITEM);
 	}
 
-	public static class PerkConfig {
+	public static class PerksConfig {
 		public final boolean ENABLED = getConfigBoolean("settings.perks.enabled", true);
-		public final boolean BOUGHT_FOREVER = getConfigBoolean("settings.perks.bought-forever", true);
-
-		public final String PERKS_SELECTION_TITLE = getConfigString("settings.perks.select.title", "Select Perk");
-		public final int PERKS_SELECTION_SLOTS = getConfigInt("settings.perks.select.slots", 27);
-		public final String PERKS_SELECTION_ITEM = getConfigString("settings.perks.select.item", ERROR_ITEM);
-
-		public final String PERKS_SHOP_TITLE = getConfigString("settings.perks.shop.title", "Perks Shop");
-		public final int PERKS_SHOP_SLOTS = getConfigInt("settings.perks.shop.slots", 27);
-		public final String PERKS_SHOP_ITEM = getConfigString("settings.perks.shop.item", ERROR_ITEM);
 	}
 
-	public static class TeamConfig {
-		public final boolean ENABLED = getConfigBoolean("settings.teams.enabled", true);
+	public static class TeamsConfig {
 		public final boolean FRIENDLY_FIRE = getConfigBoolean("settings.teams.friendly-fire", true);
-
-		public final String TEAM_SELECTION_TITLE = getConfigString("settings.teams.select.title", "Select Team");
-		public final int TEAM_SELECTION_SLOTS = getConfigInt("settings.teams.select.slots", 27);
-		public final String TEAM_SELECTION_ITEM = getConfigString("settings.teams.select.item", ERROR_ITEM);
 	}
 
 	public static class Countdowns {
@@ -119,13 +68,13 @@ public class GameValues {
 	}
 
 	public static class Database {
-		public final boolean ENABLED = getConfigBoolean("settings.database.enabled", false);
-		public final String HOST = getConfigString("settings.database.host", "localhost");
-		public final String PORT = getConfigString("settings.database.port", "3306");
-		public final String DATABASE = getConfigString("settings.database.database", "database");
-		public final String TABLE = getConfigString("settings.database.table", "minigame");
-		public final String USERNAME = getConfigString("settings.database.username", "root");
-		public final String PASSWORD = getConfigString("settings.database.password", "password");
+		public final boolean ENABLED = getConfigBoolean("settings.mysql.enabled", false);
+		public final String HOST = getConfigString("settings.mysql.host", "localhost");
+		public final String PORT = getConfigString("settings.mysql.port", "3306");
+		public final String DATABASE = getConfigString("settings.mysql.database", "database");
+		public final String TABLE = getConfigString("settings.mysql.table", "minigame");
+		public final String USERNAME = getConfigString("settings.mysql.username", "root");
+		public final String PASSWORD = getConfigString("settings.mysql.password", "password");
 	}
 
 	public static class ChatConfig {
@@ -138,13 +87,13 @@ public class GameValues {
 	}
 
 	public static class BungeeCordConfig {
-		public final boolean ENABLED = getConfigBoolean("settings.bungeecord.enabled", false);
+		public final boolean ENABLED = getConfigBoolean("settings.bungee-mode.enabled", false);
 		public final String LOBBY_SERVER = getConfigString("settings.bungeecord.lobby-server", "lobby");
 	}
 
 	public static class StatisticsConfig {
-		public final int FIRST_LEVEL = getConfigInt("settings.statistics.level.first-level", 0);
-		public final double FIRST_REQUIRED_EXP = getConfigDouble("settings.statistics.level.first-required-exp", 100.0);
+		public final int STARTING_LEVEL = getConfigInt("settings.statistics.level.starting-level", 0);
+		public final double STARTING_REQUIRED_EXP = getConfigDouble("settings.statistics.level.starting-required-exp", 100.0);
 		public final double EXP_MULTIPLIER = getConfigDouble("settings.statistics.level.exp-multiplier", 3.75);
 		public final String PLAYER_STATS_DIS_ITEM = getConfigString("settings.statistics.player-stats.display-item", "PLAYER_HEAD");
 		public final String PLAYER_STATS_CUST_NAME = getConfigString("settings.statistics.player-stats.custom-name", "YOUR STATS");
@@ -153,6 +102,7 @@ public class GameValues {
 		public final List<String> TOP_STATS_LORE = getConfigStringList("settings.statistics.top-stats.lore");
 		public final List<String> TOP_STATS_HOLOGRAM = getConfigStringList("settings.statistics.top-stats.hologram");
 		public final double STARTING_MONEY = getConfigDouble("settings.statistics.starting-money", 0);
+		public final int STARTING_TOKENS = getConfigInt("settings.statistics.starting-tokens", 0);
 
 		public final int PLAYER_STATS_SLOT = getConfigInt("settings.statistics.player-stats.slot", 10);
 
@@ -198,36 +148,6 @@ public class GameValues {
 		public final double EXP_FOR_ASSIST = getConfigDouble("settings.rewards.assist.uhc-exp", 0);
 	}
 
-	public static class InventoryConfig {
-		// Titles
-		public final String CLOSE_TITLE = getConfigString("settings.inventory.close-title", "Close");
-		public final String NEXT_TITLE = getConfigString("settings.inventory.next-title", "Next");
-		public final String PREVIOUS_TITLE = getConfigString("settings.inventory.previous-title", "Previous");
-
-		public final int ARENA_SLOTS = getConfigInt("settings.inventory.arena-slots", 27);
-		public final int STATISTICS_SLOTS = getConfigInt("settings.inventory.statistics-slots", 27);
-		public final int SHOP_SLOTS = getConfigInt("settings.inventory.shop-slots", 27);
-		public final int QUESTS_SLOTS = getConfigInt("settings.inventory.quests-slots", 27);
-
-		// Items
-		public final String CLOSE_ITEM = getConfigString("settings.inventory.close-item", "BARRIER");
-		public final String NEXT_ITEM = getConfigString("settings.inventory.next-item", "DARK_OAK_BUTTON");
-		public final String PREVIOUS_ITEM = getConfigString("settings.inventory.previous-item", "DARK_OAK_BUTTON");
-
-		public final String ARENA_ITEM = getConfigString("settings.inventory.arena-item", "DIAMOND_SWORD");
-		public final String STATISTICS_ITEM = getConfigString("settings.inventory.statistics-item", "BOOK");
-		public final String SHOP_ITEM = getConfigString("settings.inventory.shop-item", "EMERALD");
-		public final String QUESTS_ITEM = getConfigString("settings.inventory.quests-item", "BOOKSHELF");
-
-		// Inventory Enabled
-		public final boolean CONFIRM_PURCHASE_ENABLED = getConfigBoolean("settings.inventory.confirm-purchase.enabled", true);
-
-	}
-
-	public static class ScoreboardConfig {
-		public final boolean ENABLED = getConfigBoolean("settings.scoreboard.enabled", true);
-	}
-
 	public static class TablistConfig {
 		public final boolean LOBBY_ENABLED = getConfigBoolean("settings.tablist.lobby.enabled", true);
 		public final String LOBBY_HEADER = getConfigString("settings.tablist.lobby.header", "Tablist Header");
@@ -238,13 +158,6 @@ public class GameValues {
 		public final String INGAME_HEADER = getConfigString("settings.tablist.ingame.header", "Tablist Header");
 		public final String INGAME_FOOTER = getConfigString("settings.tablist.ingame.footer", "Tablist Footer");
 		public final String INGAME_PLAYER_LIST = getConfigString("settings.tablist.ingame.player-list", "&f%minigame_player%");
-	}
-
-	public static class BorderConfig {
-		public final double INIT_SIZE = getConfigDouble("settings.border.init-size", 300);
-		public final double DEATHMATCH_SIZE = getConfigDouble("settings.deathmatch.border-size", 40);
-		public final double BORDER_DAMAGE = getConfigDouble("settings.border.damage", 1);
-		public final int BORDER_SPEED = getConfigInt("settings.border.speed", 2);
 	}
 
 	public static class ActivityRewardConfig {
@@ -260,12 +173,6 @@ public class GameValues {
 		public final boolean CAN_USE_PLACEHOLDERAPI = getConfigBoolean("settings.addons.use-PlaceholderAPI", true);
 		public final boolean CAN_USE_PROTOCOLLIB = getConfigBoolean("settings.addons.use-ProtocolLib", true);
 		public final boolean CAN_USE_DECENTHOLOGRAMS = getConfigBoolean("settings.addons.use-DecentHolograms", true);
-	}
-
-	public static class DeathChestConfig {
-		public final boolean ENABLED = getConfigBoolean("settings.death-chest.enabled", true);
-		public final String HOLOGRAM_TEXT = getConfigString("settings.death-chest.hologram-text", "&a%player%'s chest");
-		public final int HOLOGRAM_EXPIRE_TIME = getConfigInt("settings.death-chest.expire", -1);
 	}
 
 	public static class QuestConfig {

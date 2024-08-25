@@ -37,7 +37,10 @@ public class ItemUtils {
 
 		if (name != null) meta.setDisplayName(TextUtils.color(name));
 		if (amount == 0) amount = 1;
-		if (lore != null && !lore.isEmpty()) meta.setLore(lore);
+		if (lore != null && !lore.isEmpty()) {
+			lore.replaceAll(TextUtils::color);
+			meta.setLore(lore);
+		}
 		item.setItemMeta(meta);
 		item.setAmount(amount);
 		return item;
@@ -404,6 +407,101 @@ public class ItemUtils {
 			case RED_WOOL:
 				return 14;
 			case BLACK_WOOL:
+				return 15;
+		}
+		return 0;
+	}
+
+	/**
+	 * Gets a wool ItemStack by color name.
+	 *
+	 * @param color The name of the color.
+	 * @return The wool ItemStack.
+	 */
+	public static ItemStack getWoolByColor(final String color) {
+		return getColorWool(getWoolDurabilityColorByString(color));
+	}
+
+	public static ItemStack getWoolByColorFromString(final String string) {
+		return getWoolByColor(getContainsColorFromString(string));
+	}
+
+	public static String getContainsColorFromString(String string) {
+		if (string.contains("WHITE")) {
+			return "WHITE";
+		} else if (string.contains("ORANGE")) {
+			return "ORANGE";
+		} else if (string.contains("MAGENTA")) {
+			return "MAGENTA";
+		} else if (string.contains("LIGHT_BLUE")) {
+			return "LIGHT_BLUE";
+		} else if (string.contains("YELLOW")) {
+			return "YELLOW";
+		} else if (string.contains("LIME")) {
+			return "LIME";
+		} else if (string.contains("PINK")) {
+			return "PINK";
+		} else if (string.contains("GRAY")) {
+			return "GRAY";
+		} else if (string.contains("LIGHT_GRAY")) {
+			return "LIGHT_GRAY";
+		} else if (string.contains("CYAN")) {
+			return "CYAN";
+		} else if (string.contains("PURPLE")) {
+			return "PURPLE";
+		} else if (string.contains("BLUE")) {
+			return "BLUE";
+		} else if (string.contains("BROWN")) {
+			return "BROWN";
+		} else if (string.contains("GREEN")) {
+			return "GREEN";
+		} else if (string.contains("RED")) {
+			return "RED";
+		} else if (string.contains("BLACK")) {
+			return "BLACK";
+		}
+		return "WHITE";
+	}
+
+	/**
+	 * Gets the durability of a wool ItemStack by color name.
+	 *
+	 * @param colorName The name of the color.
+	 * @return The durability of the wool.
+	 */
+	public static short getWoolDurabilityColorByString(final String colorName) {
+		switch (colorName.toUpperCase()) {
+			case "WHITE":
+				return 0;
+			case "ORANGE":
+				return 1;
+			case "MAGENTA":
+				return 2;
+			case "LIGHT_BLUE":
+				return 3;
+			case "YELLOW":
+				return 4;
+			case "LIME":
+				return 5;
+			case "PINK":
+				return 6;
+			case "GRAY":
+				return 7;
+			case "LIGHT_GRAY":
+				return 8;
+			case "CYAN":
+				return 9;
+			case "PURPLE":
+				return 10;
+			case "BLUE":
+				return 11;
+			case "BROWN":
+				return 12;
+			case "GREEN":
+				return 13;
+			case "RED":
+				return 14;
+			case "BLACK":
 				return 15;
 		}
 		return 0;

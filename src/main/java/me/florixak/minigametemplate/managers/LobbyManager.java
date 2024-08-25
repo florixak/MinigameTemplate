@@ -20,7 +20,7 @@ public class LobbyManager {
 
 	public void checkLobbies() {
 		if (!this.gameManager.getWorldManager().worldExists(this.lobbyName)) {
-			this.gameManager.getWorldManager().loadWorldIfExists(this.lobbyName);
+			this.gameManager.getWorldManager().loadWorldIfFileExists(this.lobbyName);
 
 			if (getLobbyLocation() != null) {
 				Bukkit.getLogger().info("World " + this.lobbyName + " is loaded.");

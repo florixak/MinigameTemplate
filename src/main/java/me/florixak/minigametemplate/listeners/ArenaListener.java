@@ -2,24 +2,35 @@ package me.florixak.minigametemplate.listeners;
 
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.gui.GuiManager;
+import me.florixak.minigametemplate.gui.GuiType;
+import me.florixak.minigametemplate.gui.MenuUtils;
+import me.florixak.minigametemplate.gui.menu.inGame.*;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.managers.player.PlayerManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class ArenaListener implements Listener {
 
 	private final GameManager gameManager;
 	private final PlayerManager playerManager;
+	private final GuiManager guiManager;
 
 	public ArenaListener(final GameManager gameManager) {
 		this.gameManager = gameManager;
 		this.playerManager = gameManager.getPlayerManager();
+		this.guiManager = gameManager.getGuiManager();
 	}
 
 	/*@EventHandler
@@ -116,6 +127,37 @@ public class ArenaListener implements Listener {
 				.replace("%player%", victim.getName())
 				.replace("%killer%", killer.getName()));
 	}*/
+
+	@EventHandler
+	public void onItemClick(final PlayerInteractEvent event) {
+
+		final Player p = event.getPlayer();
+		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
+		if (!this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) return;
+		final ItemStack item = gamePlayer.getInventory().getItemInHand();
+
+		if (item.getType() == Material.AIR || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName())
+			return;
+
+		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			final MenuUtils menuUtils = this.gameManager.getMenuManager().getMenuUtils(gamePlayer);
+
+			if (item.equals(this.guiManager.getGui(GuiType.TEAMS_SELECTOR.getKey()).getDisplayItem())) {
+				new TeamSelectorMenu(menuUtils).open();
+			} else if (item.equals(this.guiManager.getGui(GuiType.KITS_SELECTOR.getKey()).getDisplayItem())) {
+				new KitsSelectorMenu(menuUtils).open();
+			} else if (item.equals(this.guiManager.getGui(GuiType.PERKS_SELECTOR.getKey()).getDisplayItem())) {
+				new PerksSelectorMenu(menuUtils).open();
+			} else if (item.equals(this.guiManager.getGui(GuiType.COSMETICS_SELECTOR.getKey()).getDisplayItem())) {
+//				new CosmeticsSelectorMenu(menuUtils).open();
+				Bukkit.getLogger().info("Opened Cosmetics Menu for " + p.getName());
+			} else if (item.equals(this.guiManager.getGui(GuiType.QUESTS.getKey()).getDisplayItem())) {
+				new QuestsMenu(menuUtils).open();
+			} else if (item.equals(this.guiManager.getGui(GuiType.LEAVE_CONFIRM.getKey()).getDisplayItem())) {
+				new LeaveConfirmMenu(menuUtils).open();
+			}
+		}
+	}
 
 	@EventHandler
 	public void handleBlockBreak(final BlockBreakEvent event) {

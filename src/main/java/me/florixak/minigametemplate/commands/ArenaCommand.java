@@ -11,10 +11,15 @@ import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class ArenaCommand implements CommandExecutor {
+import java.util.Arrays;
+import java.util.List;
+
+public class ArenaCommand implements CommandExecutor, TabCompleter {
 
 	private final GameManager gameManager;
 
@@ -91,11 +96,9 @@ public class ArenaCommand implements CommandExecutor {
 
 		} else if (parameter.equalsIgnoreCase("waiting")) {
 			handleWaitingLocation(player, arena, args);
-			player.sendMessage("Wait location set for arena " + arena.getName());
 
 		} else if (parameter.equalsIgnoreCase("ending")) {
 			handleEndingLocation(player, arena, args);
-			player.sendMessage("End location set for arena " + arena.getName());
 
 		} else {
 			player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
@@ -103,6 +106,10 @@ public class ArenaCommand implements CommandExecutor {
 	}
 
 	private void handleTeam(final Player player, final Arena arena, final String... args) {
+		if (arena.isEnabled()) {
+			player.sendMessage("Arena is enabled, disable it first.");
+			return;
+		}
 		final String parameter = args[2];
 		if (parameter.equalsIgnoreCase("add")) {
 			if (args.length != 5) {
@@ -131,6 +138,10 @@ public class ArenaCommand implements CommandExecutor {
 	}
 
 	private void handleWaitingLocation(final Player player, final Arena arena, final String... args) {
+		if (arena.isEnabled()) {
+			player.sendMessage("Arena is enabled, disable it first.");
+			return;
+		}
 		final String parameter2 = args[1];
 		if (parameter2.equalsIgnoreCase("set")) {
 			arena.setWaitingLocation(player.getLocation());
@@ -144,6 +155,12 @@ public class ArenaCommand implements CommandExecutor {
 	}
 
 	private void handleEndingLocation(final Player player, final Arena arena, final String... args) {
+		if (arena.isEnabled()) {
+			player.sendMessage("Arena is enabled, disable it first.");
+			return;
+		} else {
+
+		}
 		final String parameter2 = args[1];
 		if (parameter2.equalsIgnoreCase("set")) {
 			arena.setEndingLocation(player.getLocation());
@@ -156,4 +173,20 @@ public class ArenaCommand implements CommandExecutor {
 		}
 	}
 
+	@Nullable
+	@Override
+	public List<String> onTabComplete(@NotNull final CommandSender sender, @NotNull final Command command, @NotNull final String label, @NotNull final String[] args) {
+		if (args.length == 1) {
+			return Arrays.asList("create", "delete", "enable", "disable", "start", "stop", "team", "waiting", "ending");
+		}
+		if (args.length == 2) {
+			if (args[0].equalsIgnoreCase("team")) {
+				return Arrays.asList("add", "remove");
+			}
+			if (args[0].equalsIgnoreCase("waiting") || args[0].equalsIgnoreCase("ending")) {
+				return Arrays.asList("set", "remove");
+			}
+		}
+		return null;
+	}
 }

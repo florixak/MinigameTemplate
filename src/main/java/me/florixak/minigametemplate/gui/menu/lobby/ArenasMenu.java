@@ -5,6 +5,7 @@ import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.gui.Gui;
 import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.gui.PaginatedMenu;
 import me.florixak.minigametemplate.managers.GameManager;
@@ -21,14 +22,18 @@ public class ArenasMenu extends PaginatedMenu {
 	private final GamePlayer gamePlayer;
 
 	public ArenasMenu(final MenuUtils menuUtils) {
-		super(menuUtils, "Select an Arena");
+		super(menuUtils);
 		this.gamePlayer = menuUtils.getGamePlayer();
-
 	}
 
 	@Override
-	public int getSlots() {
-		return 45;
+	public String getMenuName() {
+		return "Select an Arena";
+	}
+
+	@Override
+	public Gui getGui() {
+		return null;
 	}
 
 	@Override
@@ -38,9 +43,12 @@ public class ArenasMenu extends PaginatedMenu {
 
 	@Override
 	public void handleMenuClicks(final InventoryClickEvent event) {
-		if (event.getCurrentItem().getType().equals(XMaterial.BARRIER.parseMaterial())) {
+		final ItemStack clickedItem = event.getCurrentItem();
+		if (clickedItem.equals(this.guiManager.getItem("filler"))) {
+			event.setCancelled(true);
+		} else if (clickedItem.equals(this.guiManager.getItem("close"))) {
 			close();
-		} else if (event.getCurrentItem().getType().equals(XMaterial.DARK_OAK_BUTTON.parseMaterial())) {
+		} else if (clickedItem.equals(this.guiManager.getItem("previous")) || clickedItem.equals(this.guiManager.getItem("next"))) {
 			handlePaging(event, this.arenaList);
 		} else {
 			handleArenaSelection(event);
@@ -50,14 +58,14 @@ public class ArenasMenu extends PaginatedMenu {
 
 	@Override
 	public void setMenuItems() {
-		addMenuBorder();
-		ItemStack arenaDisplayItem;
+		addMenuBorder(false);
+		ItemStack displayItem;
 
 		for (int i = getStartIndex(); i < getEndIndex(); i++) {
 			final Arena arena = this.arenaList.get(i);
-			arenaDisplayItem = ItemUtils.createItem(XMaterial.MAP.parseMaterial(), arena.getName(), 1, arena.getLore());
+			displayItem = ItemUtils.createItem(XMaterial.MAP.parseMaterial(), arena.getName(), 1, arena.getLore());
 
-			this.inventory.setItem(i - getStartIndex(), arenaDisplayItem);
+			this.inventory.setItem(i - getStartIndex(), displayItem);
 		}
 	}
 

@@ -59,13 +59,6 @@ public class Kit extends BuyableItem {
 		}
 	}
 
-	public void buy(final GamePlayer gamePlayer) {
-		super.buy(gamePlayer);
-		gamePlayer.getPlayerData().getBoughtKitsList().add(this);
-		gamePlayer.getPlayerData().saveKits();
-		gameManager.getSoundManager().playSelectBuySound(gamePlayer.getPlayer());
-	}
-
 	private List<String> setLore() {
 		final List<String> lore = new ArrayList<>();
 		lore.add(" ");

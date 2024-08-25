@@ -8,7 +8,7 @@ import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.utils.NMSUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @Getter
 public class GameTeam {
 
-	private final ItemStack displayItem;
-	private final int durability;
+	private final Material displayMaterial = XMaterial.WHITE_WOOL.parseMaterial();
+	private final short durability = 0;
 	private final String name;
 	private final int size;
 
@@ -28,8 +28,6 @@ public class GameTeam {
 	private Location spawnLocation;
 
 	public GameTeam(final String name, final int size, final Location spawnLocation) {
-		this.displayItem = XMaterial.PAPER.parseItem();
-		this.durability = 1;
 		this.name = name;
 		this.size = size;
 		this.spawnLocation = spawnLocation;

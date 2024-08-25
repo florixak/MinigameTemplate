@@ -9,7 +9,9 @@ import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.game.teams.GameTeam;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.tasks.ArenaCheckTask;
+import me.florixak.minigametemplate.tasks.EndingTask;
 import me.florixak.minigametemplate.tasks.StartingTask;
+import me.florixak.minigametemplate.utils.PAPIUtils;
 import me.florixak.minigametemplate.utils.RandomUtils;
 import me.florixak.minigametemplate.utils.Utils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
@@ -17,7 +19,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @Getter
 public class Arena {
 
-	protected static final GameManager gameManager = GameManager.getInstance();
+	protected final GameManager gameManager = GameManager.getInstance();
 	protected static final File pluginFile = new File(MinigameTemplate.getInstance().getDataFolder(), "arenas");
 
 	protected final String id;
@@ -46,8 +47,9 @@ public class Arena {
 
 	protected final List<GamePlayer> players = new ArrayList<>();
 
-	protected final ArenaCheckTask arenaCheckTask = new ArenaCheckTask(this);
-	protected final StartingTask startingTask = new StartingTask(this);
+	protected ArenaCheckTask arenaCheckTask;
+	protected StartingTask startingTask;
+	protected EndingTask endingTask;
 
 	protected ArenaState arenaState = ArenaState.WAITING;
 
@@ -82,8 +84,11 @@ public class Arena {
 		this.endingLocation = endingLocation;
 		this.teams = teams;
 
-		if (enabled)
+		if (enabled) {
+			this.arenaCheckTask = new ArenaCheckTask(this);
 			this.arenaCheckTask.runTaskTimer(MinigameTemplate.getInstance(), 0L, 20L);
+		}
+
 	}
 
 	public void addTeam(final GameTeam team) {
@@ -106,7 +111,7 @@ public class Arena {
 			return;
 		}
 		this.players.add(gamePlayer);
-		gameManager.getPlayerManager().setPlayerForWaiting(gamePlayer, this);
+		this.gameManager.getPlayerManager().setPlayerForWaiting(gamePlayer, this);
 	}
 
 	public void joinAsSpectator(final GamePlayer gamePlayer) {
@@ -115,12 +120,14 @@ public class Arena {
 	}
 
 	public void leave(final GamePlayer gamePlayer) {
+		gamePlayer.reset();
 		this.players.remove(gamePlayer);
-		gameManager.getPlayerManager().setPlayerForLobby(gamePlayer);
+		this.gameManager.getPlayerManager().setPlayerForLobby(gamePlayer);
 	}
 
 	public void leaveAll() {
-		this.players.forEach(gamePlayer -> gameManager.getPlayerManager().setPlayerForLobby(gamePlayer));
+		final List<GamePlayer> players = new ArrayList<>(this.players);
+		players.forEach(this::leave);
 		this.players.clear();
 	}
 
@@ -134,6 +141,7 @@ public class Arena {
 
 	public void start() {
 		setArenaState(ArenaState.STARTING);
+		this.startingTask = new StartingTask(this);
 		this.startingTask.runTaskTimer(MinigameTemplate.getInstance(), 0, 20);
 	}
 
@@ -146,13 +154,9 @@ public class Arena {
 	}
 
 	public void end() {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				setArenaState(ArenaState.RESTARTING);
-				Bukkit.getServer().shutdown();
-			}
-		}.runTaskLater(MinigameTemplate.getInstance(), 20 * 10);
+		setArenaState(ArenaState.ENDING);
+		this.endingTask = new EndingTask(this);
+		this.endingTask.runTaskTimer(this.gameManager.getPlugin(), 0, 20);
 	}
 
 	public void setArenaState(final ArenaState arenaState) {
@@ -172,13 +176,12 @@ public class Arena {
 				break;
 			case ENDING:
 				setWinner();
-				Utils.broadcast(PAPI.setPlaceholders(null, "%winner% is WINNER!".replace("%winner%", getWinner())));
+				Utils.broadcast(PAPIUtils.setArenaPlaceholders(null, this, "%arena_winner% is the WINNER!"));
 				Utils.broadcast(PAPI.setPlaceholders(null, Messages.ARENA_ENDED.toString()));
 				end();
 				break;
 			case RESTARTING:
-				leaveAll();
-				reset();
+				disable();
 				// kick all players, reset arena, etc.
 				break;
 		}
@@ -208,12 +211,18 @@ public class Arena {
 		config.set(this.id + ".enabled", enabled);
 		saveToFile();
 
-		if (enabled)
+		if (enabled) {
+			this.arenaCheckTask = new ArenaCheckTask(this);
 			this.arenaCheckTask.runTaskTimer(MinigameTemplate.getInstance(), 0L, 20L);
-		else {
-			if (Bukkit.getScheduler().isCurrentlyRunning(this.arenaCheckTask.getTaskId())) this.arenaCheckTask.cancel();
-			if (Bukkit.getScheduler().isCurrentlyRunning(this.startingTask.getTaskId())) this.startingTask.cancel();
+		} else {
+			if (this.arenaCheckTask != null) this.arenaCheckTask.cancel();
+			if (this.startingTask != null) this.startingTask.cancel();
 		}
+	}
+
+	public void disable() {
+		leaveAll();
+		setEnabled(false);
 	}
 
 	public boolean isPlayerIn(final GamePlayer player) {
@@ -230,7 +239,7 @@ public class Arena {
 	private void preparePlayers() {
 		teleportTeams();
 		this.players.forEach(gamePlayer -> {
-			gameManager.getPlayerManager().setPlayerForGame(gamePlayer);
+			this.gameManager.getPlayerManager().setPlayerForGame(gamePlayer);
 		});
 	}
 
@@ -299,19 +308,42 @@ public class Arena {
 		getOnlinePlayers().forEach(player -> player.sendMessage(message));
 	}
 
-	public List<String> getLore() {
-		final List<String> lore = new ArrayList<>();
-		lore.add(" ");
-		lore.add(TextUtils.color("&fPlayers: &e" + getPlayers().size() + "/" + getMaxPlayers()));
-		lore.add(TextUtils.color("&fState: &e" + getArenaState().toString()));
-		lore.add(" ");
-		lore.add(TextUtils.color("&fTeams: &e" + getTeams().get(0).getSize() + "x" + getTeams().size()));
-		lore.add(" ");
-		lore.add(TextUtils.color("&6Click To Join!"));
-		return lore;
+	public void hotbarMessage(final String message) {
+		getOnlinePlayers().forEach(player -> player.sendHotBarMessage(message));
 	}
 
-	public int getGameTime() {
+	public List<String> getLore() {
+		final List<String> lore = new ArrayList<>();
+		for (String loreText : Messages.ARENA_LORE.toList()) {
+			loreText = loreText
+					.replace("%arena_name%", TextUtils.color(this.name))
+					.replace("%arena_id%", this.id)
+					.replace("%arena_online%", String.valueOf(this.players.size()))
+					.replace("%arena_min%", String.valueOf(this.minPlayers))
+					.replace("%arena_max%", String.valueOf(this.maxPlayers))
+					.replace("%arena_alive%", String.valueOf(getAlivePlayers().size()))
+					.replace("%arena_teams_alive%", String.valueOf(getAliveTeams().size()))
+					.replace("%arena_state%", this.arenaState.toString())
+					.replace("%arena_seconds%", String.valueOf(getArenaTime()))
+					.replace("%arena_mode%", getArenaMode());
+			lore.add(loreText);
+		}
+
+		if (!isPlaying())
+			lore.add(Messages.ARENA_LORE_JOIN.toString());
+		else if (isEnding())
+			lore.add(Messages.ARENA_LORE_RESTARTING.toString());
+		else
+			lore.add(Messages.ARENA_LORE_IN_GAME.toString());
+		return PAPI.setPlaceholders(null, lore);
+	}
+
+	public String getArenaMode() {
+		if (getTeams().get(0).getSize() == 1) return "Solo";
+		return getTeams().size() + "x" + getTeams().get(0).getSize();
+	}
+
+	public int getArenaTime() {
 		switch (this.arenaState) {
 			case WAITING:
 				return 0;
@@ -423,7 +455,13 @@ public class Arena {
 		final Location waitingLocation = getLocationFromConfig(section, "waiting-location");
 		final Location endingLocation = getLocationFromConfig(section, "ending-location");
 
+		if (!GameManager.getInstance().getWorldManager().worldExists(centerLocation.getWorld().getName())) {
+			GameManager.getInstance().getWorldManager().loadWorldIfFileExists(centerLocation.getWorld().getName());
+		}
+
+
 		final List<GameTeam> teams = loadArenaTeams(id);
+
 
 		return new Arena(id, name, enabled, centerLocation, waitingLocation, endingLocation, minPlayers, maxPlayers, teams);
 	}
@@ -464,11 +502,13 @@ public class Arena {
 		final double z = section.getDouble(path + ".z");
 		final float yaw = (float) section.getDouble(path + ".yaw");
 		final float pitch = (float) section.getDouble(path + ".pitch");
+		if (!GameManager.getInstance().getWorldManager().worldExists(world)) {
+			Bukkit.getLogger().info("World " + world + " does not exist, loading...");
+			GameManager.getInstance().getWorldManager().loadWorldIfFileExists(world);
+		} else {
+			Bukkit.getLogger().info("World " + world + " exists.");
+		}
 		return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
 	}
 
-	public void reset() {
-		this.players.clear();
-		this.arenaState = ArenaState.WAITING;
-	}
 }

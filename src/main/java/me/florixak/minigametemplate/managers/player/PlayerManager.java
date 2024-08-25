@@ -111,7 +111,7 @@ public class PlayerManager {
 
 		gamePlayer.clearPotions();
 		gamePlayer.clearInventory();
-		this.gameManager.getGameItemManager().giveItems(gamePlayer);
+		this.gameManager.getGuiManager().giveItems(gamePlayer);
 	}
 
 	public void setPlayerForWaiting(final GamePlayer gamePlayer, final Arena arena) {
@@ -119,7 +119,7 @@ public class PlayerManager {
 		gamePlayer.setState(PlayerState.WAITING);
 		gamePlayer.setGameMode(GameMode.ADVENTURE);
 		gamePlayer.teleport(arena.getWaitingLocation());
-		this.gameManager.getGameItemManager().giveItems(gamePlayer);
+		this.gameManager.getGuiManager().giveItems(gamePlayer);
 	}
 
 	public void setPlayerForGame(final GamePlayer gamePlayer) {

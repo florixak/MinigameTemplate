@@ -30,7 +30,7 @@ import java.util.UUID;
 @Getter
 public class GamePlayer {
 
-	private static final GameManager gameManager = GameManager.getInstance();
+	private final GameManager gameManager = GameManager.getInstance();
 
 	private final UUID uuid;
 	private final String name;
@@ -57,8 +57,8 @@ public class GamePlayer {
 		this.uuid = uuid;
 		this.name = name;
 
-		this.playerData = gameManager.getPlayerDataManager().getPlayerData(this);
-		this.playerQuestData = gameManager.getPlayerQuestDataManager().getPlayerData(this);
+		this.playerData = this.gameManager.getPlayerDataManager().getPlayerData(this);
+		this.playerQuestData = this.gameManager.getPlayerQuestDataManager().getPlayerData(this);
 	}
 
 	public Player getPlayer() {
@@ -115,7 +115,7 @@ public class GamePlayer {
 	}
 
 	public boolean isInArena() {
-		return !isLobby() && gameManager.getArenaManager().isPlayerInArena(this);
+		return !isLobby() && this.gameManager.getArenaManager().isPlayerInArena(this);
 	}
 
 	public boolean hasTeam() {
@@ -138,7 +138,7 @@ public class GamePlayer {
 		if (this.kit != kit) {
 			this.kit = kit;
 			sendMessage(Messages.KITS_SELECTED.toString().replace("%kit%", kit.getDisplayName()));
-			gameManager.getSoundManager().playSelectBuySound(getPlayer());
+			this.gameManager.getSoundManager().playSelectBuySound(getPlayer());
 		}
 	}
 
@@ -150,7 +150,7 @@ public class GamePlayer {
 		if (this.perk != perk) {
 			this.perk = perk;
 			sendMessage(Messages.PERKS_SELECTED.toString().replace("%perk%", perk.getDisplayName()));
-			gameManager.getSoundManager().playSelectBuySound(getPlayer());
+			this.gameManager.getSoundManager().playSelectBuySound(getPlayer());
 		}
 	}
 
@@ -187,7 +187,7 @@ public class GamePlayer {
 				.replace("%player%", victim.getName())
 				.replace("%money%", String.valueOf(GameValues.REWARDS.COINS_FOR_KILL))
 				.replace("%uhc-exp%", String.valueOf(GameValues.REWARDS.EXP_FOR_KILL)));
-		gameManager.getSoundManager().playKillSound(getPlayer());
+		this.gameManager.getSoundManager().playKillSound(getPlayer());
 
 		if (this.playerQuestData.hasQuestWithTypeOf("KILL")) {
 			this.playerQuestData.addProgressToTypes("KILL", getPlayer().getInventory().getItemInHand().getType());
@@ -202,7 +202,7 @@ public class GamePlayer {
 				.replace("%player%", victim.getName())
 				.replace("%money%", String.valueOf(GameValues.REWARDS.COINS_FOR_ASSIST))
 				.replace("%uhc-exp%", String.valueOf(GameValues.REWARDS.EXP_FOR_ASSIST)));
-		gameManager.getSoundManager().playAssistSound(getPlayer());
+		this.gameManager.getSoundManager().playAssistSound(getPlayer());
 
 		if (this.playerQuestData.hasQuestWithTypeOf("ASSIST")) {
 			this.playerQuestData.addProgressToTypes("ASSIST", getPlayer().getInventory().getItemInHand().getType());
@@ -222,7 +222,7 @@ public class GamePlayer {
 		clearInventory();
 
 		setSpectator();
-		gameManager.getSoundManager().playDeathSound(getPlayer());
+		this.gameManager.getSoundManager().playDeathSound(getPlayer());
 	}
 
 	public void setSpectator() {
@@ -388,8 +388,6 @@ public class GamePlayer {
 		this.expForKills = 0;
 		this.expForAssists = 0;
 		this.expForActivity = 0;
-		this.playerQuestData.getCompletedQuests().clear();
-		this.playerQuestData.getQuestProgress().clear();
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class PlaceholderExp extends PlaceholderExpansion {
 
 	@Override
 	public String getVersion() {
-		return "1.0";
+		return this.plugin.getDescription().getVersion();
 	}
 
 	@Override
@@ -58,6 +58,10 @@ public class PlaceholderExp extends PlaceholderExpansion {
 				return String.valueOf(gamePlayer.getPlayerData().getMoney());
 			}
 
+			if (placeholder.equals("tokens")) {
+				return String.valueOf(gamePlayer.getPlayerData().getTokens());
+			}
+
 			if (placeholder.equals("level")) {
 				return String.valueOf(gamePlayer.getPlayerData().getLevel());
 			}
@@ -70,12 +74,12 @@ public class PlaceholderExp extends PlaceholderExpansion {
 				return TextUtils.formatToOneDecimal(gamePlayer.getPlayerData().getRequiredExp());
 			}
 
-			if (placeholder.equals("tokens")) {
-				return String.valueOf(0);
+			if (placeholder.equals("total_games_played")) {
+				return String.valueOf(gamePlayer.getPlayerData().getGamesPlayed());
 			}
 
 			if (placeholder.equals("total_wins")) {
-				return String.valueOf(gamePlayer.getPlayerData().getWins());
+				return String.valueOf(gamePlayer.getPlayerData().get());
 			}
 
 			if (placeholder.equals("total_kills")) {
@@ -121,7 +125,7 @@ public class PlaceholderExp extends PlaceholderExpansion {
 					return String.valueOf(arena.getMaxPlayers());
 				}
 
-				if (placeholder.equals("arena_players_alive")) {
+				if (placeholder.equals("arena_alive")) {
 					return String.valueOf(arena.getAlivePlayers().size());
 				}
 
@@ -130,19 +134,20 @@ public class PlaceholderExp extends PlaceholderExpansion {
 				}
 
 				if (placeholder.equals("arena_state")) {
-					return TextUtils.color(arena.getArenaState().toString());
+					if (arena.getArenaState() == null) return Messages.ARENA_LORE_DISABLED.toString();
+					return arena.getArenaState().toString();
 				}
 
-				if (placeholder.equals("arena_seconds")) {
-					return String.valueOf(arena.getGameTime());
+				if (placeholder.equals("arena_time")) {
+					return String.valueOf(arena.getArenaTime());
 				}
 
 				if (placeholder.equals("arena_winner")) {
 					return TextUtils.color(arena.getWinner());
 				}
 
-				if (placeholder.equals("arena_enabled")) {
-					return TextUtils.color(arena.isEnabled() ? "&aEnabled" : "&cDisabled");
+				if (placeholder.equals("arena_mode")) {
+					return arena.getArenaMode();
 				}
 
 				if (placeholder.equals("team")) {
@@ -160,7 +165,9 @@ public class PlaceholderExp extends PlaceholderExpansion {
 					else return Messages.PERKS_SCOREBOARD_SELECTED_NONE.toString();
 				}
 			}
+
 		}
+
 
 		if (placeholder.equals("date")) {
 			return TimeUtils.getCurrentDate();
@@ -181,4 +188,6 @@ public class PlaceholderExp extends PlaceholderExpansion {
 
 		return null;
 	}
+
+
 }

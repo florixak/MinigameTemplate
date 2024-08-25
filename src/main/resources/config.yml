@@ -15,7 +15,7 @@ settings:
     use-PlaceholderAPI: true # Enable integration with PlaceholderAPI for custom placeholders
     use-DecentHolograms: true # Enable integration with DecentHolograms for hologram support
 
-  bungeecord:
+  bungee-mode:
     enabled: false # Enable BungeeCord support
     lobby-server: "lobby" # Name of the lobby server
 
@@ -47,8 +47,6 @@ settings:
 
   # Team settings
   teams:
-    team-mode: true # Enable team mode
-    max-size: 2 # Maximum team size
     friendly-fire: false # Allow friendly fire within teams
 
   # Kit settings
@@ -61,13 +59,6 @@ settings:
     enabled: true # Enable perks
     bought-forever: true # Perks are bought permanently
 
-  # Border settings
-  border:
-    init-size: 450 # Size of the game border
-    damage: 1 # Damage taken when outside the border
-    minimum-size: 1 # Minimal size
-    speed: 2 # DIFFERENT!: if 2 and pvp countdown is 600 seconds, border will shrink to minimum in 1200 seconds
-
   # Lobby settings
   # Rename your lobby files to these world names, or set it manually
   lobby:
@@ -78,66 +69,16 @@ settings:
     yaw: 0.0 # Yaw of the lobby spawn
     pitch: 0.0 # Pitch of the lobby spawn
 
-  game-items:
-    lobby:
-      arena-selector:
-        enabled: true # Enable arena menu
-        display-name: "&fArenas" # Display name for arena menu
-        display-item: COMPASS # Item for arena menu
-        slot: 0 # Slot for statistics menu
-      shop:
-        enabled: true # Enable shop menu
-        display-name: "&fShop" # Display name for shop menu
-        display-item: EMERALD # Item for shop menu
-        slot: 3 # Slot for shop menu
-      profile:
-        enabled: true # Enable statistics menu
-        display-name: "&fProfile" # Display name for statistics menu
-        display-item: PLAYER_HEAD
-        slot: 4 # Slot for statistics menu
-      cosmetics:
-        enabled: true # Enable cosmetics menu
-        display-name: "&fCosmetics" # Display name for cosmetics menu
-        display-item: ENDER_CHEST # Item for cosmetics menu
-        slot: 5 # Slot for cosmetics menu
-
-    in-game:
-      team-selector:
-        enabled: true # Enable teams menu
-        display-name: "&fTeams&8" # Display name for teams menu
-        display-item: WHITE_WOOL # Item for teams menu
-        slot: 0 # Slot for teams menu
-      kits-selector:
-        enabled: true # Enable kits menu
-        display-name: "&fKits&8" # Display name for kits menu
-        display-item: CHEST # Item for kits menu
-        slot: 1 # Slot for kits menu
-      perks-selector:
-        enabled: true # Enable perks menu
-        display-name: "&fPerks&8" # Display name for perks menu
-        display-item: ENCHANTED_BOOK # Item for perks menu
-        slot: 2 # Slot for perks menu
-      quests:
-        enabled: true # Enable quests menu
-        display-name: "&fQuests&8" # Display name for quests menu
-        display-item: BOOK # Item for quests menu
-        slot: 4 # Slot for quests menu
-      leave:
-        enabled: true # Enable quests menu
-        display-name: "&cLeave&8" # Display name for quests menu
-        display-item: RED_BED # Item for quests menu
-        slot: 8 # Slot for quests menu
-
-
   # Statistics settings
   statistics:
     # Starting money for each player
     starting-money: 100
+    starting-tokens: 0
 
     level:
       # Players will gain xp and increase their level
-      first-level: 0 # Starting level
-      first-required-exp: 100.0 # Experience required for first level
+      starting-level: 0 # Starting level
+      starting-required-exp: 100.0 # Experience required for first level
       exp-multiplier: 3.75 # Multiplier for experience required for each level
 
     player-stats:
@@ -252,35 +193,6 @@ settings:
       footer: "\n&7www.your-server.com" # Footer text for tablist
 
   # Selectors
-  inventories:
-    next: "&6Next"
-    next-item: DARK_OAK_BUTTON
-    previous: "&6Previous"
-    previous-item: DARK_OAK_BUTTON
-    back: "&6Back"
-    back-item: DARK_OAK_BUTTON
-    close: "&cClose"
-    close-item: BARRIER
-
-    confirm-purchase:
-      enabled: true # Enable confirm purchase menu
-      confirm: "&aConfirm (%cost% %minigame_currency%)" # Text for confirm button
-      confirm-item: EMERALD_BLOCK # Item for confirm button
-      cancel: "&cCancel" # Text for cancel button
-      cancel-item: REDSTONE_BLOCK # Item for cancel button
-      slot: -1 # Slot for confirm purchase menu, -1 = not in the hotbar menu
-      slots: 27 # Number of slots for confirm purchase menu
-
-    slots:
-      arenas: 45 # Number of slots for arenas menu
-      in-game-arenas: 45 # Number of slots for ingame arenas menu
-      profile: 45 # Number of slots for profile menu
-      teams: 35 # Number of slots for teams menu
-      kits: 45 # Number of slots for kits menu
-      perks: 45 # Number of slots for perks menu
-      quests: 45 # Number of slots for quests menus
-
-    # Available menu - teams, kits, perks, custom-crafts, statistics
 
   title:
     enabled: true # Enable title messages like victory or lose

@@ -1,6 +1,5 @@
 package me.florixak.minigametemplate.managers;
 
-import me.florixak.minigametemplate.game.GameValues;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -21,7 +20,7 @@ public class WorldManager {
 
 	private void removeWorld() {
 		try {
-			final File world = new File(Bukkit.getWorldContainer(), GameValues.WORLD_NAME);
+			final File world = new File(Bukkit.getWorldContainer(), "world");
 			FileUtils.deleteDirectory(world);
 		} catch (final IOException e) {
 			e.printStackTrace();
@@ -39,7 +38,7 @@ public class WorldManager {
 		return worldFolder.exists() && worldFolder.isDirectory();
 	}
 
-	public void loadWorldIfExists(final String worldName) {
+	public void loadWorldIfFileExists(final String worldName) {
 		if (doesWorldExist(worldName) && Bukkit.getWorld(worldName) == null) {
 			final WorldCreator creator = new WorldCreator(worldName);
 			Bukkit.createWorld(creator);

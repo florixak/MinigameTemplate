@@ -1,23 +1,29 @@
 package me.florixak.minigametemplate.tasks;
 
-import me.florixak.minigametemplate.managers.GameManager;
+import lombok.Getter;
+import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.arena.Arena;
+import me.florixak.minigametemplate.game.arena.ArenaState;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
+
 public class EndingTask extends BukkitRunnable {
 
-	private static GameManager gameManager;
-	private int countdown = 10;
+	private final Arena arena;
+	@Getter
+	private int countdown = GameValues.COUNTDOWNS.ENDING;
 
-	public EndingTask(final GameManager gameManager) {
-		this.gameManager = gameManager;
+	public EndingTask(final Arena arena) {
+		this.arena = arena;
 	}
 
 	@Override
 	public void run() {
 		if (this.countdown == 0) {
-			Bukkit.getServer().shutdown();
 			cancel();
+			this.arena.setArenaState(ArenaState.RESTARTING);
+			Bukkit.getServer().shutdown();
 			return;
 		}
 		this.countdown--;

@@ -3,39 +3,51 @@ scoreboard:
   title: "&6&lMinigame"
   footer: "&7www.your-server.com"
 
+  # TODO animated title
+
   lobby:
+    - "&7&m------------------"
     - "&7%minigame_date%"
     - "&fHello, &e%minigame_player%&f!"
+    - "&fLevel: &e%minigame_level% (%minigame_required_exp%)"
     - ""
     - "&fCoins: &e%minigame_money%"
-    - "&fLevel: &e%minigame_level% (%minigame_required_exp%)"
     - "&fTokens: &e%minigame_tokens%"
     - ""
     - "&7%minigame_scoreboard_footer%"
+    - "&7&m------------------"
 
   waiting:
+    - "&7&m------------------"
     - "&7%minigame_date% %minigame_arena_name%"
-    - "&fWaiting for players..."
+    - " "
+    - "&fState: &e%minigame_arena_state%"
     - "&fPlayers: &e%minigame_arena_online%&f/&e%minigame_arena_max%"
+    - "&fMode: &e%minigame_arena_mode%"
     - ""
     - "&fTeam: &e%minigame_team%"
     - "&fKit: &e%minigame_kit%"
     - "&fPerk: &e%minigame_perk%"
     - ""
     - "&7%minigame_scoreboard_footer%"
+    - "&7&m------------------"
 
   starting:
+    - "&7&m------------------"
     - "&7%minigame_date% %minigame_arena_name%"
     - "&fStart in: &e%minigame_seconds%"
     - "&fPlayers: &e%minigame_arena_online%&f/&e%minigame_arena_max%"
+    - "&fMode: &e%minigame_arena_mode%"
     - ""
     - "&fTeam: &e%minigame_team%"
     - "&fKit: &e%minigame_kit%"
     - "&fPerk: &e%minigame_perk%"
     - ""
     - "&7%minigame_scoreboard_footer%"
+    - "&7&m------------------"
 
   ingame:
+    - "&7&m------------------"
     - "&7%minigame_date% %minigame_arena_name%"
     - "&fTime left: &e%minigame_seconds%"
     - ""
@@ -45,9 +57,11 @@ scoreboard:
     - "&fTeam: &e%minigame_team%"
     - ""
     - "&7%minigame_scoreboard_footer%"
+    - "&7&m------------------"
 
 
   ending:
+    - "&7&m------------------"
     - "&7%minigame_date% %minigame_arena_name%"
     - "&fEnding in: &e%minigame_arena_seconds%"
     - ""
@@ -57,3 +71,4 @@ scoreboard:
     - "Thx for playing!"
     - ""
     - "&7%minigame_scoreboard_footer%"
+    - "&7&m------------------"

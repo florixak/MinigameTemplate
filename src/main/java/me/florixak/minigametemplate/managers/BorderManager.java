@@ -1,6 +1,5 @@
 package me.florixak.minigametemplate.managers;
 
-import me.florixak.minigametemplate.game.GameValues;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.WorldBorder;
@@ -13,10 +12,10 @@ public class BorderManager {
 	}
 
 	public void setBorder() {
-		this.wb = Bukkit.getWorld(GameValues.WORLD_NAME).getWorldBorder();
+		this.wb = Bukkit.getWorld("world").getWorldBorder();
 		this.wb.setCenter(0, 0);
-		this.wb.setSize(GameValues.BORDER.INIT_SIZE);
-		this.wb.setDamageAmount(GameValues.BORDER.BORDER_DAMAGE);
+//		this.wb.setSize(GameValues.BORDER.INIT_SIZE);
+//		this.wb.setDamageAmount(GameValues.BORDER.BORDER_DAMAGE);
 		this.wb.setWarningDistance(10);
 	}
 
@@ -37,7 +36,7 @@ public class BorderManager {
 	}
 
 	public double getMaxSize() {
-		return GameValues.BORDER.INIT_SIZE;
+		return 0;
 	}
 
 //	public double getSpeed() {

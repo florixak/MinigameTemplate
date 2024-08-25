@@ -1,8 +1,8 @@
-arena1:
-  name: '&cArena1'
+arena4:
+  name: '&9Arena4'
   enabled: true
   min-players: 2
-  max-players: 16
+  max-players: 8
   center-location:
     world: world
     x: 0.0
@@ -41,19 +41,3 @@ arena1:
         z: 34.204832341285844
         yaw: -198.78572
         pitch: 8.474537
-    '&9Blue':
-      size: 4
-      spawn-location:
-        x: -14.49112770766212
-        y: 4.0
-        z: 27.9779143032722
-        yaw: -271.98782
-        pitch: 5.071359
-    '&eYellow':
-      size: 4
-      spawn-location:
-        x: -26.64450847763696
-        y: 4.0
-        z: 37.44788816727507
-        yaw: -311.42407
-        pitch: 4.604268

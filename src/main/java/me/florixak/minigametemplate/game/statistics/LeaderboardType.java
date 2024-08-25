@@ -17,12 +17,22 @@ import java.util.List;
 
 public enum LeaderboardType {
 
-	WINS("wins"),
-	KILLS("kills"),
-	ASSISTS("assists"),
-	DEATHS("deaths"),
-	LOSSES("losses"),
-	KILLSTREAK("killstreak"),
+	SOLO_GAMES_PLAYED("solo-games-played"),
+	SOLO_WINS("solo-wins"),
+	SOLO_KILLS("solo-kills"),
+	SOLO_ASSISTS("solo-assists"),
+	SOLO_DEATHS("solo-deaths"),
+	SOLO_LOSSES("solo-losses"),
+	SOLO_KILLSTREAK("solo-killstreak"),
+
+	TEAMS_GAMES_PLAYED("teams-games-played"),
+	TEAMS_WINS("teams-wins"),
+	TEAMS_KILLS("teams-kills"),
+	TEAMS_ASSISTS("teams-assists"),
+	TEAMS_DEATHS("teams-deaths"),
+	TEAMS_LOSSES("teams-losses"),
+	TEAMS_KILLSTREAK("teams-killstreak"),
+
 	UHC_LEVEL("uhc-level"),
 	GAMES_PLAYED("games-played");
 
@@ -34,7 +44,7 @@ public enum LeaderboardType {
 	}
 
 	public String getDatabaseType() {
-		return this.type.replace("-", "_");
+		return this.type;
 	}
 
 	public String getHologramName() {
@@ -42,49 +52,11 @@ public enum LeaderboardType {
 	}
 
 	private String getTopStatsDisplayItemString() {
-		switch (this) {
-			case WINS:
-				return GameValues.STATISTICS.TOP_WINS_ITEM;
-			case KILLS:
-				return GameValues.STATISTICS.TOP_KILLS_ITEM;
-			case ASSISTS:
-				return GameValues.STATISTICS.TOP_ASSISTS_ITEM;
-			case DEATHS:
-				return GameValues.STATISTICS.TOP_DEATHS_ITEM;
-			case LOSSES:
-				return GameValues.STATISTICS.TOP_LOSSES_ITEM;
-			case KILLSTREAK:
-				return GameValues.STATISTICS.TOP_KILLSTREAK_ITEM;
-			case UHC_LEVEL:
-				return GameValues.STATISTICS.TOP_LEVEL_ITEM;
-			case GAMES_PLAYED:
-				return GameValues.STATISTICS.TOP_GAMES_PLAYED_ITEM;
-			default:
-				return "PAPER";
-		}
+		return "";
 	}
 
 	public String getTopStatsDisplayName() {
-		switch (this) {
-			case WINS:
-				return GameValues.STATISTICS.TOP_WINS_NAME;
-			case KILLS:
-				return GameValues.STATISTICS.TOP_KILLS_NAME;
-			case ASSISTS:
-				return GameValues.STATISTICS.TOP_ASSISTS_NAME;
-			case DEATHS:
-				return GameValues.STATISTICS.TOP_DEATHS_NAME;
-			case LOSSES:
-				return GameValues.STATISTICS.TOP_LOSSES_NAME;
-			case KILLSTREAK:
-				return GameValues.STATISTICS.TOP_KILLSTREAK_NAME;
-			case UHC_LEVEL:
-				return GameValues.STATISTICS.TOP_LEVEL_NAME;
-			case GAMES_PLAYED:
-				return GameValues.STATISTICS.TOP_GAMES_PLAYED_NAME;
-			default:
-				return "TOP STATS";
-		}
+		return "";
 	}
 
 	public ItemStack getTopStatsDisplayItem() {

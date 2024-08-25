@@ -1,8 +1,8 @@
-arena1:
-  name: '&cArena1'
+arena2:
+  name: '&aArena2'
   enabled: true
   min-players: 2
-  max-players: 16
+  max-players: 12
   center-location:
     world: world
     x: 0.0
@@ -26,7 +26,7 @@ arena1:
     pitch: 0.0
   teams:
     '&aGreen':
-      size: 4
+      size: 3
       spawn-location:
         x: 5.0159333078651915
         y: 4.0
@@ -34,7 +34,7 @@ arena1:
         yaw: -12.077964
         pitch: 17.282742
     '&cRed':
-      size: 4
+      size: 3
       spawn-location:
         x: 1.2575410212151539
         y: 4.0
@@ -42,7 +42,7 @@ arena1:
         yaw: -198.78572
         pitch: 8.474537
     '&9Blue':
-      size: 4
+      size: 3
       spawn-location:
         x: -14.49112770766212
         y: 4.0
@@ -50,7 +50,7 @@ arena1:
         yaw: -271.98782
         pitch: 5.071359
     '&eYellow':
-      size: 4
+      size: 3
       spawn-location:
         x: -26.64450847763696
         y: 4.0

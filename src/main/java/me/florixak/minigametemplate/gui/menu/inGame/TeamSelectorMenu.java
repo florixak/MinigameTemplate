@@ -1,17 +1,15 @@
 package me.florixak.minigametemplate.gui.menu.inGame;
 
-import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.MinigameTemplate;
-import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.game.teams.GameTeam;
+import me.florixak.minigametemplate.gui.Gui;
+import me.florixak.minigametemplate.gui.GuiType;
 import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.gui.PaginatedMenu;
-import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.ItemUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,21 +18,29 @@ import java.util.List;
 
 public class TeamSelectorMenu extends PaginatedMenu {
 
-	private final GameManager gameManager = GameManager.getInstance();
-	private final Arena arena;
 	private final GamePlayer gamePlayer;
 	private final List<GameTeam> teamsList;
 
 	public TeamSelectorMenu(final MenuUtils menuUtils) {
-		super(menuUtils, GameValues.TEAMS.TEAM_SELECTION_TITLE);
+		super(menuUtils);
 		this.gamePlayer = menuUtils.getGamePlayer();
-		this.arena = this.gameManager.getArenaManager().getPlayerArena(this.gamePlayer);
-		this.teamsList = this.arena.getTeams();
+		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(this.gamePlayer);
+		this.teamsList = arena.getTeams();
+	}
+
+	@Override
+	public String getMenuName() {
+		return format(getGui().getTitle());
+	}
+
+	@Override
+	public Gui getGui() {
+		return this.guiManager.getGui(GuiType.TEAMS_SELECTOR.getKey());
 	}
 
 	@Override
 	public int getSlots() {
-		return GameValues.TEAMS.TEAM_SELECTION_SLOTS;
+		return getGui().getSlots();
 	}
 
 	@Override
@@ -44,11 +50,12 @@ public class TeamSelectorMenu extends PaginatedMenu {
 
 	@Override
 	public void handleMenuClicks(final InventoryClickEvent event) {
-		final Material clickedItem = event.getCurrentItem().getType();
-		if (clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.CLOSE_ITEM).get().parseMaterial())) {
+		final ItemStack clickedItem = event.getCurrentItem();
+		if (clickedItem.equals(this.guiManager.getItem("filler"))) {
+			event.setCancelled(true);
+		} else if (clickedItem.equals(this.guiManager.getItem("close"))) {
 			close();
-		} else if (clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.NEXT_ITEM).get().parseMaterial())
-				|| clickedItem.equals(XMaterial.matchXMaterial(GameValues.INVENTORY.PREVIOUS_ITEM).get().parseMaterial())) {
+		} else if (clickedItem.equals(this.guiManager.getItem("previous")) || clickedItem.equals(this.guiManager.getItem("next"))) {
 			handlePaging(event, this.teamsList);
 		} else {
 			handleTeamSelection(event);
@@ -57,7 +64,7 @@ public class TeamSelectorMenu extends PaginatedMenu {
 
 	@Override
 	public void setMenuItems() {
-		addMenuBorder();
+		addMenuBorder(false);
 		ItemStack item;
 
 		for (int i = getStartIndex(); i < getEndIndex(); i++) {
@@ -67,7 +74,7 @@ public class TeamSelectorMenu extends PaginatedMenu {
 			for (final GamePlayer member : team.getMembers()) {
 				lore.add(TextUtils.color("&f" + member.getName()));
 			}
-			item = ItemUtils.createItem(team.getDisplayItem().getType(), "&l" + team.getDisplayName(), 1, lore);
+			item = ItemUtils.createItem(team.getDisplayMaterial(), "&l" + team.getDisplayName(), 1, lore);
 			if (MinigameTemplate.useOldMethods()) {
 				item.setDurability((short) team.getDisplayItemDurability());
 			}

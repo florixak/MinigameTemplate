@@ -1,16 +1,16 @@
 package me.florixak.minigametemplate.gui.menu.shop;
 
-import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.gameItems.BuyableItem;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.gui.Gui;
+import me.florixak.minigametemplate.gui.GuiType;
 import me.florixak.minigametemplate.gui.Menu;
 import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.managers.GameManager;
-import me.florixak.minigametemplate.utils.ItemUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class ConfirmPurchaseMenu extends Menu {
 
@@ -25,24 +25,32 @@ public class ConfirmPurchaseMenu extends Menu {
 
 	@Override
 	public String getMenuName() {
-		return TextUtils.color("&6Are you sure?");
+		return TextUtils.color(getGui().getTitle());
 	}
 
 	@Override
 	public int getSlots() {
-		return 35;
+		return getGui().getSlots();
+	}
+
+	@Override
+	public Gui getGui() {
+		return this.guiManager.getGui(GuiType.PURCHASE_CONFIRM.getKey());
 	}
 
 	@Override
 	public void handleMenuClicks(final InventoryClickEvent event) {
+		final ItemStack clickedItem = event.getCurrentItem();
 
-		this.uhcPlayer.getPlayer().closeInventory();
-
-		if (event.getSlot() == 11) {
+		if (clickedItem.equals(this.guiManager.getItem("filler"))) {
+			event.setCancelled(true);
+		} else if (event.getSlot() == 11) {
+			close();
 			if (this.toBuy == null) return;
 			this.uhcPlayer.getPlayerData().buy(this.toBuy);
 			this.menuUtils.setToBuy(null);
 		} else if (event.getSlot() == 15) {
+			close();
 			this.uhcPlayer.sendMessage(Messages.CANCELLED_PURCHASE.toString());
 			GameManager.getInstance().getSoundManager().playPurchaseCancelSound(this.uhcPlayer.getPlayer());
 		}
@@ -52,21 +60,9 @@ public class ConfirmPurchaseMenu extends Menu {
 	public void setMenuItems() {
 		if (this.toBuy == null) return;
 
-		this.inventory.setItem(11, ItemUtils.createItem(
-				XMaterial.matchXMaterial(Material.EMERALD).parseMaterial(),
-				TextUtils.color("Confirm purchase of &6%cost% %currency%"
-						.replace("%cost%", String.valueOf(this.toBuy.getCost()))
-						.replace("%currency%", Messages.CURRENCY.toString())),
-				1,
-				null)
-		);
+		this.inventory.setItem(11, this.guiManager.getItem("confirm"));
 
-		this.inventory.setItem(15, ItemUtils.createItem(
-				XMaterial.matchXMaterial(Material.REDSTONE).parseMaterial(),
-				TextUtils.color("Cancel purchase of &6%cost% %currency%"),
-				1,
-				null)
-		);
+		this.inventory.setItem(15, this.guiManager.getItem("cancel"));
 	}
 
 	@Override

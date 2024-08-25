@@ -1,0 +1,208 @@
+inventories:
+  items:
+    next:
+      display-name: "&6Next"
+      display-item: DARK_OAK_BUTTON
+      display-lore:
+        - "&7Click to go to the next page."
+    previous:
+      display-name: "&6Previous"
+      display-item: DARK_OAK_BUTTON
+      display-lore:
+        - "&7Click to go to the previous page."
+    back:
+      display-name: "&6Back"
+      display-item: DARK_OAK_BUTTON
+      display-lore:
+        - "&7Click to go back."
+    close:
+      display-name: "&6Close"
+      display-item: BARRIER
+      display-lore:
+        - "&7Click to close."
+    filler:
+      display-name: " "
+      display-item: AIR
+    confirm:
+      display-name: "&aConfirm"
+      display-item: EMERALD_BLOCK
+      display-lore:
+        - "&7Click to confirm."
+    cancel:
+      display-name: "&cCancel"
+      display-item: REDSTONE_BLOCK
+      display-lore:
+        - "&7Click to cancel."
+
+  # Lobby
+  lobby:
+    arena-selector:
+      enabled: true
+      title: "&6Arenas"
+      slots: 45
+      display-name: "&6Arenas"
+      display-item: COMPASS
+      display-slot: 0
+      display-lore:
+        - "&7Click to join an arena."
+
+    in-game-arena-selector:
+      enabled: true
+      title: "&6In-Game Arenas"
+      slots: 45
+      display-name: "&6In-Game Arenas"
+      display-item: CLOCK
+      display-slot: -1
+      display-lore:
+        - "&7Click to spectate an arena."
+
+    profile:
+      enabled: true
+      title: "&6Profile"
+      slots: 45
+      display-name: "&6Profile"
+      display-item: PLAYER_HEAD
+      display-slot: 4
+      display-lore:
+        - "&7Click to view your profile."
+
+    leaderboards:
+      enabled: true
+      title: "&6Leaderboards"
+      slots: 45
+      display-name: "&6Leaderboards"
+      display-item: DIAMOND
+      display-slot: -1
+      display-lore:
+        - "&7Click to view leaderboards."
+
+    shop:
+      enabled: true
+      title: "&6Shop"
+      slots: 45
+      display-name: "&6Shop"
+      display-item: EMERALD
+      display-slot: 3
+      display-lore:
+        - "&7Click to view the shop."
+
+    cosmetics-shop:
+      enabled: true
+      title: "&6Cosmetics To Buy"
+      slots: 45
+      display-name: "&6Cosmetics"
+      display-item: ENDER_CHEST
+      display-slot: -1
+      display-lore:
+        - "&7Click to view cosmetics."
+
+    kits-shop:
+      enabled: true
+      title: "&6Kits To Buy"
+      slots: 45
+      display-name: "&6Kits"
+      display-item: CHEST
+      display-slot: -1
+      display-lore:
+        - "&7Click to view kits."
+
+    perks-shop:
+      enabled: true
+      title: "&6Perks To Buy"
+      slots: 45
+      display-name: "&6Perks"
+      display-item: ENCHANTED_BOOK
+      display-slot: -1
+      display-lore:
+        - "&7Click to view perks."
+
+    quests:
+      enabled: true
+      title: "&6Quests"
+      slots: 45
+      display-name: "&6Quests"
+      display-item: BOOK
+      display-slot: 5
+      display-lore:
+        - "&7Click to view your quests."
+
+    # Confirm Purchase
+    purchase-confirm:
+      enabled: true
+      title: "&6Confirm Purchase"
+      slots: 27
+
+    toggle-player-hider:
+      enabled: true
+      title: "&6Toggle Player Hider"
+      slots: 27
+      display-name: "&6Toggle Player Hider"
+      display-item: LIME_DYE
+      display-slot: 7
+      display-lore:
+        - "&7Click to toggle player hider."
+
+
+
+  in-game:
+    # In Game
+    teams-selector:
+      enabled: true
+      title: "&6Choose Team"
+      slots: 36
+      display-name: "&6Teams"
+      display-item: WHITE_WOOL
+      display-slot: 0
+      display-lore:
+        - "&7Click to join a team."
+
+    kits-selector:
+      enabled: true
+      title: "&6Kits To Select"
+      slots: 45
+      display-name: "&6Kits"
+      display-item: CHEST
+      display-slot: 1
+      display-lore:
+        - "&7Click to select a kit."
+
+    perks-selector:
+      enabled: true
+      title: "&6Perks To Select"
+      slots: 45
+      display-name: "&6Perks"
+      display-item: ENCHANTED_BOOK
+      display-slot: 2
+      display-lore:
+        - "&7Click to select a perk."
+
+    cosmetics-selector:
+      enabled: true
+      title: "&6Cosmetics To Select"
+      slots: 45
+      display-name: "&6Cosmetics"
+      display-item: ENDER_CHEST
+      display-slot: 5
+      display-lore:
+        - "&7Click to select a cosmetic."
+
+    quests:
+      enabled: true
+      title: "&6Quests"
+      slots: 45
+      display-name: "&6Quests"
+      display-item: BOOK
+      display-slot: 4
+      display-lore:
+        - "&7Click to view your quests."
+
+    # Leave Arena
+    leave-confirm:
+      enabled: true
+      title: "&6Leave Arena"
+      slots: 27
+      display-name: "&6Leave Arena"
+      display-item: RED_BED
+      display-slot: 8
+      display-lore:
+        - "&7Click to view perks."

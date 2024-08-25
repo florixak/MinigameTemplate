@@ -4,9 +4,10 @@ import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.game.quests.Quest;
+import me.florixak.minigametemplate.gui.Gui;
+import me.florixak.minigametemplate.gui.GuiType;
 import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.gui.PaginatedMenu;
-import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.ItemUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -18,17 +19,26 @@ import java.util.List;
 public class QuestsMenu extends PaginatedMenu {
 
 	private final GamePlayer gamePlayer;
-	private final GameManager gameManager = GameManager.getInstance();
 	private final List<Quest> quests = this.gameManager.getQuestManager().getQuests();
 
 	public QuestsMenu(final MenuUtils menuUtils) {
-		super(menuUtils, "Quests");
+		super(menuUtils);
 		this.gamePlayer = menuUtils.getGamePlayer();
 	}
 
 	@Override
+	public String getMenuName() {
+		return format(getGui().getTitle());
+	}
+
+	@Override
 	public int getSlots() {
-		return 45;
+		return getGui().getSlots();
+	}
+
+	@Override
+	public Gui getGui() {
+		return this.guiManager.getGui(GuiType.QUESTS.getKey());
 	}
 
 	@Override
@@ -47,7 +57,7 @@ public class QuestsMenu extends PaginatedMenu {
 
 	@Override
 	public void setMenuItems() {
-		addMenuBorder();
+		addMenuBorder(false);
 		ItemStack questDisplayItem;
 
 		for (int i = getStartIndex(); i < getEndIndex(); i++) {

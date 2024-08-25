@@ -9,14 +9,15 @@ softdepend: [ PlaceholderAPI, ProtocolLib, Vault, DecentHolograms, LuckPerms ]
 commands:
   minigame:
     description: Main command for MinigameTemplate.
-    aliases: [ mgt ]
   arena:
     description: Arena command for MinigameTemplate.
-    aliases: [ mgta ]
+    aliases: [ arenas ]
   join:
     description: Join the minigame.
   leave:
     description: Leave the minigame.
+  workbench:
+    description: Open the workbench GUI.
   anvil:
     description: Open the anvils GUI.
 

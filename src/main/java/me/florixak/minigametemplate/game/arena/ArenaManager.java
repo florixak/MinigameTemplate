@@ -86,11 +86,7 @@ public class ArenaManager {
 
 	public void disableArena(final Arena arena) {
 		if (!arena.isEnabled()) return;
-		arena.getPlayers().forEach(gamePlayer -> {
-			gamePlayer.sendMessage("Arena has been disabled.");
-			arena.leave(gamePlayer);
-		});
-		arena.setEnabled(false);
+		arena.disable();
 	}
 
 	public void deleteArena(final Arena arena) {
@@ -169,7 +165,7 @@ public class ArenaManager {
 	}
 
 	public void onDisable() {
-		saveAllArenas();
+		//saveAllArenas();
 		this.arenas.clear();
 	}
 }

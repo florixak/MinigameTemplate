@@ -46,7 +46,7 @@ public class Perk extends BuyableItem {
 		return getCost() == 0;
 	}
 
-	public List<String> getDescription() {
+	public List<String> getLore() {
 		final List<String> formattedDescription = new ArrayList<>();
 		for (String desc : this.description) {
 			if (hasPerkEffect()) {
@@ -109,20 +109,13 @@ public class Perk extends BuyableItem {
 		}
 	}
 
-	public void buy(final GamePlayer gamePlayer) {
-		super.buy(gamePlayer);
-		gamePlayer.getPlayerData().getBoughtPerksList().add(this);
-		gamePlayer.getPlayerData().savePerks();
-		gameManager.getSoundManager().playSelectBuySound(gamePlayer.getPlayer());
-	}
-
 	@Override
 	public boolean equals(final Object o) {
 		return o instanceof Perk
 				&& ((Perk) o).getName().equals(getName())
 				&& ((Perk) o).getDisplayItem().equals(getDisplayItem())
 				&& ((Perk) o).getCost() == getCost()
-				&& ((Perk) o).getDescription().equals(getDescription())
+				&& ((Perk) o).getLore().equals(getLore())
 				&& ((Perk) o).getPerkBonus().equals(getPerkBonus())
 				&& ((Perk) o).getPerkEffect().equals(getPerkEffect())
 				&& ((Perk) o).getPerkItem().equals(getPerkItem());

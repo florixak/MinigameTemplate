@@ -9,4 +9,5 @@ public enum ConfigType {
 	KITS,
 	PERKS,
 	QUESTS,
+	INVENTORIES
 }

@@ -1,64 +1,55 @@
 package me.florixak.minigametemplate.gui.menu.lobby;
 
-import com.cryptomorin.xseries.XMaterial;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.player.GamePlayer;
-import me.florixak.minigametemplate.game.statistics.LeaderboardType;
+import me.florixak.minigametemplate.gui.Gui;
+import me.florixak.minigametemplate.gui.GuiType;
 import me.florixak.minigametemplate.gui.Menu;
 import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.managers.GameManager;
-import me.florixak.minigametemplate.utils.ItemUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
-public class StatisticsMenu extends Menu {
+public class ProfileMenu extends Menu {
 
 	private final GamePlayer uhcPlayer;
 
-	public StatisticsMenu(final MenuUtils menuUtils) {
+	public ProfileMenu(final MenuUtils menuUtils) {
 		super(menuUtils);
 		this.uhcPlayer = menuUtils.getGamePlayer();
 	}
 
 	@Override
 	public String getMenuName() {
-		return TextUtils.color("Statistics");
+		return TextUtils.color(getGui().getTitle());
+	}
+
+	@Override
+	public Gui getGui() {
+		return this.guiManager.getGui(GuiType.PROFILE.getKey());
 	}
 
 	@Override
 	public int getSlots() {
-		return 45;
+		return getGui().getSlots();
 	}
 
 	@Override
 	public void handleMenuClicks(final InventoryClickEvent event) {
-		if (event.getCurrentItem().getType().equals(XMaterial.BARRIER.parseMaterial())) {
+		final ItemStack clickedItem = event.getCurrentItem();
+		if (clickedItem.equals(this.guiManager.getItem("filler"))) {
+			event.setCancelled(true);
+		} else if (clickedItem.equals(this.guiManager.getItem("close"))) {
 			close();
-		} else if (event.getCurrentItem().getType().equals(XMaterial.DARK_OAK_BUTTON.parseMaterial())) {
-			handleStatistics(event);
 		}
-
 	}
 
 	@Override
 	public void setMenuItems() {
 		getInventory().setItem(GameValues.STATISTICS.PLAYER_STATS_SLOT, GameManager.getInstance().getLeaderboardManager().getPlayerStatsItem(this.uhcPlayer));
 
-		getInventory().setItem(GameValues.STATISTICS.TOP_WINS_SLOT, LeaderboardType.WINS.getTopStatsDisplayItem());
-		getInventory().setItem(GameValues.STATISTICS.TOP_KILLS_SLOT, LeaderboardType.KILLS.getTopStatsDisplayItem());
-		getInventory().setItem(GameValues.STATISTICS.TOP_ASSISTS_SLOT, LeaderboardType.ASSISTS.getTopStatsDisplayItem());
-		getInventory().setItem(GameValues.STATISTICS.TOP_DEATHS_SLOT, LeaderboardType.DEATHS.getTopStatsDisplayItem());
-		getInventory().setItem(GameValues.STATISTICS.TOP_LOSSES_SLOT, LeaderboardType.LOSSES.getTopStatsDisplayItem());
-		getInventory().setItem(GameValues.STATISTICS.TOP_KILLSTREAK_SLOT, LeaderboardType.KILLSTREAK.getTopStatsDisplayItem());
-		getInventory().setItem(GameValues.STATISTICS.TOP_LEVEL_SLOT, LeaderboardType.UHC_LEVEL.getTopStatsDisplayItem());
-		getInventory().setItem(GameValues.STATISTICS.TOP_GAMES_PLAYED_SLOT, LeaderboardType.GAMES_PLAYED.getTopStatsDisplayItem());
-
-		this.inventory.setItem(getSlots() - 5, ItemUtils.createItem(
-				XMaterial.matchXMaterial(Material.BARRIER).parseMaterial(),
-				TextUtils.color(GameValues.INVENTORY.CLOSE_TITLE),
-				1,
-				null));
+		this.inventory.setItem(getSlots() - 5, this.guiManager.getItem("close"));
 	}
 
 	private void handleStatistics(final InventoryClickEvent event) {

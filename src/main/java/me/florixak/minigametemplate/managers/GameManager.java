@@ -8,6 +8,7 @@ import me.florixak.minigametemplate.config.ConfigType;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.arena.ArenaManager;
 import me.florixak.minigametemplate.game.assists.DamageTrackerManager;
+import me.florixak.minigametemplate.gui.GuiManager;
 import me.florixak.minigametemplate.listeners.*;
 import me.florixak.minigametemplate.managers.boards.ScoreboardManager;
 import me.florixak.minigametemplate.managers.boards.TablistManager;
@@ -19,6 +20,7 @@ import me.florixak.minigametemplate.sql.SQLGetter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 
@@ -37,15 +39,15 @@ public class GameManager {
 	private final PlayerDataManager playerDataManager;
 	private final PlayerQuestDataManager playerQuestDataManager;
 	private final WorldManager worldManager;
+	private final GuiManager guiManager;
+	private final MenuManager menuManager;
 	private final ArenaManager arenaManager;
-	private final GameItemManager gameItemManager;
 	private final KitsManager kitsManager;
 	private final PerksManager perksManager;
 	private final QuestManager questManager;
 	private final LeaderboardManager leaderboardManager;
 	private final ScoreboardManager scoreboardManager;
 	private final TablistManager tablistManager;
-	private final MenuManager menuManager;
 	private final TasksManager tasksManager;
 	private final BorderManager borderManager;
 	private final SoundManager soundManager;
@@ -68,14 +70,14 @@ public class GameManager {
 		this.playerQuestDataManager = new PlayerQuestDataManager();
 		this.worldManager = new WorldManager();
 		this.lobbyManager = new LobbyManager(this);
-		this.gameItemManager = new GameItemManager(this);
+		this.menuManager = new MenuManager();
+		this.guiManager = new GuiManager(this);
 		this.kitsManager = new KitsManager(this);
 		this.perksManager = new PerksManager(this);
 		this.questManager = new QuestManager(this);
 		this.leaderboardManager = new LeaderboardManager(this);
 		this.scoreboardManager = new ScoreboardManager(this);
 		this.tablistManager = new TablistManager(this);
-		this.menuManager = new MenuManager();
 		this.tasksManager = new TasksManager(this);
 		this.borderManager = new BorderManager();
 		this.soundManager = new SoundManager();
@@ -94,6 +96,7 @@ public class GameManager {
 		registerCommand("arena", new ArenaCommand(this));
 		registerCommand("join", new JoinCommand(this));
 		registerCommand("leave", new LeaveCommand(this));
+		registerCommand("workbench", new WorkbenchCommand());
 		registerCommand("anvil", new AnvilCommand(this));
 	}
 
@@ -105,6 +108,7 @@ public class GameManager {
 			return;
 		}
 		pluginCommand.setExecutor(executor);
+		pluginCommand.setTabCompleter((executor instanceof TabCompleter) ? (TabCompleter) executor : null);
 	}
 
 	private void registerListeners() {
@@ -112,6 +116,7 @@ public class GameManager {
 
 		listeners.add(new PlayerListener(this));
 		listeners.add(new ArenaListener(this));
+		listeners.add(new LobbyListener(this));
 		listeners.add(new InventoryClickListener(this));
 		listeners.add(new EntityListener(this));
 		if (!MinigameTemplate.useOldMethods()) listeners.add(new AnvilClickListener());
@@ -162,7 +167,7 @@ public class GameManager {
 		this.leaderboardManager.onDisable();
 		this.damageTrackerManager.onDisable();
 		this.arenaManager.onDisable();
-		this.gameItemManager.onDisable();
+		this.guiManager.onDisable();
 		disconnectDatabase();
 	}
 }
