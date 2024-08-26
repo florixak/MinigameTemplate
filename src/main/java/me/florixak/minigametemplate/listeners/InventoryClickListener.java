@@ -31,7 +31,7 @@ public class InventoryClickListener implements Listener {
 
 		event.setCancelled(true);
 
-		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+		if (gamePlayer.isInArena()) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
 			if (arena.isPlaying()) {
 				event.setCancelled(false);

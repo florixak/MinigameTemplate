@@ -33,7 +33,7 @@ public class LobbyListener implements Listener {
 
 		final Player p = event.getPlayer();
 		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
-		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) return;
+		if (gamePlayer.isInArena()) return;
 		final ItemStack item = gamePlayer.getInventory().getItemInHand();
 
 		if (item.getType() == Material.AIR || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName())

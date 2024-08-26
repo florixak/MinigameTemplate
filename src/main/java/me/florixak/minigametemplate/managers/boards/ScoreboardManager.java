@@ -24,6 +24,7 @@ public class ScoreboardManager {
 	private final List<String> lobby;
 	private final List<String> waiting;
 	private final List<String> starting;
+	private final List<String> inGame;
 	private final List<String> ending;
 
 	private final GameManager gameManager;
@@ -39,6 +40,7 @@ public class ScoreboardManager {
 		this.lobby = config.getStringList("scoreboard.lobby");
 		this.waiting = config.getStringList("scoreboard.waiting");
 		this.starting = config.getStringList("scoreboard.starting");
+		this.inGame = config.getStringList("scoreboard.in-game");
 		this.ending = config.getStringList("scoreboard.ending");
 	}
 
@@ -58,7 +60,7 @@ public class ScoreboardManager {
 		if (helper == null) helper = new ScoreHelper(p);
 		helper.setTitle(this.title);
 
-		if (!this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+		if (!gamePlayer.isInArena()) {
 			helper.setSlotsFromList(this.lobby);
 			return helper;
 		}
@@ -70,6 +72,9 @@ public class ScoreboardManager {
 				break;
 			case STARTING:
 				helper.setSlotsFromList(this.starting);
+				break;
+			case INGAME:
+				helper.setSlotsFromList(this.inGame);
 				break;
 			case ENDING:
 				helper.setSlotsFromList(this.ending);

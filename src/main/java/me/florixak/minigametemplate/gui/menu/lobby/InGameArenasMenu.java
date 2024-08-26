@@ -12,7 +12,6 @@ import me.florixak.minigametemplate.utils.ItemUtils;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InGameArenasMenu extends PaginatedMenu {
@@ -58,7 +57,7 @@ public class InGameArenasMenu extends PaginatedMenu {
 		} else if (clickedItem.equals(this.guiManager.getItem("previous")) || clickedItem.equals(this.guiManager.getItem("next"))) {
 			handlePaging(event, this.arenaList);
 		} else {
-			if (!this.gameManager.getArenaManager().isPlayerInArena(this.gamePlayer)) {
+			if (!this.gamePlayer.isInArena()) {
 				this.gamePlayer.sendMessage(Messages.CANT_USE_NOW.toString());
 				return;
 			}
@@ -70,25 +69,14 @@ public class InGameArenasMenu extends PaginatedMenu {
 	@Override
 	public void setMenuItems() {
 		addMenuBorder(true);
-		ItemStack arenaDisplayItem;
+		ItemStack displayItem;
 
 		for (int i = getStartIndex(); i < getEndIndex(); i++) {
 			final Arena arena = this.arenaList.get(i);
-			final List<String> lore = new ArrayList<>();
+			displayItem = ItemUtils.createItem(XMaterial.MAP.parseMaterial(), arena.getName(), 1, arena.getLore());
+			ItemUtils.addGlow(displayItem);
 
-			if (this.gameManager.getArenaManager().isPlayerInArena(this.gamePlayer)
-					&& this.gameManager.getArenaManager().getPlayerArena(this.gamePlayer).equals(arena)) {
-				lore.add(" ");
-				lore.add("You are here!");
-			} else {
-				lore.add(" ");
-				lore.add("Click to spectate!");
-			}
-
-			arenaDisplayItem = ItemUtils.createItem(XMaterial.MAP.parseMaterial(), "&c" + arena.getName() + " (In Game)", 1, lore);
-			ItemUtils.addGlow(arenaDisplayItem);
-
-			this.inventory.setItem(i - getStartIndex(), arenaDisplayItem);
+			this.inventory.setItem(i - getStartIndex(), displayItem);
 		}
 	}
 
@@ -101,5 +89,16 @@ public class InGameArenasMenu extends PaginatedMenu {
 		final Arena arena = this.arenaList.get(event.getSlot());
 		close();
 
+		if (arena.isEnding()) {
+			this.gamePlayer.sendMessage(Messages.ARENA_ENDED.toString());
+			return;
+		}
+
+		if (arena.getPlayers().size() >= arena.getMaxPlayers()) {
+			this.gamePlayer.sendMessage(Messages.ARENA_FULL.toString());
+			return;
+		}
+
+		arena.joinAsSpectator(this.gamePlayer);
 	}
 }

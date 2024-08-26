@@ -90,32 +90,6 @@ public class SQLGetter {
 		return false;
 	}
 
-	/* Economy Setters */
-	public void setMoney(final UUID uuid, final double money) {
-		setDouble(uuid, DataType.MONEY.getDatabasePath(), money);
-	}
-
-	public void setTokens(final UUID uuid, final int tokens) {
-		setInt(uuid, DataType.TOKENS.getDatabasePath(), tokens);
-	}
-
-	/* Level Setters */
-	public void addLevel(final UUID uuid) {
-		setInt(uuid, DataType.LEVEL.getDatabasePath(), getInt(uuid, DataType.LEVEL.getDatabasePath()) + 1);
-	}
-
-	public void addExp(final UUID uuid, final double exp) {
-		setExp(uuid, getDouble(uuid, DataType.EXP.getDatabasePath()) + exp);
-	}
-
-	public void setExp(final UUID uuid, final double exp) {
-		setDouble(uuid, DataType.EXP.getDatabasePath(), exp);
-	}
-
-	public void setRequiredExp(final UUID uuid, final double exp) {
-		setDouble(uuid, DataType.REQUIRED_EXP.getDatabasePath(), exp);
-	}
-
 	/* Kits */
 	public List<String> getBoughtKits(final UUID uuid) {
 		try {
@@ -255,6 +229,10 @@ public class SQLGetter {
 		}
 	}
 
+	public void addInt(final UUID uuid, final String column, final int value) {
+		setInt(uuid, column, getInt(uuid, column) + value);
+	}
+
 	public double getDouble(final UUID uuid, final String column) {
 		try {
 			final PreparedStatement ps = this.conn.prepareStatement("SELECT " + column + " FROM " + this.table + " WHERE uuid=?");
@@ -283,6 +261,10 @@ public class SQLGetter {
 		}
 	}
 
+	public void addDouble(final UUID uuid, final String column, final double value) {
+		setDouble(uuid, column, getDouble(uuid, column) + value);
+	}
+
 	public List<String> getList(final UUID uuid, final String column) {
 		try {
 			final PreparedStatement ps = this.conn.prepareStatement("SELECT " + column + " FROM " + this.table + " WHERE uuid=?");
@@ -297,6 +279,19 @@ public class SQLGetter {
 			e.printStackTrace();
 		}
 		return new ArrayList<>();
+	}
+
+	public void setStat(final UUID uuid, final DataType dataType, final Object object) {
+		if (object instanceof String) {
+			setString(uuid, dataType.getDatabasePath(), (String) object);
+		} else if (object instanceof Integer) {
+			setInt(uuid, dataType.getDatabasePath(), (Integer) object);
+		} else if (object instanceof Double) {
+			setDouble(uuid, dataType.getDatabasePath(), (Double) object);
+		} else if (object instanceof List) {
+			final String joinedList = String.join(", ", (List<String>) object);
+			setString(uuid, dataType.getDatabasePath(), joinedList);
+		}
 	}
 
 	public boolean isTableEmpty() {

@@ -13,14 +13,8 @@ public class ArenaCheckTask extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		if (this.arena.canStart()) {
+		if (this.arena.canStart() && this.arena.isWaiting()) {
 			this.arena.start();
-		} else {
-			this.arena.stopStarting();
-		}
-
-		if (this.arena.canEnd()) {
-			this.arena.end();
 		}
 	}
 }

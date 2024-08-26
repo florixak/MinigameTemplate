@@ -18,6 +18,8 @@ import java.util.Map;
 
 public class GuiManager {
 
+	private final GameManager gameManager;
+
 	private final Map<String, ItemStack> guiItem = new HashMap<>();
 	private final Map<String, Gui> guis = new HashMap<>();
 	private final List<Gui> lobbyItemsInHotbar = new ArrayList<>();
@@ -26,6 +28,7 @@ public class GuiManager {
 	private final FileConfiguration invConfig;
 
 	public GuiManager(final GameManager gameManager) {
+		this.gameManager = gameManager;
 		this.invConfig = gameManager.getConfigManager().getFile(ConfigType.INVENTORIES).getConfig();
 
 		load();

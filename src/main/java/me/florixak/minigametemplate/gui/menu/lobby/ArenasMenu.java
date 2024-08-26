@@ -56,6 +56,9 @@ public class ArenasMenu extends PaginatedMenu {
 			close();
 		} else if (clickedItem.equals(this.guiManager.getItem("previous")) || clickedItem.equals(this.guiManager.getItem("next"))) {
 			handlePaging(event, this.arenaList);
+		} else if (clickedItem.equals(this.guiManager.getItem("in-game-arenas"))) {
+			close();
+			new InGameArenasMenu(this.menuUtils).open();
 		} else {
 			handleArenaSelection(event);
 		}
@@ -73,6 +76,8 @@ public class ArenasMenu extends PaginatedMenu {
 
 			this.inventory.setItem(i - getStartIndex(), displayItem);
 		}
+
+		this.inventory.setItem(getSlots() - 1, this.guiManager.getItem("in-game-arenas"));
 	}
 
 	@Override
@@ -87,13 +92,16 @@ public class ArenasMenu extends PaginatedMenu {
 	private void handleArenaSelection(final InventoryClickEvent event) {
 		final Arena arena = this.arenaList.get(event.getSlot());
 		close();
-		this.gamePlayer.sendMessage("Clicking on " + arena.getName());
 
-		if (this.gameManager.getArenaManager().isPlayerInArena(this.gamePlayer)) {
+		if (this.gamePlayer.isInArena()) {
 			final Arena currentArena = this.gameManager.getArenaManager().getPlayerArena(this.gamePlayer);
 			currentArena.leave(this.gamePlayer);
-			currentArena.broadcast(Messages.ARENA_LEAVE.toString().replace("%player%", this.gamePlayer.getPlayer().getName()));
 		}
+		if (arena.getPlayers().size() >= arena.getMaxPlayers()) {
+			this.gamePlayer.sendMessage(Messages.ARENA_FULL.toString());
+			return;
+		}
+
 		arena.join(this.gamePlayer);
 		arena.broadcast(Messages.ARENA_JOIN.toString().replace("%player%", this.gamePlayer.getPlayer().getName()));
 	}

@@ -134,7 +134,7 @@ public class ArenaListener implements Listener {
 		final Player p = event.getPlayer();
 		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
 
-		if (!this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) return;
+		if (!gamePlayer.isInArena()) return;
 		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
 
 		if (arena.isPlaying()) return;
@@ -167,7 +167,7 @@ public class ArenaListener implements Listener {
 	public void handleBlockBreak(final BlockBreakEvent event) {
 		final Player player = event.getPlayer();
 		final GamePlayer gamePlayer = this.playerManager.getGamePlayer(player.getUniqueId());
-		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+		if (gamePlayer.isInArena()) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
 			if (!arena.isPlaying()) {
 				event.setCancelled(true);
@@ -182,7 +182,7 @@ public class ArenaListener implements Listener {
 	public void handleBlockPlace(final BlockPlaceEvent event) {
 		final Player player = event.getPlayer();
 		final GamePlayer gamePlayer = this.playerManager.getGamePlayer(player.getUniqueId());
-		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+		if (gamePlayer.isInArena()) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
 			if (!arena.isPlaying()) {
 				event.setCancelled(true);
@@ -203,7 +203,7 @@ public class ArenaListener implements Listener {
 	public void handleHunger(final FoodLevelChangeEvent event) {
 		final Player p = (Player) event.getEntity();
 		final GamePlayer gamePlayer = this.playerManager.getGamePlayer(p.getUniqueId());
-		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+		if (gamePlayer.isInArena()) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
 			if (!arena.isPlaying()) {
 				event.setCancelled(true);

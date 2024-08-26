@@ -29,7 +29,7 @@ public class EntityListener implements Listener {
 		final Player player = (Player) event.getEntity();
 		final GamePlayer gamePlayer = this.playerManager.getGamePlayer(player.getUniqueId());
 
-		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+		if (gamePlayer.isInArena()) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
 			if (!arena.isPlaying()) {
 				event.setCancelled(true);
@@ -49,7 +49,7 @@ public class EntityListener implements Listener {
 		final Player damager = (Player) event.getDamager();
 		final GamePlayer damagerPlayer = this.playerManager.getGamePlayer(damager.getUniqueId());
 
-		if (!this.gameManager.getArenaManager().isPlayerInArena(damagerPlayer)) { // if damager not in arena
+		if (!damagerPlayer.isInArena()) { // if damager not in arena
 			event.setCancelled(true); // disable event
 		} else {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(damagerPlayer);
@@ -102,7 +102,7 @@ public class EntityListener implements Listener {
 		final Player player = (Player) event.getTarget();
 		final GamePlayer gamePlayer = this.playerManager.getGamePlayer(player.getUniqueId());
 
-		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+		if (gamePlayer.isInArena()) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
 			if (!arena.isPlaying()) {
 				event.setCancelled(true);

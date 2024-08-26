@@ -44,7 +44,7 @@ public class JoinCommand implements CommandExecutor {
 				}
 				final Arena arena = this.arenaManager.getArena(args[1]);
 
-				if (this.arenaManager.isPlayerInArena(gamePlayer)) {
+				if (gamePlayer.isInArena()) {
 					final Arena currentArena = this.arenaManager.getPlayerArena(gamePlayer);
 					currentArena.leave(gamePlayer);
 					currentArena.broadcast(PAPI.setPlaceholders(player, Messages.ARENA_LEAVE.toString().replace("%player%", player.getName())));

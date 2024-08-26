@@ -34,6 +34,11 @@ inventories:
       display-item: REDSTONE_BLOCK
       display-lore:
         - "&7Click to cancel."
+    in-game-arenas:
+      display-name: "&cIn-Game Arenas"
+      display-item: CLOCK
+      display-lore:
+        - "&7Click to spectate an arena."
 
   # Lobby
   lobby:

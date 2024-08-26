@@ -120,17 +120,17 @@ public class PlayerData {
 
 	private void setSoloStat(final DataType type, final int value) {
 		this.soloStats.put(type, value);
-		saveStat(type, value, "solo");
+		saveStat(type, value);
 	}
 
 	private void setTeamsStat(final DataType type, final int value) {
 		this.teamsStats.put(type, value);
-		saveStat(type, value, "teams");
+		saveStat(type, value);
 	}
 
 	private void saveStat(final DataType type, final Object value) {
 		if (this.gameManager.isDatabaseConnected()) {
-//			this.gameManager.getData().setStat(this.gamePlayer.getUuid(), type, value);
+			this.gameManager.getData().setStat(this.gamePlayer.getUuid(), type, value);
 		} else {
 			final String path = "player-data." + this.gamePlayer.getUuid() + "." + type.toString();
 			if (value instanceof Integer) {
@@ -139,18 +139,11 @@ public class PlayerData {
 				this.playerData.set(path, (Double) value);
 			} else if (value instanceof String) {
 				this.playerData.set(path, (String) value);
+			} else if (value instanceof List) {
+				this.playerData.set(path, (List<String>) value);
 			} else {
 				this.playerData.set(path, value);
 			}
-			this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
-		}
-	}
-
-	private void saveStat(final DataType type, final int value, final String category) {
-		if (this.gameManager.isDatabaseConnected()) {
-//			this.gameManager.getData().setStat(this.gamePlayer.getUuid(), type, value);
-		} else {
-			this.playerData.set("player-data." + this.gamePlayer.getUuid() + "." + category + "." + type.toString(), value);
 			this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 		}
 	}
@@ -237,7 +230,7 @@ public class PlayerData {
 		checkLevelUp();
 	}
 
-	private void increaseUHCLevel() {
+	private void increaseLevel() {
 		this.exp -= this.requiredExp;
 		final int previousLevel = this.level;
 		this.level++;
@@ -267,7 +260,7 @@ public class PlayerData {
 
 	private void checkLevelUp() {
 		while (this.exp >= this.requiredExp) {
-			increaseUHCLevel();
+			increaseLevel();
 		}
 	}
 
@@ -448,5 +441,32 @@ public class PlayerData {
 			return this.gameManager.getData().getDouble(this.gamePlayer.getUuid(), type.getDatabasePath());
 		}
 		return this.playerData.getDouble("player-data." + this.gamePlayer.getUuid() + "." + type.toString(), defaultValue);
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		return this == o || o instanceof PlayerData && this.gamePlayer.getUuid().equals(((PlayerData) o).gamePlayer.getUuid());
+	}
+
+	@Override
+	public int hashCode() {
+		return this.gamePlayer.getUuid().hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return "PlayerData{" +
+				"name='" + this.name + '\'' +
+				", money=" + this.money +
+				", tokens=" + this.tokens +
+				", exp=" + this.exp +
+				", level=" + this.level +
+				", requiredExp=" + this.requiredExp +
+				", soloStats=" + this.soloStats +
+				", teamsStats=" + this.teamsStats +
+				", boughtKitsList=" + this.boughtKitsList +
+				", boughtPerksList=" + this.boughtPerksList +
+				", boughtCosmeticsList=" + this.boughtCosmeticsList +
+				'}';
 	}
 }

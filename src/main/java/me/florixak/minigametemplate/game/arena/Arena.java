@@ -10,6 +10,7 @@ import me.florixak.minigametemplate.game.teams.GameTeam;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.tasks.ArenaCheckTask;
 import me.florixak.minigametemplate.tasks.EndingTask;
+import me.florixak.minigametemplate.tasks.InGameTask;
 import me.florixak.minigametemplate.tasks.StartingTask;
 import me.florixak.minigametemplate.utils.PAPIUtils;
 import me.florixak.minigametemplate.utils.RandomUtils;
@@ -47,9 +48,12 @@ public class Arena {
 	protected boolean solo = false;
 
 	protected final List<GamePlayer> players = new ArrayList<>();
+	protected final List<GamePlayer> playersCache = new ArrayList<>();
+	protected final List<GamePlayer> spectators = new ArrayList<>();
 
 	protected ArenaCheckTask arenaCheckTask;
 	protected StartingTask startingTask;
+	protected InGameTask inGameTask;
 	protected EndingTask endingTask;
 
 	protected ArenaState arenaState = ArenaState.WAITING;
@@ -111,6 +115,9 @@ public class Arena {
 				break;
 			case INGAME:
 				preparePlayers();
+				savePlayersCache();
+				this.inGameTask = new InGameTask(this);
+				this.inGameTask.runTaskTimer(MinigameTemplate.getInstance(), 0, 20);
 				Utils.broadcast(PAPI.setPlaceholders(null, Messages.ARENA_STARTED.toString()));
 				break;
 			case ENDING:
@@ -128,19 +135,19 @@ public class Arena {
 	}
 
 	public boolean isWaiting() {
-		return this.arenaState == ArenaState.WAITING;
+		return this.arenaState.equals(ArenaState.WAITING);
 	}
 
 	public boolean isStarting() {
-		return this.arenaState == ArenaState.STARTING;
+		return this.arenaState.equals(ArenaState.STARTING);
 	}
 
 	public boolean isPlaying() {
-		return this.arenaState == ArenaState.INGAME;
+		return this.arenaState.equals(ArenaState.INGAME);
 	}
 
 	public boolean isEnding() {
-		return this.arenaState == ArenaState.ENDING;
+		return this.arenaState.equals(ArenaState.ENDING);
 	}
 
 	public void setEnabled(final boolean enabled) {
@@ -163,6 +170,9 @@ public class Arena {
 	public void disable() {
 		kickAll();
 		setEnabled(false);
+		this.spectators.clear();
+		this.playersCache.clear();
+		this.players.clear();
 	}
 
 	public boolean isFull() {
@@ -170,7 +180,8 @@ public class Arena {
 	}
 
 	public boolean canStart() {
-		return this.players.size() >= this.minPlayers;
+//		return this.players.size() >= this.minPlayers;
+		return this.players.size() == 1;
 	}
 
 	public void start() {
@@ -184,7 +195,7 @@ public class Arena {
 	}
 
 	public boolean canEnd() {
-		return this.players.size() <= 1 && this.arenaState == ArenaState.INGAME;
+		return this.players.size() <= 0 && this.arenaState == ArenaState.INGAME;
 	}
 
 	public void end() {
@@ -199,9 +210,31 @@ public class Arena {
 		return this.players.contains(player);
 	}
 
+	public GamePlayer getPlayerCache(final GamePlayer gamePlayer) {
+		for (final GamePlayer player : this.playersCache) {
+			if (player.getUuid().equals(gamePlayer.getUuid())) {
+				return player;
+			}
+		}
+		return null;
+	}
+
+	public GamePlayer getPlayerByCache(final GamePlayer gamePlayerCache) {
+		for (final GamePlayer player : this.players) {
+			if (player.getUuid().equals(gamePlayerCache.getUuid())) {
+				return player;
+			}
+		}
+		return null;
+	}
+
 	public void join(final GamePlayer gamePlayer) {
 		if (isFull()) {
 			gamePlayer.sendMessage(Messages.ARENA_FULL.toString());
+			return;
+		}
+		if (isPlaying()) {
+			joinAsSpectator(gamePlayer);
 			return;
 		}
 		this.players.add(gamePlayer);
@@ -210,19 +243,23 @@ public class Arena {
 
 	public void joinAsSpectator(final GamePlayer gamePlayer) {
 		gamePlayer.setSpectator();
-		this.players.add(gamePlayer);
+		this.spectators.add(gamePlayer);
 	}
 
 	public void leave(final GamePlayer gamePlayer) {
 		if (isPlaying()) gamePlayer.die(true);
 		gamePlayer.reset();
+		this.players.remove(gamePlayer);
+		if (this.spectators.contains(gamePlayer)) this.spectators.remove(gamePlayer);
 		this.gameManager.getPlayerManager().setPlayerForLobby(gamePlayer);
 	}
 
 	public void kickAll() {
-		final List<GamePlayer> players = new ArrayList<>(this.players);
-		players.forEach(this::leave);
+		final List<GamePlayer> allPlayers = new ArrayList<>(this.players);
+		allPlayers.addAll(this.spectators);
+		allPlayers.forEach(this::leave);
 		this.players.clear();
+		this.spectators.clear();
 	}
 
 	private void preparePlayers() {
@@ -230,6 +267,10 @@ public class Arena {
 		this.players.forEach(gamePlayer -> {
 			this.gameManager.getPlayerManager().setPlayerForGame(gamePlayer);
 		});
+	}
+
+	public void savePlayersCache() {
+		this.playersCache.addAll(this.players);
 	}
 
 	public Set<GamePlayer> getOnlinePlayers() {
@@ -322,8 +363,16 @@ public class Arena {
 		getOnlinePlayers().forEach(player -> player.sendMessage(message));
 	}
 
-	public void hotbarMessage(final String message) {
+	public void sendHotbarMessage(final String message) {
 		getOnlinePlayers().forEach(player -> player.sendHotBarMessage(message));
+	}
+
+	public void sendTitle(final String title, final String subtitle) {
+		getOnlinePlayers().forEach(player -> player.sendTitle(title, subtitle, 20, 40, 20));
+	}
+
+	public void sendMessage(final String message) {
+		getOnlinePlayers().forEach(player -> player.sendMessage(message));
 	}
 
 	public List<String> getLore() {
@@ -353,7 +402,7 @@ public class Arena {
 	}
 
 	public String getArenaMode() {
-		if (getTeams().get(0).getSize() == 1) return "Solo";
+		if (this.solo) return "Solo";
 		return getTeams().size() + "x" + getTeams().get(0).getSize();
 	}
 
@@ -362,11 +411,11 @@ public class Arena {
 			case WAITING:
 				return 0;
 			case STARTING:
-				return this.startingTask.getSeconds();
+				return this.startingTask.getTime();
 			case INGAME:
-				return 0;
+				return this.inGameTask.getTime();
 			case ENDING:
-				return 0;
+				return this.endingTask.getTime();
 			case RESTARTING:
 				return 0;
 		}
@@ -379,13 +428,18 @@ public class Arena {
 	}
 
 	private void saveAndShowStatistics() {
-		for (final GamePlayer gamePlayer : this.players) {
+		for (final GamePlayer gamePlayer : this.playersCache) {
 			if (getArenaMode().equalsIgnoreCase("Solo")) {
 				gamePlayer.getPlayerData().saveSoloStatistics();
 			} else {
 				gamePlayer.getPlayerData().saveTeamsStatistics();
 			}
-			gamePlayer.getPlayerData().showStatistics();
+			if (getPlayerByCache(gamePlayer) != null) {
+				gamePlayer.getPlayerData().showStatistics();
+			} else {
+//				gamePlayer.sendMessage("Data from previous game were saved.");
+				Bukkit.getLogger().info("Arena data saved for " + gamePlayer + ".");
+			}
 		}
 	}
 
@@ -453,7 +507,6 @@ public class Arena {
 		}
 		return true;
 	}
-
 
 	@Override
 	public boolean equals(final Object obj) {

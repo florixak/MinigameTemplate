@@ -34,7 +34,7 @@ public class AnvilCommand implements CommandExecutor {
 			return true;
 		}
 
-		if (!this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+		if (!gamePlayer.isInArena()) {
 			p.sendMessage(Messages.CANT_USE_NOW.toString());
 			return true;
 		}

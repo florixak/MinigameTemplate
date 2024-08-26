@@ -43,7 +43,7 @@ Messages:
     join: "&a[+] &f%minigame_player% joined arena! (%minigame_arena_online%)"
     quit: "&c[-] &f%minigame_player% left arena! (%minigame_arena_online%)"
 
-    starting: "&6[!] &fGame is starting in %minigame_seconds%!"
+    starting: "&6[!] &fGame is starting in %minigame_time%!"
     already-starting: "&c[!] &fGame is already about to start!"
     starting-canceled: "&c[!] &fGame starting has been canceled!"
     started: "&a[!] &fGame has started!"
@@ -63,7 +63,7 @@ Messages:
         - "&fMode: &e%arena_mode%"
         - " "
         - "&fState: &e%arena_state%"
-        - "&fTime left: &e%arena_seconds%"
+        - "&fTime left: &e%arena_time%"
         - " "
       join: "&eClick to join!"
       in-game: "&6Click to spectate!"
@@ -115,7 +115,7 @@ Messages:
       money-deduct: "&e[!] &f%previous_money% - %perk-cost% = %money% %minigame_currency% (Perk %minigame_perk%&f)"
       money-deduct-after-start: "&e[!] &fMoney for kit will be deducted after game starts!"
     received:
-      effect: "&a[!] &fObtained %effect% %effect_level% for %effect_duration% seconds!"
+      effect: "&a[!] &fObtained %effect% %effect_level% for %effect_duration% time!"
       item: "&a[!] &fYou got lucky! You have received %item%!"
       bonus: "&a[!] &f+%bonus_coins% %currency%, +%bonus_exp% UHC exp and +%bonus_exp% exp!"
   

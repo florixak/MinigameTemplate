@@ -7,6 +7,7 @@ import lombok.Setter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.kits.Kit;
 import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.game.teams.GameTeam;
@@ -118,6 +119,10 @@ public class GamePlayer {
 		return !isLobby() && this.gameManager.getArenaManager().isPlayerInArena(this);
 	}
 
+	public Arena getArena() {
+		return this.gameManager.getArenaManager().getPlayerArena(this);
+	}
+
 	public boolean hasTeam() {
 		return this.team != null;
 	}
@@ -226,7 +231,7 @@ public class GamePlayer {
 	}
 
 	public void setSpectator() {
-		if (this.state != PlayerState.DEAD) {
+		if (!this.state.equals(PlayerState.DEAD)) {
 			setState(PlayerState.SPECTATOR);
 		}
 		setGameMode(GameMode.SPECTATOR);
@@ -341,6 +346,11 @@ public class GamePlayer {
 		sendMessage(messageToSend);
 	}
 
+	public void sendTitle(final String title, final String subtitle, final int fadeIn, final int stay, final int fadeOut) {
+		if (title == null || title.isEmpty() || !isOnline()) return;
+		MinigameTemplate.getInstance().getVersionUtils().sendTitle(getPlayer(), TextUtils.color(title), TextUtils.color(subtitle), fadeIn, stay, fadeOut);
+	}
+
 	@SuppressWarnings("deprecation")
 	public ItemStack getPlayerHead(final String playerName) {
 		final Material type = XMaterial.matchXMaterial(MinigameTemplate.useOldMethods() ? "SKULL_ITEM" : "PLAYER_HEAD").get().parseMaterial();
@@ -397,7 +407,13 @@ public class GamePlayer {
 
 	@Override
 	public String toString() {
-		return "GamePlayer(uuid=" + this.uuid + ", name=" + this.name + ")";
+		return "GamePlayer(uuid=" + this.uuid
+				+ ", name=" + this.name
+				+ ", State=" + this.state
+				+ ", Kills=" + this.kills
+				+ ", Assists=" + this.assists
+				+ ", Team=" + (this.team != null ? this.team.getName() : "")
+				+ ")";
 	}
 
 	@Override

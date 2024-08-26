@@ -148,7 +148,7 @@ public class ArenaManager {
 	}
 
 	public List<Arena> getInGameArenas() {
-		return getActiveArenas().stream().filter(arena -> !arena.isWaiting()).filter(arena -> !arena.isStarting()).collect(Collectors.toList());
+		return getActiveArenas().stream().filter(arena -> !arena.isWaiting() && !arena.isStarting()).collect(Collectors.toList());
 	}
 
 	public List<Arena> getInactiveArenas() {

@@ -119,7 +119,7 @@ public class PlaceholderExp extends PlaceholderExpansion {
 				return String.valueOf(gamePlayer.getPlayerQuestData().getCompletedQuests().size());
 			}
 
-			if (this.plugin.getGameManager().getArenaManager().isPlayerInArena(gamePlayer)) {
+			if (gamePlayer.isInArena()) {
 				final Arena arena = this.plugin.getGameManager().getArenaManager().getPlayerArena(gamePlayer);
 
 				if (placeholder.equals("arena_name")) {

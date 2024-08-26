@@ -1,8 +1,8 @@
 package me.florixak.minigametemplate.tasks;
 
 import lombok.Getter;
-import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.arena.Arena;
+import me.florixak.minigametemplate.game.arena.ArenaState;
 import me.florixak.minigametemplate.utils.TimeUtils;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -10,7 +10,7 @@ public class StartingTask extends BukkitRunnable {
 
 	private final Arena arena;
 	@Getter
-	private int seconds = GameValues.COUNTDOWNS.STARTING;
+	private int time = 10;
 
 	public StartingTask(final Arena arena) {
 		this.arena = arena;
@@ -18,15 +18,22 @@ public class StartingTask extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		if (this.seconds <= 0) {
-			this.cancel();
+		if (!this.arena.canStart()) {
+			cancel();
+			this.arena.setArenaState(ArenaState.WAITING);
 			return;
 		}
 
-		if (this.seconds == 30 || this.seconds == 15 || this.seconds == 10 || this.seconds <= 5) {
-			this.arena.hotbarMessage("Starting in " + TimeUtils.getFormattedTime(this.seconds));
+		if (this.time <= 0) {
+			this.cancel();
+			this.arena.setArenaState(ArenaState.INGAME);
+			return;
 		}
 
-		this.seconds--;
+		if (this.time == 30 || this.time == 15 || this.time == 10 || this.time <= 5) {
+			this.arena.broadcast("Starting in " + TimeUtils.getFormattedTime(this.time));
+		}
+
+		this.time--;
 	}
 }

@@ -74,7 +74,7 @@ public class PlayerManager {
 	}
 
 	public void removePlayer(final GamePlayer gamePlayer) {
-		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+		if (gamePlayer.isInArena()) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
 			arena.leave(gamePlayer);
 		}

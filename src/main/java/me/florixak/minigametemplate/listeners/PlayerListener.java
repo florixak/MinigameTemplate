@@ -95,7 +95,7 @@ public class PlayerListener implements Listener {
 
 	private boolean checkIfPlayerCan(final Player player) {
 		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(player.getUniqueId());
-		if (this.gameManager.getArenaManager().isPlayerInArena(gamePlayer)) {
+		if (gamePlayer.isInArena()) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(player);
 			return arena.isPlaying() && !gamePlayer.isDead() && !gamePlayer.isSpectator();
 		}
