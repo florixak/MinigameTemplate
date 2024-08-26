@@ -263,10 +263,10 @@ public class Arena {
 	}
 
 	private void preparePlayers() {
-		teleportTeams();
 		this.players.forEach(gamePlayer -> {
 			this.gameManager.getPlayerManager().setPlayerForGame(gamePlayer);
 		});
+		teleportTeams();
 	}
 
 	public void savePlayersCache() {
@@ -510,7 +510,7 @@ public class Arena {
 
 	@Override
 	public boolean equals(final Object obj) {
-		return obj instanceof Arena && ((Arena) obj).getId().equals(this.id);
+		return obj instanceof Arena && ((Arena) obj).getId().equals(this.id) && ((Arena) obj).getName().equals(this.name);
 	}
 
 	@Override
