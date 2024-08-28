@@ -22,7 +22,7 @@ public class PlayerQuestDataManager {
 		this.playerQuestData.remove(gamePlayer);
 	}
 
-	public PlayerQuestData getPlayerData(final GamePlayer gamePlayer) {
+	public PlayerQuestData getQuestData(final GamePlayer gamePlayer) {
 		if (!this.hasPlayerData(gamePlayer)) {
 			this.addPlayerData(gamePlayer);
 		}

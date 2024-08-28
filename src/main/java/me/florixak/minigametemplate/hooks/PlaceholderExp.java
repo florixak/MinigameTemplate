@@ -56,27 +56,27 @@ public class PlaceholderExp extends PlaceholderExpansion {
 			}
 
 			if (placeholder.equals("money")) {
-				return String.valueOf(gamePlayer.getPlayerData().getMoney());
+				return String.valueOf(gamePlayer.getData().getMoney());
 			}
 
 			if (placeholder.equals("tokens")) {
-				return String.valueOf(gamePlayer.getPlayerData().getTokens());
+				return String.valueOf(gamePlayer.getData().getTokens());
 			}
 
 			if (placeholder.equals("level")) {
-				return String.valueOf(gamePlayer.getPlayerData().getLevel());
+				return String.valueOf(gamePlayer.getData().getLevel());
 			}
 
 			if (placeholder.equals("exp")) {
-				return String.valueOf(gamePlayer.getPlayerData().getExp());
+				return String.valueOf(gamePlayer.getData().getExp());
 			}
 
 			if (placeholder.equals("required_exp")) {
-				return TextUtils.formatToOneDecimal(gamePlayer.getPlayerData().getRequiredExp());
+				return TextUtils.formatToOneDecimal(gamePlayer.getData().getRequiredExp());
 			}
 
 			if (placeholder.equals("solo_games_played")) {
-				return String.valueOf(gamePlayer.getPlayerData().getTeamsStat(DataType.SOLO_GAMES_PLAYED));
+				return String.valueOf(gamePlayer.getData().getTeamsStat(DataType.SOLO_GAMES_PLAYED));
 			}
 
 			if (placeholder.equals("teams_games_played")) {
@@ -84,15 +84,15 @@ public class PlaceholderExp extends PlaceholderExpansion {
 			}
 
 			if (placeholder.equals("total_games_played")) {
-				return String.valueOf(gamePlayer.getPlayerData().getTeamsStat(DataType.SOLO_WINS));
+				return String.valueOf(gamePlayer.getData().getTeamsStat(DataType.SOLO_WINS));
 			}
 
 			if (placeholder.equals("solo_wins")) {
-				return String.valueOf(gamePlayer.getPlayerData().getSoloStat(DataType.SOLO_WINS));
+				return String.valueOf(gamePlayer.getData().getSoloStat(DataType.SOLO_WINS));
 			}
 
 			if (placeholder.equals("teams_wins")) {
-				return String.valueOf(gamePlayer.getPlayerData().getTeamsStat(DataType.SOLO_KILLS));
+				return String.valueOf(gamePlayer.getData().getTeamsStat(DataType.SOLO_KILLS));
 			}
 
 //			if (placeholder.equals("total_wins")) {
@@ -116,7 +116,7 @@ public class PlaceholderExp extends PlaceholderExpansion {
 //			}
 
 			if (placeholder.equals("completed_quests")) {
-				return String.valueOf(gamePlayer.getPlayerQuestData().getCompletedQuests().size());
+				return String.valueOf(gamePlayer.getQuestData().getCompletedQuests().size());
 			}
 
 			if (gamePlayer.isInArena()) {
@@ -168,17 +168,20 @@ public class PlaceholderExp extends PlaceholderExpansion {
 				}
 
 				if (placeholder.equals("team")) {
-					if (gamePlayer.hasTeam()) return TextUtils.color(gamePlayer.getTeam().getDisplayName());
+					if (gamePlayer.getArenaData().hasTeam())
+						return TextUtils.color(gamePlayer.getArenaData().getTeam().getDisplayName());
 					else return Messages.TEAM_NONE.toString();
 				}
 
 				if (placeholder.equals("kit")) {
-					if (gamePlayer.hasKit()) return TextUtils.color(gamePlayer.getKit().getDisplayName());
+					if (gamePlayer.getArenaData().hasKit())
+						return TextUtils.color(gamePlayer.getArenaData().getKit().getDisplayName());
 					else return Messages.KITS_SCOREBOARD_SELECTED_NONE.toString();
 				}
 
 				if (placeholder.equals("perk")) {
-					if (gamePlayer.hasPerk()) return TextUtils.color(gamePlayer.getPerk().getDisplayName());
+					if (gamePlayer.getArenaData().hasPerk())
+						return TextUtils.color(gamePlayer.getArenaData().getPerk().getDisplayName());
 					else return Messages.PERKS_SCOREBOARD_SELECTED_NONE.toString();
 				}
 			}

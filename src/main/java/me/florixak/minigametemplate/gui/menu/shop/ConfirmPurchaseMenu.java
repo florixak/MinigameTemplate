@@ -47,7 +47,7 @@ public class ConfirmPurchaseMenu extends Menu {
 		} else if (event.getSlot() == 11) {
 			close();
 			if (this.toBuy == null) return;
-			this.uhcPlayer.getPlayerData().buy(this.toBuy);
+			this.uhcPlayer.getData().buy(this.toBuy);
 			this.menuUtils.setToBuy(null);
 		} else if (event.getSlot() == 15) {
 			close();

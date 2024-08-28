@@ -26,7 +26,7 @@ public class KitsSelectorMenu extends PaginatedMenu {
 		super(menuUtils);
 		this.gamePlayer = menuUtils.getGamePlayer();
 		this.kitsList = this.gameManager.getKitsManager().getKitsList().stream()
-				.filter(kit -> this.gamePlayer.getPlayerData().hasBought(kit)).collect(Collectors.toList());
+				.filter(kit -> this.gamePlayer.getData().hasBought(kit)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -94,6 +94,6 @@ public class KitsSelectorMenu extends PaginatedMenu {
 	private void handleKitSelection(final InventoryClickEvent event) {
 		final Kit selectedKit = this.kitsList.get(event.getSlot());
 		close();
-		this.gamePlayer.setKit(selectedKit);
+		this.gamePlayer.getArenaData().setKit(selectedKit);
 	}
 }

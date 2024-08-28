@@ -88,8 +88,8 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (gamePlayer.getPlayerQuestData().hasQuestWithTypeOf("PICKUP")) {
-			gamePlayer.getPlayerQuestData().addProgressToTypes("PICKUP", event.getItem().getItemStack().getType());
+		if (gamePlayer.getQuestData().hasQuestWithTypeOf("PICKUP")) {
+			gamePlayer.getQuestData().addProgressToTypes("PICKUP", event.getItem().getItemStack().getType());
 		}
 	}
 
@@ -97,7 +97,7 @@ public class PlayerListener implements Listener {
 		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(player.getUniqueId());
 		if (gamePlayer.isInArena()) {
 			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(player);
-			return arena.isPlaying() && !gamePlayer.isDead() && !gamePlayer.isSpectator();
+			return arena.isPlaying() && !gamePlayer.isSpectator();
 		}
 		return false;
 	}

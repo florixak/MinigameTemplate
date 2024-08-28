@@ -26,7 +26,7 @@ public class PerksShopMenu extends PaginatedMenu {
 		super(menuUtils);
 		this.gamePlayer = menuUtils.getGamePlayer();
 		this.perksList = this.gameManager.getPerksManager().getPerks().stream()
-				.filter(perk -> !this.gamePlayer.getPlayerData().hasBought(perk)).collect(Collectors.toList());
+				.filter(perk -> !this.gamePlayer.getData().hasBought(perk)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -103,16 +103,16 @@ public class PerksShopMenu extends PaginatedMenu {
 		final Perk selectedPerk = this.perksList.get(event.getSlot());
 		close();
 
-		if (this.gamePlayer.getPlayerData().hasBought(selectedPerk)
+		if (this.gamePlayer.getData().hasBought(selectedPerk)
 				|| this.gamePlayer.hasPermission(Permissions.PERKS_FREE.getPerm())
 				|| selectedPerk.isFree()) {
-			this.gamePlayer.getPlayerData().buy(selectedPerk);
+			this.gamePlayer.getData().buy(selectedPerk);
 		} else {
 			if (this.guiManager.getGui(GuiType.PURCHASE_CONFIRM.getKey()).isEnabled()) {
 				this.menuUtils.setToBuy(selectedPerk);
 				new ConfirmPurchaseMenu(this.menuUtils).open();
 			} else {
-				this.gamePlayer.getPlayerData().buy(selectedPerk);
+				this.gamePlayer.getData().buy(selectedPerk);
 			}
 		}
 

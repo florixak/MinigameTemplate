@@ -62,7 +62,7 @@ public class EntityListener implements Listener {
 				final Player entity = (Player) event.getEntity();
 				final GamePlayer damagedPlayer = this.playerManager.getGamePlayer(entity.getUniqueId());
 
-				if (damagerPlayer.getTeam() == damagedPlayer.getTeam()) {
+				if (damagerPlayer.getArenaData().getTeam() == damagedPlayer.getArenaData().getTeam()) {
 					event.setCancelled(true);
 					damagerPlayer.sendMessage(Messages.TEAM_NO_FRIENDLY_FIRE.toString());
 					return;

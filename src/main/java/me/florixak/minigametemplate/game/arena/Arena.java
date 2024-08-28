@@ -6,6 +6,8 @@ import lombok.Setter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.game.player.PlayerArenaData;
+import me.florixak.minigametemplate.game.player.PlayerState;
 import me.florixak.minigametemplate.game.teams.GameTeam;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.tasks.ArenaCheckTask;
@@ -17,15 +19,15 @@ import me.florixak.minigametemplate.utils.RandomUtils;
 import me.florixak.minigametemplate.utils.Utils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -48,7 +50,7 @@ public class Arena {
 	protected boolean solo = false;
 
 	protected final List<GamePlayer> players = new ArrayList<>();
-	protected final List<GamePlayer> playersCache = new ArrayList<>();
+	protected final Map<GamePlayer, PlayerArenaData> playerArenaData = new HashMap<>();
 	protected final List<GamePlayer> spectators = new ArrayList<>();
 
 	protected ArenaCheckTask arenaCheckTask;
@@ -115,7 +117,6 @@ public class Arena {
 				break;
 			case INGAME:
 				preparePlayers();
-				savePlayersCache();
 				this.inGameTask = new InGameTask(this);
 				this.inGameTask.runTaskTimer(MinigameTemplate.getInstance(), 0, 20);
 				Utils.broadcast(PAPI.setPlaceholders(null, Messages.ARENA_STARTED.toString()));
@@ -128,7 +129,8 @@ public class Arena {
 				end();
 				break;
 			case RESTARTING:
-				disable();
+				kickAll();
+//				disable();
 				// kick all players, reset arena, etc.
 				break;
 		}
@@ -170,8 +172,9 @@ public class Arena {
 	public void disable() {
 		kickAll();
 		setEnabled(false);
+		this.teams.clear();
 		this.spectators.clear();
-		this.playersCache.clear();
+		this.playerArenaData.clear();
 		this.players.clear();
 	}
 
@@ -210,22 +213,8 @@ public class Arena {
 		return this.players.contains(player);
 	}
 
-	public GamePlayer getPlayerCache(final GamePlayer gamePlayer) {
-		for (final GamePlayer player : this.playersCache) {
-			if (player.getUuid().equals(gamePlayer.getUuid())) {
-				return player;
-			}
-		}
-		return null;
-	}
-
-	public GamePlayer getPlayerByCache(final GamePlayer gamePlayerCache) {
-		for (final GamePlayer player : this.players) {
-			if (player.getUuid().equals(gamePlayerCache.getUuid())) {
-				return player;
-			}
-		}
-		return null;
+	public PlayerArenaData getPlayerArenaData(final GamePlayer gamePlayer) {
+		return this.playerArenaData.get(gamePlayer);
 	}
 
 	public void join(final GamePlayer gamePlayer) {
@@ -238,20 +227,52 @@ public class Arena {
 			return;
 		}
 		this.players.add(gamePlayer);
-		this.gameManager.getPlayerManager().setPlayerForWaiting(gamePlayer, this);
+//		if (this.solo) {
+//			joinRandomTeam(gamePlayer);
+//		}
+		this.playerArenaData.put(gamePlayer, new PlayerArenaData(gamePlayer));
+		setPlayerForWaiting(gamePlayer);
 	}
 
 	public void joinAsSpectator(final GamePlayer gamePlayer) {
-		gamePlayer.setSpectator();
+		setSpectator(gamePlayer);
 		this.spectators.add(gamePlayer);
 	}
 
+	public void setSpectator(final GamePlayer gamePlayer) {
+		this.spectators.add(gamePlayer);
+
+		if (!gamePlayer.getArenaData().isDead())
+			gamePlayer.getArenaData().setState(PlayerState.SPECTATOR);
+
+		gamePlayer.setGameMode(GameMode.SPECTATOR);
+//		teleport(new Location(Bukkit.getWorld(GameValues.WORLD_NAME), 0, 100, 0));
+	}
+
+	public void die(final GamePlayer gamePlayer, final boolean leave) {
+		gamePlayer.getArenaData().setState(PlayerState.DEAD);
+		if (leave) return;
+		final Player player = gamePlayer.getPlayer();
+		player.spigot().respawn();
+		player.setHealth(player.getMaxHealth());
+		player.setFoodLevel(20);
+		player.setExhaustion(0);
+		player.setFireTicks(0);
+		gamePlayer.clearPotions();
+		gamePlayer.clearInventory();
+
+		setSpectator(gamePlayer);
+		this.gameManager.getSoundManager().playDeathSound(player);
+	}
+
 	public void leave(final GamePlayer gamePlayer) {
-		if (isPlaying()) gamePlayer.die(true);
-		gamePlayer.reset();
+		if (isPlaying()) gamePlayer.getArenaData().setState(PlayerState.DEAD);
+		if (isWaiting() || isStarting()) {
+			this.playerArenaData.remove(gamePlayer);
+		}
+		this.spectators.remove(gamePlayer);
 		this.players.remove(gamePlayer);
-		if (this.spectators.contains(gamePlayer)) this.spectators.remove(gamePlayer);
-		this.gameManager.getPlayerManager().setPlayerForLobby(gamePlayer);
+		setPlayerForLobby(gamePlayer);
 	}
 
 	public void kickAll() {
@@ -264,13 +285,9 @@ public class Arena {
 
 	private void preparePlayers() {
 		this.players.forEach(gamePlayer -> {
-			this.gameManager.getPlayerManager().setPlayerForGame(gamePlayer);
+			setPlayerForGame(gamePlayer);
 		});
 		teleportTeams();
-	}
-
-	public void savePlayersCache() {
-		this.playersCache.addAll(this.players);
 	}
 
 	public Set<GamePlayer> getOnlinePlayers() {
@@ -281,16 +298,16 @@ public class Arena {
 
 	public Set<GamePlayer> getAlivePlayers() {
 		return getOnlinePlayers().stream()
-				.filter(GamePlayer::isAlive)
+				.filter(player -> player.getArenaData().getState().equals(PlayerState.ALIVE))
 				.collect(Collectors.toSet());
 	}
 
 	public Set<GamePlayer> getDeadPlayers() {
-		return this.players.stream().filter(GamePlayer::isDead).collect(Collectors.toSet());
+		return this.players.stream().filter(player -> player.getArenaData().getState().equals(PlayerState.DEAD)).collect(Collectors.toSet());
 	}
 
 	public Set<GamePlayer> getSpectatorPlayers() {
-		return getOnlinePlayers().stream().filter(GamePlayer::isSpectator).collect(Collectors.toSet());
+		return getOnlinePlayers().stream().filter(player -> player.getArenaData().getState().equals(PlayerState.SPECTATOR)).collect(Collectors.toSet());
 	}
 
 	public GamePlayer getRandomPlayer() {
@@ -300,6 +317,53 @@ public class Arena {
 	public GamePlayer getPlayerWithoutPerm(final String perm) {
 		final List<GamePlayer> onlineListWithoutPerm = getPlayers().stream().filter(GamePlayer::isOnline).filter(gamePlayer -> !gamePlayer.hasPermission(perm)).collect(Collectors.toList());
 		return RandomUtils.randomOnlinePlayer(onlineListWithoutPerm);
+	}
+
+	public void setPlayerForLobby(final GamePlayer gamePlayer) {
+		final Player p = gamePlayer.getPlayer();
+		gamePlayer.getArenaData().setState(PlayerState.LOBBY);
+		p.setHealth(p.getMaxHealth());
+		p.setFoodLevel(20);
+		p.setExhaustion(0);
+		p.setExp(0);
+		p.setLevel(0);
+		p.setFireTicks(0);
+		p.setGameMode(GameMode.ADVENTURE);
+
+		p.teleport(this.gameManager.getLobbyManager().getLobbyLocation());
+
+		gamePlayer.clearPotions();
+		gamePlayer.clearInventory();
+		this.gameManager.getGuiManager().giveItems(gamePlayer);
+	}
+
+	public void setPlayerForWaiting(final GamePlayer gamePlayer) {
+		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
+		gamePlayer.getArenaData().setState(PlayerState.WAITING);
+		gamePlayer.setGameMode(GameMode.ADVENTURE);
+		gamePlayer.teleport(arena.getWaitingLocation());
+		this.gameManager.getGuiManager().giveItems(gamePlayer);
+	}
+
+	public void setPlayerForGame(final GamePlayer gamePlayer) {
+		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
+		gamePlayer.getArenaData().setState(PlayerState.ALIVE);
+
+		gamePlayer.setGameMode(GameMode.SURVIVAL);
+		gamePlayer.getPlayer().setHealth(gamePlayer.getPlayer().getMaxHealth());
+		gamePlayer.getPlayer().setFoodLevel(20);
+		gamePlayer.getPlayer().setExhaustion(0);
+
+		gamePlayer.clearPotions();
+		gamePlayer.clearInventory();
+
+		if (!arena.getPlayerArenaData(gamePlayer).hasTeam()) {
+			arena.joinRandomTeam(gamePlayer);
+		}
+
+		if (arena.getPlayerArenaData(gamePlayer).hasKit()) {
+			arena.getPlayerArenaData(gamePlayer).getKit().giveKit(gamePlayer);
+		}
 	}
 
 	/* Teams */
@@ -315,7 +379,7 @@ public class Arena {
 		GameTeam team = this.teams.stream().filter(gameTeam -> gameTeam.getMembers().isEmpty()).findFirst().orElse(null);
 		if (team == null) team = this.teams.stream().filter(gameTeam -> !gameTeam.isFull()).findFirst().orElse(null);
 		if (team == null) {
-			gamePlayer.setSpectator();
+			setSpectator(gamePlayer);
 			return;
 		}
 		team.addMember(gamePlayer);
@@ -341,8 +405,8 @@ public class Arena {
 		return this.teams.stream().filter(GameTeam::isWinner).findFirst().orElse(null);
 	}
 
-	public GamePlayer getWinnerPlayer() {
-		return this.players.stream().filter(GamePlayer::isWinner).filter(GamePlayer::isOnline).findFirst().orElse(null);
+	public PlayerArenaData getWinnerPlayer() {
+		return this.playerArenaData.values().stream().filter(data -> data.isWinner()).findFirst().orElse(null);
 	}
 
 	public void setWinner() {
@@ -353,7 +417,7 @@ public class Arena {
 
 	public String getWinner() {
 		if (getWinnerPlayer() == null || getWinnerTeam() == null) return "None";
-		if (getWinnerPlayer().getTeam().getSize() == 1) return getWinnerPlayer().getName();
+		if (getWinnerPlayer().getTeam().getSize() == 1) return getWinnerPlayer().getGamePlayer().getName();
 		return getWinnerTeam().getDisplayName();
 	}
 
@@ -414,8 +478,6 @@ public class Arena {
 				return this.startingTask.getTime();
 			case INGAME:
 				return this.inGameTask.getTime();
-			case ENDING:
-				return this.endingTask.getTime();
 			case RESTARTING:
 				return 0;
 		}
@@ -428,14 +490,15 @@ public class Arena {
 	}
 
 	private void saveAndShowStatistics() {
-		for (final GamePlayer gamePlayer : this.playersCache) {
+		for (final PlayerArenaData arenaData : this.playerArenaData.values()) {
+			final GamePlayer gamePlayer = arenaData.getGamePlayer();
 			if (getArenaMode().equalsIgnoreCase("Solo")) {
-				gamePlayer.getPlayerData().saveSoloStatistics();
+				arenaData.saveSoloStatistics();
 			} else {
-				gamePlayer.getPlayerData().saveTeamsStatistics();
+				arenaData.saveTeamsStatistics();
 			}
-			if (getPlayerByCache(gamePlayer) != null) {
-				gamePlayer.getPlayerData().showStatistics();
+			if (isPlayerIn(gamePlayer)) {
+				arenaData.showStatistics();
 			} else {
 //				gamePlayer.sendMessage("Data from previous game were saved.");
 				Bukkit.getLogger().info("Arena data saved for " + gamePlayer + ".");

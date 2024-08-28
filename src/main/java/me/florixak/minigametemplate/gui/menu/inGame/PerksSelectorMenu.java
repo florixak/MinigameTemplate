@@ -2,6 +2,7 @@ package me.florixak.minigametemplate.gui.menu.inGame;
 
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.GameValues;
+import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.gui.Gui;
@@ -26,7 +27,7 @@ public class PerksSelectorMenu extends PaginatedMenu {
 		super(menuUtils);
 		this.gamePlayer = menuUtils.getGamePlayer();
 		this.perksList = this.gameManager.getPerksManager().getPerks().stream()
-				.filter(perk -> this.gamePlayer.getPlayerData().hasBought(perk)).collect(Collectors.toList());
+				.filter(perk -> this.gamePlayer.getData().hasBought(perk)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -94,6 +95,7 @@ public class PerksSelectorMenu extends PaginatedMenu {
 	private void handlePerkSelection(final InventoryClickEvent event) {
 		final Perk selectedPerk = this.perksList.get(event.getSlot());
 		close();
-		this.gamePlayer.setPerk(selectedPerk);
+		final Arena arena = this.gamePlayer.getArena();
+		arena.getPlayerArenaData(this.gamePlayer).setPerk(selectedPerk);
 	}
 }

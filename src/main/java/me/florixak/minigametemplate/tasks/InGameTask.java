@@ -19,7 +19,7 @@ public class InGameTask extends BukkitRunnable {
 	@Override
 	public void run() {
 
-		if (this.time <= 0 || this.arena.canEnd()) {
+		if (this.time <= 0 /*|| this.arena.canEnd()*/) {
 			this.cancel();
 			this.arena.setArenaState(ArenaState.ENDING);
 			return;

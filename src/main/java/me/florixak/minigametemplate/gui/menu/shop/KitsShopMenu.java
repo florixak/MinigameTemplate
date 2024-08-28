@@ -25,7 +25,7 @@ public class KitsShopMenu extends PaginatedMenu {
 		super(menuUtils);
 		this.gamePlayer = menuUtils.getGamePlayer();
 		this.kitsList = this.gameManager.getKitsManager().getKitsList().stream()
-				.filter(kit -> !this.gamePlayer.getPlayerData().hasBought(kit)).collect(Collectors.toList());
+				.filter(kit -> !this.gamePlayer.getData().hasBought(kit)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class KitsShopMenu extends PaginatedMenu {
 			this.menuUtils.setToBuy(selectedKit);
 			new ConfirmPurchaseMenu(this.menuUtils).open();
 		} else {
-			this.gamePlayer.getPlayerData().buy(selectedKit);
+			this.gamePlayer.getData().buy(selectedKit);
 		}
 
 

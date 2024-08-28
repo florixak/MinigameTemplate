@@ -2,6 +2,7 @@ package me.florixak.minigametemplate.game.arena;
 
 import lombok.Getter;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.game.player.PlayerArenaData;
 import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -155,12 +156,13 @@ public class ArenaManager {
 		return this.arenas.stream().filter(arena -> !arena.isEnabled()).collect(Collectors.toList());
 	}
 
-	private List<GamePlayer> findTopKillers(final List<GamePlayer> players) {
-		players.sort((gamePlayer1, gamePlayer2) -> Integer.compare(gamePlayer2.getKills(), gamePlayer1.getKills()));
-		return players;
+	private List<PlayerArenaData> findTopKillers(final List<GamePlayer> players) {
+		final List<PlayerArenaData> playerData = new ArrayList<>(players.stream().map(GamePlayer::getArenaData).collect(Collectors.toList()));
+		playerData.sort((gamePlayer1, gamePlayer2) -> Integer.compare(gamePlayer2.getKills(), gamePlayer1.getKills()));
+		return playerData;
 	}
 
-	public List<GamePlayer> getTopKillers(final Arena arena) {
+	public List<PlayerArenaData> getTopKillers(final Arena arena) {
 		return findTopKillers(arena.getPlayers());
 	}
 

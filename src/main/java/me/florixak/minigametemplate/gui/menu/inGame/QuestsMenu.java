@@ -63,13 +63,13 @@ public class QuestsMenu extends PaginatedMenu {
 		for (int i = getStartIndex(); i < getEndIndex(); i++) {
 			final Quest quest = this.quests.get(i);
 			final List<String> lore = new ArrayList<>();
-			final boolean completed = this.gamePlayer.getPlayerQuestData().isCompletedQuest(quest.getId());
+			final boolean completed = this.gamePlayer.getQuestData().isCompletedQuest(quest.getId());
 			final int count = quest.getQuestType().getCount();
 
 			for (final String description : quest.getDescription()) {
 				lore.add(TextUtils.color(description
 						.replace("%count%", String.valueOf(count))
-						.replace("%progress%", String.valueOf(!completed ? this.gamePlayer.getPlayerQuestData().getProgress(quest.getId()) : count))
+						.replace("%progress%", String.valueOf(!completed ? this.gamePlayer.getQuestData().getProgress(quest.getId()) : count))
 						.replace("%material%", quest.getQuestType().hasMaterial() ?
 								TextUtils.toNormalCamelText(quest.getQuestType().getParsedMaterial().name()) :
 								"None")

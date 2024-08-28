@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import lombok.Getter;
 import lombok.Setter;
 import me.florixak.minigametemplate.config.Messages;
+import me.florixak.minigametemplate.game.Permissions;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.utils.NMSUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
@@ -62,7 +63,7 @@ public class GameTeam {
 	}
 
 	public List<GamePlayer> getAliveMembers() {
-		return getMembers(GamePlayer::isAlive);
+		return getMembers(gamePlayer -> !gamePlayer.getArenaData().isAlive());
 	}
 
 	public boolean isAlive() {
@@ -70,15 +71,15 @@ public class GameTeam {
 	}
 
 	public int getKills() {
-		return getMembers().stream().mapToInt(GamePlayer::getKills).sum();
+		return getMembers().stream().mapToInt(player -> player.getArenaData().getKills()).sum();
 	}
 
 	public void setWinner() {
-		getMembers().forEach(GamePlayer::setWinner);
+		getMembers().forEach(player -> player.getArenaData().setWinner(true));
 	}
 
 	public boolean isWinner() {
-		return getMembers().stream().anyMatch(GamePlayer::isWinner);
+		return getMembers().stream().anyMatch(player -> player.getArenaData().isWinner());
 	}
 
 	public void addMember(final GamePlayer gamePlayer) {
@@ -88,23 +89,23 @@ public class GameTeam {
 			return;
 		}
 
-		if (isFull() && !gamePlayer.getPlayer().hasPermission("hoc.*")) {
+		if (isFull() && !gamePlayer.getPlayer().hasPermission(Permissions.SETUP.getPerm())) {
 			gamePlayer.sendMessage(Messages.TEAM_FULL.toString());
 			return;
 		}
-		if (gamePlayer.hasTeam()) {
-			gamePlayer.getTeam().removeMember(gamePlayer);
+		if (gamePlayer.getArenaData().hasTeam()) {
+			gamePlayer.getArenaData().getTeam().removeMember(gamePlayer);
 		}
 
-		gamePlayer.setTeam(this);
+		gamePlayer.getArenaData().setTeam(this);
 		this.members.add(gamePlayer);
 
-		gamePlayer.sendMessage(Messages.TEAM_JOIN.toString().replace("%team%", gamePlayer.getTeam().getDisplayName()));
+		gamePlayer.sendMessage(Messages.TEAM_JOIN.toString().replace("%team%", gamePlayer.getArenaData().getTeam().getDisplayName()));
 	}
 
 	public void removeMember(final GamePlayer gamePlayer) {
 		this.members.remove(gamePlayer);
-		gamePlayer.setTeam(null);
+		gamePlayer.getArenaData().setTeam(null);
 	}
 
 	public void sendHotBarMessage(final String message) {

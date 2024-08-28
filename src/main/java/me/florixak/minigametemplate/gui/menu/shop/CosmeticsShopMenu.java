@@ -25,7 +25,7 @@ public class CosmeticsShopMenu extends PaginatedMenu {
 		super(menuUtils);
 		this.gamePlayer = menuUtils.getGamePlayer();
 		this.cosmeticsList = this.gameManager.getKitsManager().getKitsList().stream()
-				.filter(kit -> !this.gamePlayer.getPlayerData().hasBought(kit)).collect(Collectors.toList());
+				.filter(kit -> !this.gamePlayer.getData().hasBought(kit)).collect(Collectors.toList());
 	}
 
 	@Override

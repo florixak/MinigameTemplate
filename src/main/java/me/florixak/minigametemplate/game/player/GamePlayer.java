@@ -3,14 +3,8 @@ package me.florixak.minigametemplate.game.player;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XPotion;
 import lombok.Getter;
-import lombok.Setter;
 import me.florixak.minigametemplate.MinigameTemplate;
-import me.florixak.minigametemplate.config.Messages;
-import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.arena.Arena;
-import me.florixak.minigametemplate.game.kits.Kit;
-import me.florixak.minigametemplate.game.perks.Perk;
-import me.florixak.minigametemplate.game.teams.GameTeam;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.NMSUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
@@ -36,30 +30,10 @@ public class GamePlayer {
 	private final UUID uuid;
 	private final String name;
 
-	private final PlayerData playerData;
-	private final PlayerQuestData playerQuestData;
-
-	private PlayerState state = PlayerState.LOBBY;
-	private int kills = 0;
-	private int assists = 0;
-	private Kit kit;
-	private Perk perk;
-	@Setter
-	private GameTeam team;
-	private boolean hasWon = false;
-	private long timePlayed = 0;
-	@Setter
-	private Location spawnLocation;
-
-	private double moneyForGameResult = 0, moneyForKills = 0, moneyForAssists = 0, moneyForActivity = 0;
-	private double expForGameResult = 0, expForKills = 0, expForAssists = 0, expForActivity = 0;
-
 	public GamePlayer(final UUID uuid, final String name) {
 		this.uuid = uuid;
 		this.name = name;
 
-		this.playerData = this.gameManager.getPlayerDataManager().getPlayerData(this);
-		this.playerQuestData = this.gameManager.getPlayerQuestDataManager().getPlayerData(this);
 	}
 
 	public Player getPlayer() {
@@ -68,7 +42,7 @@ public class GamePlayer {
 
 	public String getName() {
 		if (Bukkit.getPlayer(this.name) == null) {
-			return this.playerData.getName();
+			return this.getData().getName();
 		}
 		return this.name;
 	}
@@ -78,205 +52,32 @@ public class GamePlayer {
 		return player != null;
 	}
 
-	public void setState(final PlayerState state) {
-		if (state == this.state) return;
-		this.state = state;
-	}
-
-	public void setWinner() {
-		this.hasWon = true;
-
-		if (this.playerQuestData.hasQuestWithTypeOf("WIN")) {
-			this.playerQuestData.addProgressToTypes("WIN", getInventory().getItemInHand().getType());
-		}
-	}
-
-	public boolean isWinner() {
-		return this.hasWon;
-	}
-
 	public boolean isLobby() {
-		return getState().equals(PlayerState.LOBBY);
-	}
-
-	public boolean isWaiting() {
-		return getState().equals(PlayerState.WAITING);
-	}
-
-	public boolean isAlive() {
-		return getState().equals(PlayerState.ALIVE);
-	}
-
-	public boolean isDead() {
-		return getState().equals(PlayerState.DEAD);
-	}
-
-	public boolean isSpectator() {
-		return getState().equals(PlayerState.SPECTATOR) || getState().equals(PlayerState.DEAD);
+		return !isInArena();
 	}
 
 	public boolean isInArena() {
-		return !isLobby() && this.gameManager.getArenaManager().isPlayerInArena(this);
+		return this.gameManager.getArenaManager().isPlayerInArena(this);
 	}
 
 	public Arena getArena() {
 		return this.gameManager.getArenaManager().getPlayerArena(this);
 	}
 
-	public boolean hasTeam() {
-		return this.team != null;
+	public PlayerArenaData getArenaData() {
+		return getArena().getPlayerArenaData(this);
 	}
 
-	public void addKill() {
-		this.kills++;
+	public PlayerData getData() {
+		return this.gameManager.getPlayerDataManager().getPlayerData(this);
 	}
 
-	public void addAssist() {
-		this.assists++;
-	}
-
-	public boolean hasKit() {
-		return this.kit != null;
-	}
-
-	public void setKit(final Kit kit) {
-		if (this.kit != kit) {
-			this.kit = kit;
-			sendMessage(Messages.KITS_SELECTED.toString().replace("%kit%", kit.getDisplayName()));
-			this.gameManager.getSoundManager().playSelectBuySound(getPlayer());
-		}
-	}
-
-	public boolean hasPerk() {
-		return this.perk != null;
-	}
-
-	public void setPerk(final Perk perk) {
-		if (this.perk != perk) {
-			this.perk = perk;
-			sendMessage(Messages.PERKS_SELECTED.toString().replace("%perk%", perk.getDisplayName()));
-			this.gameManager.getSoundManager().playSelectBuySound(getPlayer());
-		}
-	}
-
-	public void revive() {
-		/*if (GameValues.TEAM.TEAM_MODE && !hasTeam()) {
-			if (this.gameManager.getTeamsManager().getFreeTeams().isEmpty()) {
-				sendMessage(Messages.TEAM_NO_FREE.toString());
-				return;
-			}
-			this.gameManager.getTeamsManager().joinRandomTeam(this);
-		}
-
-		setState(PlayerState.ALIVE);
-		setGameMode(GameMode.SURVIVAL);
-//		teleport(TeleportUtils.getSafeLocation());
-
-		getPlayer().setHealth(getPlayer().getMaxHealth());
-		getPlayer().setFoodLevel(20);
-		getPlayer().setExhaustion(0);
-		getPlayer().setFireTicks(0);
-		clearPotions();
-		clearInventory();*/
-	}
-
-	public void kill(final GamePlayer victim) {
-		if (victim == null) return;
-
-		addKill();
-		getPlayer().giveExp((int) GameValues.REWARDS.EXP_FOR_KILL);
-		if (hasPerk()) {
-			getPerk().givePerk(this);
-		}
-		sendMessage(Messages.REWARDS_KILL.toString()
-				.replace("%player%", victim.getName())
-				.replace("%money%", String.valueOf(GameValues.REWARDS.COINS_FOR_KILL))
-				.replace("%uhc-exp%", String.valueOf(GameValues.REWARDS.EXP_FOR_KILL)));
-		this.gameManager.getSoundManager().playKillSound(getPlayer());
-
-		if (this.playerQuestData.hasQuestWithTypeOf("KILL")) {
-			this.playerQuestData.addProgressToTypes("KILL", getPlayer().getInventory().getItemInHand().getType());
-		}
-	}
-
-	public void assist(final GamePlayer victim) {
-		if (victim == null) return;
-
-		addAssist();
-		sendMessage(Messages.REWARDS_ASSIST.toString()
-				.replace("%player%", victim.getName())
-				.replace("%money%", String.valueOf(GameValues.REWARDS.COINS_FOR_ASSIST))
-				.replace("%uhc-exp%", String.valueOf(GameValues.REWARDS.EXP_FOR_ASSIST)));
-		this.gameManager.getSoundManager().playAssistSound(getPlayer());
-
-		if (this.playerQuestData.hasQuestWithTypeOf("ASSIST")) {
-			this.playerQuestData.addProgressToTypes("ASSIST", getPlayer().getInventory().getItemInHand().getType());
-		}
-	}
-
-	public void die(final boolean leave) {
-		setState(PlayerState.DEAD);
-		if (leave) return;
-		getPlayer().spigot().respawn();
-
-		getPlayer().setHealth(getPlayer().getMaxHealth());
-		getPlayer().setFoodLevel(20);
-		getPlayer().setExhaustion(0);
-		getPlayer().setFireTicks(0);
-		clearPotions();
-		clearInventory();
-
-		setSpectator();
-		this.gameManager.getSoundManager().playDeathSound(getPlayer());
-	}
-
-	public void setSpectator() {
-		if (!this.state.equals(PlayerState.DEAD)) {
-			setState(PlayerState.SPECTATOR);
-		}
-		setGameMode(GameMode.SPECTATOR);
-//		teleport(new Location(Bukkit.getWorld(GameValues.WORLD_NAME), 0, 100, 0));
-	}
-
-	public void addMoneyForGameResult(final double money) {
-		this.moneyForGameResult += money;
-	}
-
-	public void addMoneyForKills(final double money) {
-		this.moneyForKills += money;
-	}
-
-	public void addMoneyForAssists(final double money) {
-		this.moneyForAssists += money;
-	}
-
-	public void addMoneyForActivity(final double money) {
-		this.moneyForActivity += money;
-	}
-
-	public void addExpForGameResult(final double exp) {
-		this.expForGameResult += exp;
-	}
-
-	public void addExpForKills(final double exp) {
-		this.expForKills += exp;
-	}
-
-	public void addExpForAssists(final double exp) {
-		this.expForAssists += exp;
-	}
-
-	public void addExpForActivity(final double exp) {
-		this.expForActivity += exp;
+	public PlayerQuestData getQuestData() {
+		return this.gameManager.getPlayerQuestDataManager().getQuestData(this);
 	}
 
 	public boolean hasPermission(final String permission) {
 		return getPlayer().hasPermission(permission);
-	}
-
-	public void leaveTeam() {
-		if (getTeam() == null) return;
-		getTeam().removeMember(this);
 	}
 
 	public void teleport(final Location loc) {
@@ -351,7 +152,6 @@ public class GamePlayer {
 		MinigameTemplate.getInstance().getVersionUtils().sendTitle(getPlayer(), TextUtils.color(title), TextUtils.color(subtitle), fadeIn, stay, fadeOut);
 	}
 
-	@SuppressWarnings("deprecation")
 	public ItemStack getPlayerHead(final String playerName) {
 		final Material type = XMaterial.matchXMaterial(MinigameTemplate.useOldMethods() ? "SKULL_ITEM" : "PLAYER_HEAD").get().parseMaterial();
 		final ItemStack item = new ItemStack(type, 1);
@@ -380,26 +180,6 @@ public class GamePlayer {
 		NMSUtils.sendHotBarMessageViaNMS(getPlayer(), TextUtils.color(message));
 	}
 
-	public void reset() {
-		this.hasWon = false;
-		this.kills = 0;
-		this.assists = 0;
-		this.kit = null;
-		this.perk = null;
-		if (hasTeam()) getTeam().removeMember(this);
-		this.team = null;
-		this.spawnLocation = null;
-		this.timePlayed = 0;
-		this.moneyForGameResult = 0;
-		this.moneyForKills = 0;
-		this.moneyForAssists = 0;
-		this.moneyForActivity = 0;
-		this.expForGameResult = 0;
-		this.expForKills = 0;
-		this.expForAssists = 0;
-		this.expForActivity = 0;
-	}
-
 	@Override
 	public boolean equals(final Object obj) {
 		return obj instanceof GamePlayer && ((GamePlayer) obj).getUuid().equals(getUuid());
@@ -409,10 +189,6 @@ public class GamePlayer {
 	public String toString() {
 		return "GamePlayer(uuid=" + this.uuid
 				+ ", name=" + this.name
-				+ ", State=" + this.state
-				+ ", Kills=" + this.kills
-				+ ", Assists=" + this.assists
-				+ ", Team=" + (this.team != null ? this.team.getName() : "")
 				+ ")";
 	}
 

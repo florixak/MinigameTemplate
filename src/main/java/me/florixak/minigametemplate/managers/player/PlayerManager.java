@@ -7,10 +7,8 @@ import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
-import me.florixak.minigametemplate.game.player.PlayerState;
 import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -97,70 +95,20 @@ public class PlayerManager {
 		return getPlayers().stream().filter(GamePlayer::isInArena).collect(Collectors.toList());
 	}
 
-	public void setPlayerForLobby(final GamePlayer gamePlayer) {
-		final Player p = gamePlayer.getPlayer();
-		gamePlayer.setState(PlayerState.LOBBY);
-		p.setHealth(p.getMaxHealth());
-		p.setFoodLevel(20);
-		p.setExhaustion(0);
-		p.setExp(0);
-		p.setLevel(0);
-		p.setFireTicks(0);
-		p.setGameMode(GameMode.ADVENTURE);
+	public void sendPlayerToBungeeLobby(final GamePlayer gamePlayer) {
+		final Player player = gamePlayer.getPlayer();
 
-		p.teleport(this.gameManager.getLobbyManager().getLobbyLocation());
-
-		gamePlayer.clearPotions();
-		gamePlayer.clearInventory();
-		this.gameManager.getGuiManager().giveItems(gamePlayer);
-	}
-
-	public void setPlayerForWaiting(final GamePlayer gamePlayer, final Arena arena) {
-		if (arena == null) return;
-		gamePlayer.setState(PlayerState.WAITING);
-		gamePlayer.setGameMode(GameMode.ADVENTURE);
-		gamePlayer.teleport(arena.getWaitingLocation());
-		this.gameManager.getGuiManager().giveItems(gamePlayer);
-	}
-
-	public void setPlayerForGame(final GamePlayer gamePlayer) {
-		gamePlayer.setState(PlayerState.ALIVE);
-
-		gamePlayer.setGameMode(GameMode.SURVIVAL);
-		gamePlayer.getPlayer().setHealth(gamePlayer.getPlayer().getMaxHealth());
-		gamePlayer.getPlayer().setFoodLevel(20);
-		gamePlayer.getPlayer().setExhaustion(0);
-
-		gamePlayer.clearPotions();
-		gamePlayer.clearInventory();
-
-		if (!gamePlayer.hasTeam()) {
-			final Arena arena = this.gameManager.getArenaManager().getPlayerArena(gamePlayer);
-			arena.joinRandomTeam(gamePlayer);
-		}
-
-		if (gamePlayer.hasKit()) {
-			gamePlayer.getKit().giveKit(gamePlayer);
-		}
-	}
-
-	public void sendPlayersToBungeeLobby() {
-		for (final Player player : Bukkit.getOnlinePlayers()) {
-			try {
-				final ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				out.writeUTF("Connect");
-				out.writeUTF(GameValues.BUNGEECORD.LOBBY_SERVER);
-				player.sendPluginMessage(MinigameTemplate.getInstance(), "BungeeCord", out.toByteArray());
-			} catch (final Exception e) {
-				Bukkit.getLogger().info("Failed to send " + player.getName() + " to the lobby server.");
-			}
+		try {
+			final ByteArrayDataOutput out = ByteStreams.newDataOutput();
+			out.writeUTF("Connect");
+			out.writeUTF(GameValues.BUNGEECORD.LOBBY_SERVER);
+			player.sendPluginMessage(MinigameTemplate.getInstance(), "BungeeCord", out.toByteArray());
+		} catch (final Exception e) {
+			Bukkit.getLogger().info("Failed to send " + player.getName() + " to the lobby server.");
 		}
 	}
 
 	public void onDisable() {
-		for (final GamePlayer gamePlayer : getPlayers()) {
-			gamePlayer.reset();
-		}
 		this.players.clear();
 	}
 }
