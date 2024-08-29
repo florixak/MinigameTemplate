@@ -11,7 +11,6 @@ import me.florixak.minigametemplate.game.gameItems.BuyableItem;
 import me.florixak.minigametemplate.game.kits.Kit;
 import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.managers.GameManager;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
@@ -277,7 +276,7 @@ public class PlayerData {
 
 		if (this.gameManager.isDatabaseConnected()) {
 			this.gameManager.getData().setBoughtKits(this.uuid, String.join(", ", kitsNameList));
-			Bukkit.getLogger().info("Saved kits: " + kitsNameList);
+//			Bukkit.getLogger().info("Saved kits: " + kitsNameList);
 			return;
 		}
 

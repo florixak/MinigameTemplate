@@ -187,14 +187,8 @@ public class PlayerArenaData {
 			this.gamePlayer.sendMessage(PAPI.setPlaceholders(this.gamePlayer.getPlayer(), Messages.KILLSTREAK_NEW.toString()));
 		}
 
-		double money = this.moneyForGameResult + this.moneyForKills + this.moneyForAssists + this.moneyForActivity;
-		double exp = this.expForGameResult + this.expForKills + this.expForAssists + this.expForActivity;
-		money *= GameValues.REWARDS.MULTIPLIER;
-		exp *= GameValues.REWARDS.MULTIPLIER;
-
+		saveMoneyAndExp();
 		this.playerData.setGamesPlayed("solo");
-		this.playerData.depositMoney(money);
-		this.playerData.addExp(exp);
 		this.gamePlayer.getQuestData().savePlayerQuestData();
 	}
 
@@ -212,16 +206,21 @@ public class PlayerArenaData {
 			this.gamePlayer.sendMessage(PAPI.setPlaceholders(this.gamePlayer.getPlayer(), Messages.KILLSTREAK_NEW.toString()));
 		}
 
+		saveMoneyAndExp();
+		this.playerData.setGamesPlayed("teams");
+		this.gamePlayer.getQuestData().savePlayerQuestData();
+	}
+
+	private void saveMoneyAndExp() {
 		double money = this.moneyForGameResult + this.moneyForKills + this.moneyForAssists + this.moneyForActivity;
 		double exp = this.expForGameResult + this.expForKills + this.expForAssists + this.expForActivity;
 		money *= GameValues.REWARDS.MULTIPLIER;
 		exp *= GameValues.REWARDS.MULTIPLIER;
 
-		this.playerData.setGamesPlayed("teams");
 		this.playerData.depositMoney(money);
 		this.playerData.addExp(exp);
-		this.gamePlayer.getQuestData().savePlayerQuestData();
 	}
+
 
 	public void showStatistics() {
 		final List<String> rewards = this.winner ? Messages.REWARDS_WIN.toList() : Messages.REWARDS_LOSE.toList();
