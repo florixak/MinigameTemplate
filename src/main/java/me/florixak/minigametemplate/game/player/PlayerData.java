@@ -14,10 +14,7 @@ import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayerData {
@@ -26,7 +23,8 @@ public class PlayerData {
 	private final GameManager gameManager = GameManager.getInstance();
 	private final FileConfiguration playerData = this.gameManager.getConfigManager().getFile(ConfigType.PLAYER_DATA).getConfig();
 
-	private final GamePlayer gamePlayer;
+	@Getter
+	private final UUID uuid;
 	@Getter
 	private String name;
 	private double money = GameValues.STATISTICS.STARTING_MONEY;
@@ -46,8 +44,12 @@ public class PlayerData {
 	private final List<Cosmetic> boughtCosmeticsList = new ArrayList<>();
 
 	public PlayerData(final GamePlayer gamePlayer) {
-		this.gamePlayer = gamePlayer;
+		this.uuid = gamePlayer.getUuid();
 		initializeData();
+	}
+
+	public GamePlayer getGamePlayer() {
+		return this.gameManager.getPlayerManager().getGamePlayer(this.uuid);
 	}
 
 	private void initializeData() {
@@ -60,18 +62,18 @@ public class PlayerData {
 
 	private void setInitialData() {
 		if (this.plugin.getVaultHook().hasEconomy()) {
-			if (GameValues.STATISTICS.STARTING_MONEY > 0 && !this.plugin.getVaultHook().hasAccount(this.gamePlayer.getPlayer())) {
-				this.plugin.getVaultHook().deposit(this.gamePlayer.getName(), GameValues.STATISTICS.STARTING_MONEY);
+			if (GameValues.STATISTICS.STARTING_MONEY > 0 && !this.plugin.getVaultHook().hasAccount(getGamePlayer().getPlayer())) {
+				this.plugin.getVaultHook().deposit(getGamePlayer().getName(), GameValues.STATISTICS.STARTING_MONEY);
 			}
 		}
 
 		if (this.gameManager.isDatabaseConnected()) {
-			this.gameManager.getData().createPlayer(this.gamePlayer.getPlayer());
+			this.gameManager.getData().createPlayer(getGamePlayer().getPlayer());
 			return;
 		}
 
-		final String path = "player-data." + this.gamePlayer.getUuid();
-		this.playerData.set(path + ".name", this.gamePlayer.getName());
+		final String path = "player-data." + this.uuid.toString();
+		this.playerData.set(path + ".name", getGamePlayer().getName());
 		this.playerData.set(path + ".money", GameValues.STATISTICS.STARTING_MONEY);
 		this.playerData.set(path + ".tokens", GameValues.STATISTICS.STARTING_TOKENS);
 		this.playerData.set(path + ".level", GameValues.STATISTICS.STARTING_LEVEL);
@@ -86,7 +88,7 @@ public class PlayerData {
 	}
 
 	private void loadData() {
-		this.name = getStringData(DataType.NAME, this.gamePlayer.getName());
+		this.name = getStringData(DataType.NAME, getGamePlayer().getPlayer().getName());
 		this.money = getDoubleData(DataType.MONEY, GameValues.STATISTICS.STARTING_MONEY);
 		this.tokens = getIntData(DataType.TOKENS, GameValues.STATISTICS.STARTING_TOKENS);
 		this.level = getIntData(DataType.LEVEL, GameValues.STATISTICS.STARTING_LEVEL);
@@ -104,9 +106,9 @@ public class PlayerData {
 
 	private boolean hasData() {
 		if (this.gameManager.isDatabaseConnected()) {
-			return this.gameManager.getData().exists(this.gamePlayer.getUuid());
+			return this.gameManager.getData().exists(this.uuid);
 		}
-		return this.playerData.getConfigurationSection("player-data." + this.gamePlayer.getUuid()) != null;
+		return this.playerData.getConfigurationSection("player-data." + this.uuid.toString()) != null;
 	}
 
 	public int getSoloStat(final DataType type) {
@@ -129,9 +131,9 @@ public class PlayerData {
 
 	public void saveStat(final DataType type, final Object value) {
 		if (this.gameManager.isDatabaseConnected()) {
-			this.gameManager.getData().setStat(this.gamePlayer.getUuid(), type, value);
+			this.gameManager.getData().setStat(this.uuid, type, value);
 		} else {
-			final String path = "player-data." + this.gamePlayer.getUuid() + "." + type.toString();
+			final String path = "player-data." + this.uuid.toString().toString() + "." + type.toString();
 			if (value instanceof Integer) {
 				this.playerData.set(path, (Integer) value);
 			} else if (value instanceof Double) {
@@ -171,14 +173,14 @@ public class PlayerData {
 	/* Money & Tokens */
 	public double getMoney() {
 		if (this.plugin.getVaultHook().hasEconomy()) {
-			return this.plugin.getVaultHook().getBalance(this.gamePlayer.getPlayer());
+			return this.plugin.getVaultHook().getBalance(getGamePlayer().getPlayer());
 		}
 		return this.money;
 	}
 
 	public void depositMoney(final double amount) {
 		if (this.plugin.getVaultHook().hasEconomy()) {
-			this.plugin.getVaultHook().deposit(this.gamePlayer.getName(), amount);
+			this.plugin.getVaultHook().deposit(getName(), amount);
 			return;
 		}
 		this.money += amount;
@@ -187,7 +189,7 @@ public class PlayerData {
 
 	public void withdrawMoney(final double amount) {
 		if (this.plugin.getVaultHook().hasEconomy()) {
-			this.plugin.getVaultHook().withdraw(this.gamePlayer.getName(), amount);
+			this.plugin.getVaultHook().withdraw(getGamePlayer().getName(), amount);
 			return;
 		}
 		this.money -= amount;
@@ -222,20 +224,20 @@ public class PlayerData {
 		final int newLevel = this.level;
 		this.requiredExp = setRequiredExp();
 
-		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".level", this.level);
-		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".required-exp", this.requiredExp);
-		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".exp", (int) this.exp);
-		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".required-exp", this.requiredExp);
+		this.playerData.set("player-data." + this.uuid.toString() + ".level", this.level);
+		this.playerData.set("player-data." + this.uuid.toString() + ".required-exp", this.requiredExp);
+		this.playerData.set("player-data." + this.uuid.toString() + ".exp", (int) this.exp);
+		this.playerData.set("player-data." + this.uuid.toString() + ".required-exp", this.requiredExp);
 		this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 
 		final double reward = GameValues.REWARDS.BASE_REWARD * GameValues.REWARDS.REWARD_COEFFICIENT * this.level;
 		depositMoney(reward);
-		if (this.gamePlayer.getPlayer() != null) {
-			this.gameManager.getSoundManager().playLevelUpSound(this.gamePlayer.getPlayer());
-			this.gamePlayer.sendMessage(PAPI.setPlaceholders(this.gamePlayer.getPlayer(), Messages.LEVEL_UP.toString()
+		if (getGamePlayer().getPlayer() != null) {
+			this.gameManager.getSoundManager().playLevelUpSound(getGamePlayer().getPlayer());
+			getGamePlayer().sendMessage(PAPI.setPlaceholders(getGamePlayer().getPlayer(), Messages.LEVEL_UP.toString()
 					.replace("%previous-level%", String.valueOf(previousLevel))
 					.replace("%new-level%", String.valueOf(newLevel))));
-			this.gamePlayer.sendMessage(PAPI.setPlaceholders(this.gamePlayer.getPlayer(), Messages.REWARDS_LEVEL_UP.toString().replace("%money%", String.valueOf(reward))));
+			getGamePlayer().sendMessage(PAPI.setPlaceholders(getGamePlayer().getPlayer(), Messages.REWARDS_LEVEL_UP.toString().replace("%money%", String.valueOf(reward))));
 		}
 	}
 
@@ -253,11 +255,11 @@ public class PlayerData {
 	private void loadBoughtKits() {
 		final List<String> kitsInString;
 		if (this.gameManager.isDatabaseConnected()) {
-			kitsInString = this.gameManager.getData().getBoughtKits(this.gamePlayer.getUuid());
+			kitsInString = this.gameManager.getData().getBoughtKits(this.uuid);
 
 
 		} else {
-			kitsInString = this.playerData.getStringList("player-data." + this.gamePlayer.getUuid() + ".kits");
+			kitsInString = this.playerData.getStringList("player-data." + this.uuid.toString() + ".kits");
 		}
 		for (final String kitName : kitsInString) {
 			final Kit kit = this.gameManager.getKitsManager().getKit(kitName);
@@ -269,12 +271,12 @@ public class PlayerData {
 		final List<String> kitsNameList = this.boughtKitsList.stream().map(Kit::getName).collect(Collectors.toList());
 
 		if (this.gameManager.isDatabaseConnected()) {
-			this.gameManager.getData().setBoughtKits(this.gamePlayer.getUuid(), String.join(", ", kitsNameList));
+			this.gameManager.getData().setBoughtKits(this.uuid, String.join(", ", kitsNameList));
 			Bukkit.getLogger().info("Saved kits: " + kitsNameList);
 			return;
 		}
 
-		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".kits", kitsNameList);
+		this.playerData.set("player-data." + this.uuid.toString() + ".kits", kitsNameList);
 		this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 	}
 
@@ -282,9 +284,9 @@ public class PlayerData {
 		final List<String> boughtPerksList;
 
 		if (this.gameManager.isDatabaseConnected()) {
-			boughtPerksList = this.gameManager.getData().getBoughtPerks(this.gamePlayer.getUuid());
+			boughtPerksList = this.gameManager.getData().getBoughtPerks(this.uuid);
 		} else {
-			boughtPerksList = this.playerData.getStringList("player-data." + this.gamePlayer.getUuid() + ".perks");
+			boughtPerksList = this.playerData.getStringList("player-data." + this.uuid.toString() + ".perks");
 		}
 
 
@@ -301,11 +303,11 @@ public class PlayerData {
 		final List<String> perksNameList = this.boughtPerksList.stream().map(Perk::getName).collect(Collectors.toList());
 
 		if (this.gameManager.isDatabaseConnected()) {
-			this.gameManager.getData().setBoughtPerks(this.gamePlayer.getUuid(), perksNameList.toString().replace("[", "").replace("]", ""));
+			this.gameManager.getData().setBoughtPerks(this.uuid, perksNameList.toString().replace("[", "").replace("]", ""));
 			return;
 		}
 
-		this.playerData.set("player-data." + this.gamePlayer.getUuid() + ".perks", perksNameList);
+		this.playerData.set("player-data." + this.uuid.toString() + ".perks", perksNameList);
 		this.gameManager.getConfigManager().saveFile(ConfigType.PLAYER_DATA);
 	}
 
@@ -313,19 +315,19 @@ public class PlayerData {
 		if (item == null) return;
 		if (hasBought(item)) return;
 		if (!hasEnoughMoney(item.getCost())) {
-			this.gamePlayer.sendMessage(Messages.NO_MONEY.toString());
-			GameManager.getInstance().getSoundManager().playPurchaseCancelSound(this.gamePlayer.getPlayer());
+			getGamePlayer().sendMessage(Messages.NO_MONEY.toString());
+			GameManager.getInstance().getSoundManager().playPurchaseCancelSound(getGamePlayer().getPlayer());
 			return;
 		}
 		if (item instanceof Kit) {
 			final Kit kit = (Kit) item;
-			this.gamePlayer.sendMessage(Messages.KITS_SHOP_MONEY_DEDUCT.toString().replace("%kit%", kit.getDisplayName()));
+			getGamePlayer().sendMessage(Messages.KITS_SHOP_MONEY_DEDUCT.toString().replace("%kit%", kit.getDisplayName()));
 			this.boughtKitsList.add(kit);
 			saveKits();
 			withdrawAndPlaySound(kit.getCost());
 		} else if (item instanceof Perk) {
 			final Perk perk = (Perk) item;
-			this.gamePlayer.sendMessage(Messages.PERKS_SHOP_MONEY_DEDUCT.toString().replace("%perk%", perk.getDisplayName()));
+			getGamePlayer().sendMessage(Messages.PERKS_SHOP_MONEY_DEDUCT.toString().replace("%perk%", perk.getDisplayName()));
 			this.boughtPerksList.add(perk);
 			savePerks();
 			withdrawAndPlaySound(perk.getCost());
@@ -334,7 +336,7 @@ public class PlayerData {
 
 	private void withdrawAndPlaySound(final double amount) {
 		withdrawMoney(amount);
-		GameManager.getInstance().getSoundManager().playSelectBuySound(this.gamePlayer.getPlayer());
+		GameManager.getInstance().getSoundManager().playSelectBuySound(getGamePlayer().getPlayer());
 	}
 
 	public boolean hasBought(final BuyableItem item) {
@@ -349,33 +351,33 @@ public class PlayerData {
 	/* Getters & Setters */
 	public int getIntData(final DataType type, final int defaultValue) {
 		if (this.gameManager.isDatabaseConnected()) {
-			return this.gameManager.getData().getInt(this.gamePlayer.getUuid(), type.getDatabasePath());
+			return this.gameManager.getData().getInt(this.uuid, type.getDatabasePath());
 		}
-		return this.playerData.getInt("player-data." + this.gamePlayer.getUuid() + "." + type.toString(), defaultValue);
+		return this.playerData.getInt("player-data." + this.uuid.toString() + "." + type.toString(), defaultValue);
 	}
 
 	private String getStringData(final DataType type, final String defaultValue) {
 		if (this.gameManager.isDatabaseConnected()) {
-			return this.gameManager.getData().getString(this.gamePlayer.getUuid(), type.getDatabasePath());
+			return this.gameManager.getData().getString(this.uuid, type.getDatabasePath());
 		}
-		return this.playerData.getString("player-data." + this.gamePlayer.getUuid() + "." + type.toString(), defaultValue);
+		return this.playerData.getString("player-data." + this.uuid.toString() + "." + type.toString(), defaultValue);
 	}
 
 	private double getDoubleData(final DataType type, final double defaultValue) {
 		if (this.gameManager.isDatabaseConnected()) {
-			return this.gameManager.getData().getDouble(this.gamePlayer.getUuid(), type.getDatabasePath());
+			return this.gameManager.getData().getDouble(this.uuid, type.getDatabasePath());
 		}
-		return this.playerData.getDouble("player-data." + this.gamePlayer.getUuid() + "." + type.toString(), defaultValue);
+		return this.playerData.getDouble("player-data." + this.uuid.toString() + "." + type.toString(), defaultValue);
 	}
 
 	@Override
 	public boolean equals(final Object o) {
-		return this == o || o instanceof PlayerData && this.gamePlayer.getUuid().equals(((PlayerData) o).gamePlayer.getUuid());
+		return this == o || o instanceof PlayerData && ((PlayerData) o).getUuid().equals(this.uuid.toString());
 	}
 
 	@Override
 	public int hashCode() {
-		return this.gamePlayer.getUuid().hashCode();
+		return this.uuid.toString().hashCode();
 	}
 
 	@Override

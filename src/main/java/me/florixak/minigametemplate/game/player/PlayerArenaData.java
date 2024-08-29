@@ -12,6 +12,7 @@ import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Location;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class PlayerArenaData {
@@ -23,6 +24,9 @@ public class PlayerArenaData {
 	private PlayerQuestData playerQuestData;
 
 	private PlayerState state = PlayerState.LOBBY;
+
+	private UUID uuid;
+	private String name;
 
 	private int kills = 0;
 	private int assists = 0;
@@ -38,6 +42,8 @@ public class PlayerArenaData {
 
 	public PlayerArenaData(final GamePlayer gamePlayer) {
 		this.gamePlayer = gamePlayer;
+		this.uuid = gamePlayer.getUuid();
+		this.name = gamePlayer.getName();
 		this.playerData = gamePlayer.getData();
 		this.playerQuestData = gamePlayer.getQuestData();
 	}
@@ -106,11 +112,29 @@ public class PlayerArenaData {
 		return this.state.equals(PlayerState.DEAD);
 	}
 
-	public void setWinner() {
-		this.winner = true;
+	public boolean isSpectator() {
+		return this.state.equals(PlayerState.SPECTATOR);
+	}
+
+	public void setWinner(final boolean winner) {
+		this.winner = winner;
 
 		if (this.playerQuestData.hasQuestWithTypeOf("WIN")) {
 			this.playerQuestData.addProgressToTypes("WIN", this.gamePlayer.getInventory().getItemInHand().getType());
+		}
+
+		if (winner) {
+			this.moneyForGameResult = GameValues.REWARDS.COINS_FOR_WIN;
+			this.expForGameResult = GameValues.REWARDS.EXP_FOR_WIN;
+			this.gamePlayer.sendMessage("%money% and %exp% for winning the game."
+					.replace("%money%", String.valueOf(GameValues.REWARDS.COINS_FOR_WIN))
+					.replace("%exp%", String.valueOf(GameValues.REWARDS.EXP_FOR_WIN)));
+		} else {
+			this.moneyForGameResult = GameValues.REWARDS.COINS_FOR_LOSE;
+			this.expForGameResult = GameValues.REWARDS.EXP_FOR_LOSE;
+			this.gamePlayer.sendMessage("%money% and %exp% for losing the game."
+					.replace("%money%", String.valueOf(GameValues.REWARDS.COINS_FOR_LOSE))
+					.replace("%exp%", String.valueOf(GameValues.REWARDS.EXP_FOR_LOSE)));
 		}
 	}
 
@@ -164,13 +188,13 @@ public class PlayerArenaData {
 		}
 
 		double money = this.moneyForGameResult + this.moneyForKills + this.moneyForAssists + this.moneyForActivity;
-		double uhcExp = this.expForGameResult + this.expForKills + this.expForAssists + this.expForActivity;
+		double exp = this.expForGameResult + this.expForKills + this.expForAssists + this.expForActivity;
 		money *= GameValues.REWARDS.MULTIPLIER;
-		uhcExp *= GameValues.REWARDS.MULTIPLIER;
+		exp *= GameValues.REWARDS.MULTIPLIER;
 
 		this.playerData.setGamesPlayed("solo");
 		this.playerData.depositMoney(money);
-		this.playerData.addExp(uhcExp);
+		this.playerData.addExp(exp);
 		this.gamePlayer.getQuestData().savePlayerQuestData();
 	}
 
@@ -189,13 +213,13 @@ public class PlayerArenaData {
 		}
 
 		double money = this.moneyForGameResult + this.moneyForKills + this.moneyForAssists + this.moneyForActivity;
-		double uhcExp = this.expForGameResult + this.expForKills + this.expForAssists + this.expForActivity;
+		double exp = this.expForGameResult + this.expForKills + this.expForAssists + this.expForActivity;
 		money *= GameValues.REWARDS.MULTIPLIER;
-		uhcExp *= GameValues.REWARDS.MULTIPLIER;
+		exp *= GameValues.REWARDS.MULTIPLIER;
 
 		this.playerData.setGamesPlayed("teams");
 		this.playerData.depositMoney(money);
-		this.playerData.addExp(uhcExp);
+		this.playerData.addExp(exp);
 		this.gamePlayer.getQuestData().savePlayerQuestData();
 	}
 

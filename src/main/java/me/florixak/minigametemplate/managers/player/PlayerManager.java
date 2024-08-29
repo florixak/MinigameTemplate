@@ -7,8 +7,10 @@ import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.game.player.PlayerState;
 import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -94,6 +96,26 @@ public class PlayerManager {
 	public List<GamePlayer> getPlayersInArenas() {
 		return getPlayers().stream().filter(GamePlayer::isInArena).collect(Collectors.toList());
 	}
+
+	public void setPlayerForLobby(final GamePlayer gamePlayer) {
+		final Player p = gamePlayer.getPlayer();
+		if (gamePlayer.isInArena())
+			gamePlayer.getArenaData().setState(PlayerState.LOBBY);
+		p.setHealth(p.getMaxHealth());
+		p.setFoodLevel(20);
+		p.setExhaustion(0);
+		p.setExp(0);
+		p.setLevel(0);
+		p.setFireTicks(0);
+		p.setGameMode(GameMode.ADVENTURE);
+
+		p.teleport(this.gameManager.getLobbyManager().getLobbyLocation());
+
+		gamePlayer.clearPotions();
+		gamePlayer.clearInventory();
+		this.gameManager.getGuiManager().giveItems(gamePlayer);
+	}
+
 
 	public void sendPlayerToBungeeLobby(final GamePlayer gamePlayer) {
 		final Player player = gamePlayer.getPlayer();

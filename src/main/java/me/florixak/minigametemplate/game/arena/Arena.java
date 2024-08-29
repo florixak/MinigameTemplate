@@ -119,12 +119,12 @@ public class Arena {
 				preparePlayers();
 				this.inGameTask = new InGameTask(this);
 				this.inGameTask.runTaskTimer(MinigameTemplate.getInstance(), 0, 20);
-				Utils.broadcast(PAPI.setPlaceholders(null, Messages.ARENA_STARTED.toString()));
+				broadcast(PAPI.setPlaceholders(null, Messages.ARENA_STARTED.toString()));
 				break;
 			case ENDING:
 				setWinner();
-				Utils.broadcast(PAPIUtils.setArenaPlaceholders(null, this, "%arena_winner% is the WINNER!"));
-				Utils.broadcast(PAPI.setPlaceholders(null, Messages.ARENA_ENDED.toString()));
+				broadcast(PAPIUtils.setArenaPlaceholders(null, this, "%arena_winner% is the WINNER!"));
+				broadcast(PAPI.setPlaceholders(null, Messages.ARENA_ENDED.toString()));
 				saveAndShowStatistics();
 				end();
 				break;
@@ -213,6 +213,10 @@ public class Arena {
 		return this.players.contains(player);
 	}
 
+	public boolean isPlayerIn(final UUID uuid) {
+		return this.players.contains(this.gameManager.getPlayerManager().getGamePlayer(uuid));
+	}
+
 	public PlayerArenaData getPlayerArenaData(final GamePlayer gamePlayer) {
 		return this.playerArenaData.get(gamePlayer);
 	}
@@ -272,7 +276,7 @@ public class Arena {
 		}
 		this.spectators.remove(gamePlayer);
 		this.players.remove(gamePlayer);
-		setPlayerForLobby(gamePlayer);
+		this.gameManager.getPlayerManager().setPlayerForLobby(gamePlayer);
 	}
 
 	public void kickAll() {
@@ -317,24 +321,6 @@ public class Arena {
 	public GamePlayer getPlayerWithoutPerm(final String perm) {
 		final List<GamePlayer> onlineListWithoutPerm = getPlayers().stream().filter(GamePlayer::isOnline).filter(gamePlayer -> !gamePlayer.hasPermission(perm)).collect(Collectors.toList());
 		return RandomUtils.randomOnlinePlayer(onlineListWithoutPerm);
-	}
-
-	public void setPlayerForLobby(final GamePlayer gamePlayer) {
-		final Player p = gamePlayer.getPlayer();
-		gamePlayer.getArenaData().setState(PlayerState.LOBBY);
-		p.setHealth(p.getMaxHealth());
-		p.setFoodLevel(20);
-		p.setExhaustion(0);
-		p.setExp(0);
-		p.setLevel(0);
-		p.setFireTicks(0);
-		p.setGameMode(GameMode.ADVENTURE);
-
-		p.teleport(this.gameManager.getLobbyManager().getLobbyLocation());
-
-		gamePlayer.clearPotions();
-		gamePlayer.clearInventory();
-		this.gameManager.getGuiManager().giveItems(gamePlayer);
 	}
 
 	public void setPlayerForWaiting(final GamePlayer gamePlayer) {
@@ -491,17 +477,15 @@ public class Arena {
 
 	private void saveAndShowStatistics() {
 		for (final PlayerArenaData arenaData : this.playerArenaData.values()) {
-			final GamePlayer gamePlayer = arenaData.getGamePlayer();
 			if (getArenaMode().equalsIgnoreCase("Solo")) {
 				arenaData.saveSoloStatistics();
 			} else {
 				arenaData.saveTeamsStatistics();
 			}
-			if (isPlayerIn(gamePlayer)) {
+			if (isPlayerIn(arenaData.getGamePlayer())) {
 				arenaData.showStatistics();
 			} else {
-//				gamePlayer.sendMessage("Data from previous game were saved.");
-				Bukkit.getLogger().info("Arena data saved for " + gamePlayer + ".");
+				Bukkit.getLogger().info("Arena data saved for " + arenaData.getUuid() + ", " + arenaData.getName() + ".");
 			}
 		}
 	}

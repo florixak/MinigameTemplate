@@ -58,12 +58,16 @@ public class GameTeam {
 		return getMembers().stream().map(GamePlayer::getName).collect(Collectors.joining(", "));
 	}
 
+	public List<GamePlayer> getMembersInArena() {
+		return getMembers().stream().filter(GamePlayer::isInArena).collect(Collectors.toList());
+	}
+
 	private List<GamePlayer> getMembers(final Predicate<GamePlayer> filter) {
 		return getMembers().stream().filter(filter).collect(Collectors.toList());
 	}
 
 	public List<GamePlayer> getAliveMembers() {
-		return getMembers(gamePlayer -> !gamePlayer.getArenaData().isAlive());
+		return getMembersInArena().stream().filter(gamePlayer -> gamePlayer.getArenaData().isAlive()).collect(Collectors.toList());
 	}
 
 	public boolean isAlive() {
@@ -75,7 +79,7 @@ public class GameTeam {
 	}
 
 	public void setWinner() {
-		getMembers().forEach(player -> player.getArenaData().setWinner(true));
+		getMembersInArena().forEach(player -> player.getArenaData().setWinner(true));
 	}
 
 	public boolean isWinner() {
@@ -104,18 +108,18 @@ public class GameTeam {
 	}
 
 	public void removeMember(final GamePlayer gamePlayer) {
-		this.members.remove(gamePlayer);
 		gamePlayer.getArenaData().setTeam(null);
+		this.members.remove(gamePlayer);
 	}
 
 	public void sendHotBarMessage(final String message) {
 		if (message.isEmpty() || message == null) return;
-		getMembers().stream().filter(GamePlayer::isAlive).forEach(gamePlayer -> NMSUtils.sendHotBarMessageViaNMS(gamePlayer.getPlayer(), message));
+		getMembersInArena().forEach(gamePlayer -> NMSUtils.sendHotBarMessageViaNMS(gamePlayer.getPlayer(), message));
 	}
 
 	public void sendMessage(final String message) {
 		if (message.isEmpty() || message == null) return;
-		getMembers().stream().filter(GamePlayer::isOnline).forEach(gamePlayer -> gamePlayer.sendMessage(TextUtils.color(message)));
+		getMembersInArena().forEach(gamePlayer -> gamePlayer.sendMessage(TextUtils.color(message)));
 	}
 
 	@Override
