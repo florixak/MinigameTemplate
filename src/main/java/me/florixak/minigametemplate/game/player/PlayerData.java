@@ -45,6 +45,7 @@ public class PlayerData {
 
 	public PlayerData(final GamePlayer gamePlayer) {
 		this.uuid = gamePlayer.getUuid();
+		this.name = gamePlayer.getPlayer().getName();
 		initializeData();
 	}
 
@@ -63,7 +64,7 @@ public class PlayerData {
 	private void setInitialData() {
 		if (this.plugin.getVaultHook().hasEconomy()) {
 			if (GameValues.STATISTICS.STARTING_MONEY > 0 && !this.plugin.getVaultHook().hasAccount(getGamePlayer().getPlayer())) {
-				this.plugin.getVaultHook().deposit(getGamePlayer().getName(), GameValues.STATISTICS.STARTING_MONEY);
+				this.plugin.getVaultHook().deposit(this.name, GameValues.STATISTICS.STARTING_MONEY);
 			}
 		}
 
@@ -73,7 +74,7 @@ public class PlayerData {
 		}
 
 		final String path = "player-data." + this.uuid.toString();
-		this.playerData.set(path + ".name", getGamePlayer().getName());
+		this.playerData.set(path + ".name", this.name);
 		this.playerData.set(path + ".money", GameValues.STATISTICS.STARTING_MONEY);
 		this.playerData.set(path + ".tokens", GameValues.STATISTICS.STARTING_TOKENS);
 		this.playerData.set(path + ".level", GameValues.STATISTICS.STARTING_LEVEL);
@@ -88,7 +89,7 @@ public class PlayerData {
 	}
 
 	private void loadData() {
-		this.name = getStringData(DataType.NAME, getGamePlayer().getPlayer().getName());
+		this.name = getStringData(DataType.NAME, this.name);
 		this.money = getDoubleData(DataType.MONEY, GameValues.STATISTICS.STARTING_MONEY);
 		this.tokens = getIntData(DataType.TOKENS, GameValues.STATISTICS.STARTING_TOKENS);
 		this.level = getIntData(DataType.LEVEL, GameValues.STATISTICS.STARTING_LEVEL);
@@ -133,7 +134,7 @@ public class PlayerData {
 		if (this.gameManager.isDatabaseConnected()) {
 			this.gameManager.getData().setStat(this.uuid, type, value);
 		} else {
-			final String path = "player-data." + this.uuid.toString().toString() + "." + type.toString();
+			final String path = "player-data." + this.uuid.toString() + "." + type.toString();
 			if (value instanceof Integer) {
 				this.playerData.set(path, (Integer) value);
 			} else if (value instanceof Double) {
@@ -180,16 +181,16 @@ public class PlayerData {
 
 	public void depositMoney(final double amount) {
 		if (this.plugin.getVaultHook().hasEconomy()) {
-			this.plugin.getVaultHook().deposit(getName(), amount);
+			this.plugin.getVaultHook().deposit(this.name, amount);
 			return;
 		}
 		this.money += amount;
-		saveStat(DataType.MONEY, (int) this.money);
+		saveStat(DataType.MONEY, this.money);
 	}
 
 	public void withdrawMoney(final double amount) {
 		if (this.plugin.getVaultHook().hasEconomy()) {
-			this.plugin.getVaultHook().withdraw(getGamePlayer().getName(), amount);
+			this.plugin.getVaultHook().withdraw(this.name, amount);
 			return;
 		}
 		this.money -= amount;
@@ -208,6 +209,10 @@ public class PlayerData {
 	public void withdrawTokens(final int amount) {
 		this.tokens -= amount;
 		saveStat(DataType.TOKENS, this.tokens);
+	}
+
+	public boolean hasEnoughTokens(final int amount) {
+		return this.tokens >= amount;
 	}
 
 	/* Leveling System */
