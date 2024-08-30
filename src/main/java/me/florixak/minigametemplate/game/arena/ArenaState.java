@@ -6,7 +6,8 @@ public enum ArenaState {
 	STARTING,
 	INGAME,
 	ENDING,
-	RESTARTING;
+	RESTARTING,
+	DISABLED;
 
 	@Override
 	public String toString() {

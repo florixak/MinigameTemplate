@@ -3,7 +3,7 @@ package me.florixak.minigametemplate.commands;
 import eu.decentsoftware.holograms.api.utils.PAPI;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.player.GamePlayer;
-import me.florixak.minigametemplate.gui.menu.lobby.ArenasMenu;
+import me.florixak.minigametemplate.gui.menu.lobby.AvailableArenasMenu;
 import me.florixak.minigametemplate.gui.menu.lobby.InGameArenasMenu;
 import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.command.Command;
@@ -35,7 +35,7 @@ public class MinigameCommand implements CommandExecutor {
 			player.sendMessage(PAPI.setPlaceholders(player, Messages.UHC_PLAYER_HELP.toString()));
 			return true;
 		} else if (args[0].equalsIgnoreCase("arenas")) {
-			new ArenasMenu(this.gameManager.getMenuManager().getMenuUtils(gamePlayer)).open();
+			new AvailableArenasMenu(this.gameManager.getMenuManager().getMenuUtils(gamePlayer)).open();
 
 		} else if (args[0].equalsIgnoreCase("ingame")) {
 			new InGameArenasMenu(this.gameManager.getMenuManager().getMenuUtils(gamePlayer)).open();

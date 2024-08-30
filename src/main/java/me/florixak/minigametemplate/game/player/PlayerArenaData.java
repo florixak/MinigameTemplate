@@ -9,6 +9,7 @@ import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.game.teams.GameTeam;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.text.TextUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.List;
@@ -46,6 +47,8 @@ public class PlayerArenaData {
 		this.name = gamePlayer.getName();
 		this.playerData = gamePlayer.getData();
 		this.playerQuestData = gamePlayer.getQuestData();
+
+		Bukkit.getLogger().info("PlayerArenaData created: " + this);
 	}
 
 	public void reset() {
@@ -234,6 +237,31 @@ public class PlayerArenaData {
 	public void setState(final PlayerState state) {
 		if (this.state.equals(state)) return;
 		this.state = state;
+	}
+
+	@Override
+	public String toString() {
+		return "PlayerArenaData(" +
+				"uuid=" + this.uuid.toString() +
+				", name=" + this.name +
+				", state=" + this.state +
+				", kills=" + this.kills +
+				", assists=" + this.assists +
+				", kit=" + this.kit +
+				", perk=" + this.perk +
+				", team=" + this.team +
+				", winner=" + this.winner +
+				')';
+	}
+
+	@Override
+	public int hashCode() {
+		return this.uuid.hashCode();
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		return obj instanceof PlayerArenaData && ((PlayerArenaData) obj).getUuid().equals(this.uuid);
 	}
 
 

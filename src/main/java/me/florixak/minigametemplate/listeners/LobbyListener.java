@@ -5,7 +5,7 @@ import me.florixak.minigametemplate.gui.GuiManager;
 import me.florixak.minigametemplate.gui.GuiType;
 import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.gui.menu.inGame.QuestsMenu;
-import me.florixak.minigametemplate.gui.menu.lobby.ArenasMenu;
+import me.florixak.minigametemplate.gui.menu.lobby.AvailableArenasMenu;
 import me.florixak.minigametemplate.gui.menu.lobby.ProfileMenu;
 import me.florixak.minigametemplate.gui.menu.shop.ShopMenu;
 import me.florixak.minigametemplate.managers.GameManager;
@@ -43,7 +43,7 @@ public class LobbyListener implements Listener {
 			final MenuUtils menuUtils = this.gameManager.getMenuManager().getMenuUtils(gamePlayer);
 
 			if (item.equals(this.guiManager.getGui(GuiType.ARENA_SELECTOR.getKey()).getDisplayItem())) {
-				new ArenasMenu(menuUtils).open();
+				new AvailableArenasMenu(menuUtils).open();
 				Bukkit.getLogger().info("Opened Arenas Menu for " + p.getName());
 			} else if (item.equals(this.guiManager.getGui(GuiType.SHOP.getKey()).getDisplayItem())) {
 				new ShopMenu(menuUtils).open();

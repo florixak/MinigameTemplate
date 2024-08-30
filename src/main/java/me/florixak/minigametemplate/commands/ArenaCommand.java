@@ -6,7 +6,7 @@ import me.florixak.minigametemplate.game.Permissions;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
 import me.florixak.minigametemplate.game.teams.GameTeam;
-import me.florixak.minigametemplate.gui.menu.lobby.ArenasMenu;
+import me.florixak.minigametemplate.gui.menu.lobby.AvailableArenasMenu;
 import me.florixak.minigametemplate.managers.GameManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -46,7 +46,7 @@ public class ArenaCommand implements CommandExecutor, TabCompleter {
 		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(player.getUniqueId());
 
 		if (args.length == 0) {
-			new ArenasMenu(this.gameManager.getMenuManager().getMenuUtils(gamePlayer)).open();
+			new AvailableArenasMenu(this.gameManager.getMenuManager().getMenuUtils(gamePlayer)).open();
 			return;
 		}
 

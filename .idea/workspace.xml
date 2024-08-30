@@ -6,8 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="2fa52811-7c51-417c-8700-0097a2a19a25" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/commands/ArenaCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/commands/ArenaCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/commands/MinigameCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/commands/MinigameCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/config/Messages.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/config/Messages.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/Arena.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/Arena.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/ArenaManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/ArenaManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/ArenaState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/arena/ArenaState.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/player/PlayerArenaData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/player/PlayerArenaData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/player/PlayerData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/game/player/PlayerData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/lobby/ArenasMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/lobby/AvailableArenasMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/lobby/InGameArenasMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/gui/menu/lobby/InGameArenasMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/LobbyListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/florixak/minigametemplate/listeners/LobbyListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/messages.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/messages.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

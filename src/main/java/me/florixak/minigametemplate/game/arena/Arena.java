@@ -33,32 +33,33 @@ import java.util.stream.Collectors;
 @Getter
 public class Arena {
 
-	protected final GameManager gameManager = GameManager.getInstance();
 	protected static final File pluginFile = new File(MinigameTemplate.getInstance().getDataFolder(), "arenas");
 
-	protected final String id;
-	protected final String name;
-	protected boolean enabled;
-	protected int maxPlayers;
-	protected final int minPlayers;
-	protected final Location centerLocation;
+	protected final GameManager gameManager = GameManager.getInstance();
+
+	private final String id;
+	private final String name;
+	private boolean enabled;
+	private int maxPlayers;
+	private final int minPlayers;
+	private final Location centerLocation;
 	@Setter
-	protected Location waitingLocation;
+	private Location waitingLocation;
 	@Setter
-	protected Location endingLocation;
-	protected final List<GameTeam> teams;
-	protected boolean solo = false;
+	private Location endingLocation;
+	private final List<GameTeam> teams;
+	private boolean solo = false;
 
-	protected final List<GamePlayer> players = new ArrayList<>();
-	protected final Map<GamePlayer, PlayerArenaData> playerArenaData = new HashMap<>();
-	protected final List<GamePlayer> spectators = new ArrayList<>();
+	private final List<GamePlayer> players = new ArrayList<>();
+	private final Map<GamePlayer, PlayerArenaData> playerArenaData = new HashMap<>();
+	private final List<GamePlayer> spectators = new ArrayList<>();
 
-	protected ArenaCheckTask arenaCheckTask;
-	protected StartingTask startingTask;
-	protected InGameTask inGameTask;
-	protected EndingTask endingTask;
+	private ArenaCheckTask arenaCheckTask;
+	private StartingTask startingTask;
+	private InGameTask inGameTask;
+	private EndingTask endingTask;
 
-	protected ArenaState arenaState = ArenaState.WAITING;
+	private ArenaState arenaState = ArenaState.WAITING;
 
 	public Arena(final String id, final String name, final Location centerLocation, final int minPlayers) {
 		this.id = id;
@@ -70,6 +71,8 @@ public class Arena {
 		this.waitingLocation = centerLocation;
 		this.endingLocation = centerLocation;
 		this.teams = new ArrayList<>();
+
+		setArenaState(ArenaState.DISABLED);
 	}
 
 	public Arena(final String id,
@@ -96,8 +99,11 @@ public class Arena {
 		}
 
 		if (enabled) {
+			setArenaState(ArenaState.WAITING);
 			this.arenaCheckTask = new ArenaCheckTask(this);
 			this.arenaCheckTask.runTaskTimer(MinigameTemplate.getInstance(), 0L, 20L);
+		} else {
+			setArenaState(ArenaState.DISABLED);
 		}
 
 	}
@@ -110,8 +116,6 @@ public class Arena {
 		this.arenaState = arenaState;
 
 		switch (arenaState) {
-			case WAITING:
-				break;
 			case STARTING:
 				Utils.broadcast(PAPI.setPlaceholders(null, Messages.ARENA_STARTING.toString()));
 				break;
@@ -129,7 +133,7 @@ public class Arena {
 				end();
 				break;
 			case RESTARTING:
-				kickAll();
+				reset();
 //				disable();
 				// kick all players, reset arena, etc.
 				break;
@@ -161,16 +165,18 @@ public class Arena {
 		saveToFile();
 
 		if (enabled) {
+			setArenaState(ArenaState.WAITING);
 			this.arenaCheckTask = new ArenaCheckTask(this);
 			this.arenaCheckTask.runTaskTimer(MinigameTemplate.getInstance(), 0L, 20L);
 		} else {
+			setArenaState(ArenaState.DISABLED);
 			if (this.arenaCheckTask != null) this.arenaCheckTask.cancel();
 			if (this.startingTask != null) this.startingTask.cancel();
 		}
 	}
 
 	public void disable() {
-		kickAll();
+		reset();
 		setEnabled(false);
 		this.teams.clear();
 		this.spectators.clear();
@@ -273,18 +279,22 @@ public class Arena {
 		if (isPlaying()) gamePlayer.getArenaData().setState(PlayerState.DEAD);
 		if (isWaiting() || isStarting()) {
 			this.playerArenaData.remove(gamePlayer);
+			Bukkit.getLogger().info("PlayerArenaData removed for " + gamePlayer.getName());
+		} else {
+			Bukkit.getLogger().info("PlayerArenaData were saved for " + gamePlayer.getName());
 		}
 		this.spectators.remove(gamePlayer);
 		this.players.remove(gamePlayer);
 		this.gameManager.getPlayerManager().setPlayerForLobby(gamePlayer);
 	}
 
-	public void kickAll() {
+	public void reset() {
 		final List<GamePlayer> allPlayers = new ArrayList<>(this.players);
 		allPlayers.addAll(this.spectators);
 		allPlayers.forEach(this::leave);
 		this.players.clear();
 		this.spectators.clear();
+		this.playerArenaData.clear();
 	}
 
 	private void preparePlayers() {
@@ -442,12 +452,15 @@ public class Arena {
 			lore.add(loreText);
 		}
 
-		if (!isPlaying())
+		if (!isEnabled())
+			lore.add(Messages.ARENA_LORE_DISABLED.toString());
+		else if (!isPlaying())
 			lore.add(Messages.ARENA_LORE_JOIN.toString());
 		else if (isEnding())
 			lore.add(Messages.ARENA_LORE_RESTARTING.toString());
-		else
+		else if (isPlaying())
 			lore.add(Messages.ARENA_LORE_IN_GAME.toString());
+
 		return PAPI.setPlaceholders(null, lore);
 	}
 
@@ -485,7 +498,7 @@ public class Arena {
 			if (isPlayerIn(arenaData.getGamePlayer())) {
 				arenaData.showStatistics();
 			} else {
-				Bukkit.getLogger().info("Arena data saved for " + arenaData.getUuid() + ", " + arenaData.getName() + ".");
+				Bukkit.getLogger().info("Arena data saved for " + arenaData);
 			}
 		}
 	}

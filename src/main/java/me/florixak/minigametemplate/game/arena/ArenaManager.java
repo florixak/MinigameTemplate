@@ -156,6 +156,10 @@ public class ArenaManager {
 		return this.arenas.stream().filter(arena -> !arena.isEnabled()).collect(Collectors.toList());
 	}
 
+	public List<Arena> getUnavailableArenas() {
+		return this.arenas.stream().filter(arena -> !arena.isEnabled() || (!arena.isStarting() && !arena.isWaiting())).collect(Collectors.toList());
+	}
+
 	private List<PlayerArenaData> findTopKillers(final List<GamePlayer> players) {
 		final List<PlayerArenaData> playerData = new ArrayList<>(players.stream().map(GamePlayer::getArenaData).collect(Collectors.toList()));
 		playerData.sort((gamePlayer1, gamePlayer2) -> Integer.compare(gamePlayer2.getKills(), gamePlayer1.getKills()));

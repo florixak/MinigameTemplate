@@ -17,7 +17,7 @@ import java.util.List;
 public class InGameArenasMenu extends PaginatedMenu {
 
 	private final GamePlayer gamePlayer;
-	private final List<Arena> arenaList = this.gameManager.getArenaManager().getInGameArenas();
+	private final List<Arena> arenaList = this.gameManager.getArenaManager().getUnavailableArenas();
 
 	public InGameArenasMenu(final MenuUtils menuUtils) {
 		super(menuUtils);
@@ -53,7 +53,7 @@ public class InGameArenasMenu extends PaginatedMenu {
 			close();
 		} else if (clickedItem.equals(this.guiManager.getItem("back"))) {
 			close();
-			new ArenasMenu(this.menuUtils).open();
+			new AvailableArenasMenu(this.menuUtils).open();
 		} else if (clickedItem.equals(this.guiManager.getItem("previous")) || clickedItem.equals(this.guiManager.getItem("next"))) {
 			handlePaging(event, this.arenaList);
 		} else {
@@ -88,6 +88,11 @@ public class InGameArenasMenu extends PaginatedMenu {
 	private void handleArenaSelection(final InventoryClickEvent event) {
 		final Arena arena = this.arenaList.get(event.getSlot());
 		close();
+
+		if (!arena.isEnabled()) {
+			this.gamePlayer.sendMessage(Messages.ARENA_DISABLED.toString());
+			return;
+		}
 
 		if (arena.isEnding()) {
 			this.gamePlayer.sendMessage(Messages.ARENA_ENDED.toString());

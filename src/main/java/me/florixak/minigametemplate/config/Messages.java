@@ -49,6 +49,7 @@ public enum Messages {
 	ARENA_ALREADY_STARTING("arena.already-starting"),
 	ARENA_STARTING_CANCELED("arena.starting-canceled"),
 	ARENA_STARTED("arena.started"),
+	ARENA_DISABLED("arena.disabled"),
 	ARENA_ENDED("arena.ended"),
 	ARENA_SOLO("arena.solo"),
 	ARENA_TEAMS("arena.teams"),

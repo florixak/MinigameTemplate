@@ -16,13 +16,13 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class ArenasMenu extends PaginatedMenu {
+public class AvailableArenasMenu extends PaginatedMenu {
 
 	private final GameManager gameManager = GameManager.getInstance();
 	private final List<Arena> arenaList = this.gameManager.getArenaManager().getNotInGameArenas();
 	private final GamePlayer gamePlayer;
 
-	public ArenasMenu(final MenuUtils menuUtils) {
+	public AvailableArenasMenu(final MenuUtils menuUtils) {
 		super(menuUtils);
 		this.gamePlayer = menuUtils.getGamePlayer();
 	}

@@ -53,9 +53,10 @@ Messages:
     players-to-start: "&6[!] &fGame needs minimal %minigame_arena_min% players to start!"
     not-enough-players: "&c[!] &fNot enough players to start!"
 
-    ended: "&c[!] &fGame has ended!"
-    restarting: "%prefix% &fGame is restarting!"
-    full: "&c[!] Game is full!"
+    ended: "&c[!] &fArena %arena_name% has ended!"
+    restarting: "%prefix% &fArena %arena_name%  is restarting!"
+    full: "&c[!] Arena %arena_name% is full!"
+    disabled: "&c[!] &fArena %arena_name% is disabled!"
 
     lore:
       info:
