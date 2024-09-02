@@ -6,7 +6,8 @@ import lombok.Getter;
 import me.florixak.minigametemplate.MinigameTemplate;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.managers.GameManager;
-import me.florixak.minigametemplate.utils.NMSUtils;
+import me.florixak.minigametemplate.utils.PAPIUtils;
+import me.florixak.minigametemplate.utils.Utils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -25,6 +26,7 @@ import java.util.UUID;
 @Getter
 public class GamePlayer {
 
+	private final MinigameTemplate plugin = MinigameTemplate.getInstance();
 	private final GameManager gameManager = GameManager.getInstance();
 
 	private final UUID uuid;
@@ -33,7 +35,6 @@ public class GamePlayer {
 	public GamePlayer(final UUID uuid, final String name) {
 		this.uuid = uuid;
 		this.name = name;
-
 	}
 
 	public Player getPlayer() {
@@ -125,7 +126,7 @@ public class GamePlayer {
 
 	public void kick(final String message) {
 		if (message == null || message.isEmpty() || !isOnline()) return;
-		getPlayer().kickPlayer(TextUtils.color(message));
+		getPlayer().kickPlayer(TextUtils.color(PAPIUtils.setPlaceholders(getPlayer(), null, message)));
 	}
 
 	public void setGameMode(final GameMode gameMode) {
@@ -149,7 +150,10 @@ public class GamePlayer {
 
 	public void sendTitle(final String title, final String subtitle, final int fadeIn, final int stay, final int fadeOut) {
 		if (title == null || title.isEmpty() || !isOnline()) return;
-		MinigameTemplate.getInstance().getVersionUtils().sendTitle(getPlayer(), TextUtils.color(title), TextUtils.color(subtitle), fadeIn, stay, fadeOut);
+		this.plugin.getVersionUtils().sendTitle(getPlayer(),
+				TextUtils.color(PAPIUtils.setPlaceholders(getPlayer(), null, title)),
+				TextUtils.color(PAPIUtils.setPlaceholders(getPlayer(), null, subtitle)),
+				fadeIn, stay, fadeOut);
 	}
 
 	public ItemStack getPlayerHead(final String playerName) {
@@ -177,7 +181,7 @@ public class GamePlayer {
 
 	public void sendHotBarMessage(final String message) {
 		if (message == null || message.isEmpty() || !isOnline()) return;
-		NMSUtils.sendHotBarMessageViaNMS(getPlayer(), TextUtils.color(message));
+		Utils.sendHotbarMessage(getPlayer(), TextUtils.color(PAPIUtils.setPlaceholders(getPlayer(), null, message)));
 	}
 
 	@Override

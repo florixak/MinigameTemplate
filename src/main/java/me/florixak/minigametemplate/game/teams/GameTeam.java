@@ -6,7 +6,7 @@ import lombok.Setter;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.Permissions;
 import me.florixak.minigametemplate.game.player.GamePlayer;
-import me.florixak.minigametemplate.utils.NMSUtils;
+import me.florixak.minigametemplate.utils.Utils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -114,7 +114,7 @@ public class GameTeam {
 
 	public void sendHotBarMessage(final String message) {
 		if (message.isEmpty() || message == null) return;
-		getMembersInArena().forEach(gamePlayer -> NMSUtils.sendHotBarMessageViaNMS(gamePlayer.getPlayer(), message));
+		getMembersInArena().forEach(gamePlayer -> Utils.sendHotbarMessage(gamePlayer.getPlayer(), message));
 	}
 
 	public void sendMessage(final String message) {

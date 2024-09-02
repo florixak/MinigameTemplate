@@ -13,8 +13,8 @@ public class ScoreboardUpdateTask extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		this.gameManager.getPlayerManager().getOnlinePlayers().forEach(gamePlayer -> {
-			this.gameManager.getScoreboardManager().updateScoreboard(gamePlayer.getUuid());
-		});
+		this.gameManager.getPlayerManager().getOnlinePlayers().forEach(gamePlayer ->
+				this.gameManager.getScoreboardManager().updateScoreboard(gamePlayer.getUuid())
+		);
 	}
 }

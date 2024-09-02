@@ -20,7 +20,6 @@ public class EndingTask extends BukkitRunnable {
 	public void run() {
 		if (this.time == 0) {
 			cancel();
-			this.arena.disable();
 			this.arena.setArenaState(ArenaState.RESTARTING);
 			return;
 		}

@@ -181,15 +181,38 @@ settings:
 
   # Tablist settings
   tablist: # Enable custom tablist (requires ProtocolLib)
+    update-interval: 10 # Update interval in seconds
     lobby:
       enabled: true
-      header: "&6&lMinigame\n &7%minigame_date%\n" # Header text for tablist
-      player-list: "&7[%minigame_level%] &f%minigame_player%" # Player list format for solo mode
+      header:
+        - "&e&lMinigame\n &7%date%\n"
+        - "&6&lM&e&linigame\n &7%date%\n"
+        - "&e&lM&6&li&e&lnigame\n &7%date%\n"
+        - "&e&lMi&6&ln&e&ligame\n &7%date%\n"
+        - "&e&lMin&6&li&e&lgame\n &7%date%\n"
+        - "&e&lMini&6&lg&e&lame\n &7%date%\n"
+        - "&e&lMinig&6&la&e&lme\n &7%date%\n"
+        - "&e&lMiniga&6&lm&e&le\n &7%date%\n"
+        - "&e&lMinigam&6&le\n &7%date%\n"
+        - "&e&lMinigame\n &7%date%\n"
+        - "&6&lMinigame\n &7%date%\n"
+      player-list: "&7[%level%] &f%player%" # Player list format for solo mode
       footer: "\n&7www.your-server.com" # Footer text for tablist
     ingame:
       enabled: true
-      header: "&6&lMinigame\n &7%minigame_arena_name%\n" # Header text for tablist
-      player-list: "&7[%minigame_level%] %minigame_team% &f%minigame_player%" # Player list format for team mode
+      header:
+        - "&e&lMinigame\n &7%arena_name%\n"
+        - "&6&lM&e&linigame\n &7%arena_name%\n"
+        - "&e&lM&6&li&e&lnigame\n &7%arena_name%\n"
+        - "&e&lMi&6&ln&e&ligame\n &7%arena_name%\n"
+        - "&e&lMin&6&li&e&lgame\n &7%arena_name%\n"
+        - "&e&lMini&6&lg&e&lame\n &7%arena_name%\n"
+        - "&e&lMinig&6&la&e&lme\n &7%arena_name%\n"
+        - "&e&lMiniga&6&lm&e&le\n &7%arena_name%\n"
+        - "&e&lMinigam&6&le\n &7%arena_name%\n"
+        - "&e&lMinigame\n &7%arena_name%\n"
+        - "&6&lMinigame\n &7%arena_name%\n"
+      player-list: "&7[%level%] %team% &f%player%" # Player list format for team mode
       footer: "\n&7www.your-server.com" # Footer text for tablist
 
   # Selectors

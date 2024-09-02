@@ -1,6 +1,8 @@
 package me.florixak.minigametemplate.managers.boards;
 
 import eu.decentsoftware.holograms.api.utils.PAPI;
+import me.florixak.minigametemplate.managers.GameManager;
+import me.florixak.minigametemplate.utils.PAPIUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,6 +16,7 @@ import java.util.List;
 
 public class ScoreHelper {
 
+	private final GameManager gameManager = GameManager.getInstance();
 	private final Scoreboard scoreboard;
 	private final Objective objective;
 	private final Player player;
@@ -76,7 +79,7 @@ public class ScoreHelper {
 		}
 
 		for (final String line : list) {
-			setSlot(slot, line);
+			setSlot(slot, PAPIUtils.setPlaceholders(this.player, this.gameManager.getArenaManager().getPlayerArena(this.gameManager.getPlayerManager().getGamePlayer(this.player.getUniqueId())), line));
 			slot--;
 		}
 	}

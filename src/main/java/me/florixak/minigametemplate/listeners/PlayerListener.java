@@ -77,7 +77,6 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@Deprecated
 	@EventHandler
 	public void handleItemPickUp(final PlayerPickupItemEvent event) {
 		final GamePlayer gamePlayer = this.gameManager.getPlayerManager().getGamePlayer(event.getPlayer().getUniqueId());

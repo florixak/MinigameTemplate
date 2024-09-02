@@ -31,7 +31,7 @@ public class StartingTask extends BukkitRunnable {
 		}
 
 		if (this.time == 30 || this.time == 15 || this.time == 10 || this.time <= 5) {
-			this.arena.broadcast("Starting in " + TimeUtils.getFormattedTime(this.time));
+			this.arena.sendHotbarMessage("Starting in " + TimeUtils.getFormattedTime(this.time));
 		}
 
 		this.time--;

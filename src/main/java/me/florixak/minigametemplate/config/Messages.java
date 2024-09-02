@@ -24,8 +24,9 @@ public enum Messages {
 	CANCELLED_PURCHASE("purchase-cancel"),
 	CANT_USE_NOW("cant-use-now"),
 
-	LOBBY_JOIN("player.join"),
-	LOBBY_QUIT("player.quit"),
+	LOBBY_JOIN("lobby.join"),
+	LOBBY_QUIT("lobby.quit"),
+	LOBBY_ARENA_STARTING("lobby.arena-starting"),
 
 	KILLSTREAK_NEW("player.new-killstreak"),
 	CANT_PLACE("cant-place"),
@@ -35,7 +36,6 @@ public enum Messages {
 	SUBTITLE_WIN("title.victory.subtitle"),
 	TITLE_LOSE("title.lose.title"),
 	SUBTITLE_LOSE("title.lose.subtitle"),
-
 
 //	BORDER_SHRINK("arena.border-shrink"),
 
@@ -53,11 +53,14 @@ public enum Messages {
 	ARENA_ENDED("arena.ended"),
 	ARENA_SOLO("arena.solo"),
 	ARENA_TEAMS("arena.teams"),
+	ARENA_KILL("arena.kill"),
+	ARENA_DEATH("arena.death"),
 	ARENA_RESTARTING("arena.restarting"),
 	ARENA_FULL("arena.full"),
 	ARENA_KICK_DUE_RESERVED_SLOT("arena.kick-due-reserved-slot"),
 	ARENA_PLAYER_KILLED("arena.player-killed"),
 	ARENA_PLAYED_DIED("arena.player-died"),
+	ARENA_WAITING_HOTBAR("arena.waiting-hotbar"),
 	ARENA_LORE("arena.lore.info"),
 	ARENA_LORE_JOIN("arena.lore.join"),
 	ARENA_LORE_IN_GAME("arena.lore.in-game"),

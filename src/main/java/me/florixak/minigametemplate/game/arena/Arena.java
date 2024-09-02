@@ -16,8 +16,6 @@ import me.florixak.minigametemplate.tasks.InGameTask;
 import me.florixak.minigametemplate.tasks.StartingTask;
 import me.florixak.minigametemplate.utils.PAPIUtils;
 import me.florixak.minigametemplate.utils.RandomUtils;
-import me.florixak.minigametemplate.utils.Utils;
-import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -117,7 +115,7 @@ public class Arena {
 
 		switch (arenaState) {
 			case STARTING:
-				Utils.broadcast(PAPI.setPlaceholders(null, Messages.ARENA_STARTING.toString()));
+				broadcast(PAPI.setPlaceholders(null, Messages.ARENA_STARTING.toString()));
 				break;
 			case INGAME:
 				preparePlayers();
@@ -127,7 +125,7 @@ public class Arena {
 				break;
 			case ENDING:
 				setWinner();
-				broadcast(PAPIUtils.setArenaPlaceholders(null, this, "%arena_winner% is the WINNER!"));
+				broadcast(PAPIUtils.setPlaceholders(null, this, "%arena_winner% is the WINNER!"));
 				broadcast(PAPI.setPlaceholders(null, Messages.ARENA_ENDED.toString()));
 				saveAndShowStatistics();
 				end();
@@ -420,35 +418,31 @@ public class Arena {
 
 	/* Arena Methods */
 	public void broadcast(final String message) {
-		getOnlinePlayers().forEach(player -> player.sendMessage(message));
+		if (message == null || message.isEmpty()) return;
+		getOnlinePlayers().forEach(player -> player.sendMessage(PAPIUtils.setPlaceholders(player.getPlayer(), this, message)));
 	}
 
 	public void sendHotbarMessage(final String message) {
-		getOnlinePlayers().forEach(player -> player.sendHotBarMessage(message));
+		if (message == null || message.isEmpty()) return;
+		getOnlinePlayers().forEach(player -> player.sendHotBarMessage(PAPIUtils.setPlaceholders(player.getPlayer(), this, message)));
 	}
 
 	public void sendTitle(final String title, final String subtitle) {
-		getOnlinePlayers().forEach(player -> player.sendTitle(title, subtitle, 20, 40, 20));
+		if (title == null || title.isEmpty())
+			getOnlinePlayers().forEach(player -> player.sendTitle("", PAPIUtils.setPlaceholders(player.getPlayer(), this, subtitle), 20, 40, 20));
+		else if (subtitle == null || subtitle.isEmpty())
+			getOnlinePlayers().forEach(player -> player.sendTitle(PAPIUtils.setPlaceholders(player.getPlayer(), this, title), "", 20, 40, 20));
+		else
+			getOnlinePlayers().forEach(player -> player.sendTitle(PAPIUtils.setPlaceholders(player.getPlayer(), this, title), PAPIUtils.setPlaceholders(player.getPlayer(), this, subtitle), 20, 40, 20));
 	}
 
-	public void sendMessage(final String message) {
-		getOnlinePlayers().forEach(player -> player.sendMessage(message));
-	}
+//	public void sendMessage(final String message) {
+//		getOnlinePlayers().forEach(player -> player.sendMessage(PAPIUtils.setPlayerPlaceholders(player.getPlayer(), message)));
+//	}
 
 	public List<String> getLore() {
 		final List<String> lore = new ArrayList<>();
-		for (String loreText : Messages.ARENA_LORE.toList()) {
-			loreText = loreText
-					.replace("%arena_name%", TextUtils.color(this.name))
-					.replace("%arena_id%", this.id)
-					.replace("%arena_online%", String.valueOf(this.players.size()))
-					.replace("%arena_min%", String.valueOf(this.minPlayers))
-					.replace("%arena_max%", String.valueOf(this.maxPlayers))
-					.replace("%arena_alive%", String.valueOf(getAlivePlayers().size()))
-					.replace("%arena_teams_alive%", String.valueOf(getAliveTeams().size()))
-					.replace("%arena_state%", this.arenaState.toString())
-					.replace("%arena_seconds%", String.valueOf(getArenaTime()))
-					.replace("%arena_mode%", getArenaMode());
+		for (final String loreText : Messages.ARENA_LORE.toList()) {
 			lore.add(loreText);
 		}
 
@@ -461,7 +455,7 @@ public class Arena {
 		else if (isPlaying())
 			lore.add(Messages.ARENA_LORE_IN_GAME.toString());
 
-		return PAPI.setPlaceholders(null, lore);
+		return PAPIUtils.setPlaceholders(null, this, lore);
 	}
 
 	public String getArenaMode() {
@@ -497,6 +491,7 @@ public class Arena {
 			}
 			if (isPlayerIn(arenaData.getGamePlayer())) {
 				arenaData.showStatistics();
+				arenaData.getGamePlayer().sendTitle(arenaData.isWinner() ? "Victory" : "Game Over", arenaData.isWinner() ? "Congratulations!" : "Good luck next time", 20, 40, 20);
 			} else {
 				Bukkit.getLogger().info("Arena data saved for " + arenaData);
 			}

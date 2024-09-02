@@ -17,7 +17,7 @@ import java.util.List;
 public class InGameArenasMenu extends PaginatedMenu {
 
 	private final GamePlayer gamePlayer;
-	private final List<Arena> arenaList = this.gameManager.getArenaManager().getUnavailableArenas();
+	private final List<Arena> arenaList = this.gameManager.getArenaManager().getInGameArenas();
 
 	public InGameArenasMenu(final MenuUtils menuUtils) {
 		super(menuUtils);

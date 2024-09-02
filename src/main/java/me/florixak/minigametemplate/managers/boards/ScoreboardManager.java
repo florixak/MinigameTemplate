@@ -18,7 +18,9 @@ public class ScoreboardManager {
 
 	private final Map<UUID, ScoreHelper> players = new HashMap<>();
 
-	private final String title;
+	private int titleOrder = 0;
+
+	private final List<String> title;
 	@Getter
 	private final String footer;
 	private final List<String> lobby;
@@ -34,7 +36,7 @@ public class ScoreboardManager {
 
 		final FileConfiguration config = gameManager.getConfigManager().getFile(ConfigType.SCOREBOARD).getConfig();
 
-		this.title = config.getString("scoreboard.title");
+		this.title = config.getStringList("scoreboard.title");
 		this.footer = config.getString("scoreboard.footer");
 
 		this.lobby = config.getStringList("scoreboard.lobby");
@@ -58,7 +60,10 @@ public class ScoreboardManager {
 
 		ScoreHelper helper = this.players.get(p.getUniqueId());
 		if (helper == null) helper = new ScoreHelper(p);
-		helper.setTitle(this.title);
+
+		if (this.titleOrder >= this.title.size()) this.titleOrder = 0;
+		helper.setTitle(this.title.get(this.titleOrder));
+		this.titleOrder++;
 
 		if (!gamePlayer.isInArena()) {
 			helper.setSlotsFromList(this.lobby);

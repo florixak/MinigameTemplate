@@ -27,21 +27,22 @@ Messages:
   player:
     kick-due-reserved-slot: "You were kicked because player with reserved slot joined!"
 
-    kill: "&6[†] &f%player% was killed by %killer%!"
     new-killstreak: "&6[!] &fCongratulations! You broke your killstreak with %kills% kills!"
-    death: "&6[†] &f%player% died!"
 
     shot-hp: "&6[!] &f%player% has &c%hp%❤"
 
     uhc-level:
       level-up: "&a[LEVEL UP] &f%previous-uhc-level% → %new-uhc-level%"
+
   lobby:
-    join: "&a[+] &f%minigame_player% joined the lobby! (%minigame_online%)"
-    quit: "&c[-] &f%minigame_player% left the lobby! (%minigame_online%)"
+    join: "&a[+] &f%minigame_player% joined the lobby! (%online%)"
+    quit: "&c[-] &f%minigame_player% left the lobby! (%online%)"
+
+    arena-starting: "&6[!] &fArena %arena_name% &fis starting in %minigame_time%!"
 
   arena:
-    join: "&a[+] &f%minigame_player% joined arena! (%minigame_arena_online%)"
-    quit: "&c[-] &f%minigame_player% left arena! (%minigame_arena_online%)"
+    join: "&a[+] &f%minigame_player% joined arena! (%arena_online%)"
+    quit: "&c[-] &f%minigame_player% left arena! (%arena_online%)"
 
     starting: "&6[!] &fGame is starting in %minigame_time%!"
     already-starting: "&c[!] &fGame is already about to start!"
@@ -57,6 +58,9 @@ Messages:
     restarting: "%prefix% &fArena %arena_name%  is restarting!"
     full: "&c[!] Arena %arena_name% is full!"
     disabled: "&c[!] &fArena %arena_name% is disabled!"
+
+    kill: "&6[†] &f%player% was killed by %killer%!"
+    death: "&6[†] &f%player% died!"
 
     lore:
       info:

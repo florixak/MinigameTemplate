@@ -16,7 +16,43 @@ import java.util.List;
 public class Utils {
 
 	public static void broadcast(final String msg) {
+		if (msg == null || msg.isEmpty()) return;
 		Bukkit.broadcastMessage(TextUtils.color(msg));
+	}
+
+	public static void sendHotbarMessage(final Player player, final String message) {
+		try {
+			final Object chatComponentText = getNMSClass("ChatComponentText").getConstructor(String.class).newInstance(message);
+			final Object packetPlayOutChat = getNMSClass("PacketPlayOutChat")
+					.getConstructor(getNMSClass("IChatBaseComponent"), byte.class)
+					.newInstance(chatComponentText, (byte) 2);
+			sendPacket(player, packetPlayOutChat);
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void sendPacket(final Player player, final Object packet) {
+		try {
+			final Object handle = player.getClass().getMethod("getHandle").invoke(player);
+			final Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
+			playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static Class<?> getNMSClass(final String name) {
+		try {
+			return Class.forName("net.minecraft.server." + getServerVersion() + "." + name);
+		} catch (final ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private static String getServerVersion() {
+		return org.bukkit.Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 	}
 
 	public static void skullTeleport(final Player p, final ItemStack item) {
