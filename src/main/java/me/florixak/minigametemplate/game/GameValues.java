@@ -158,6 +158,8 @@ public class GameValues {
 		public final List<String> INGAME_HEADER = getConfigStringList("settings.tablist.ingame.header");
 		public final String INGAME_FOOTER = getConfigString("settings.tablist.ingame.footer", "");
 		public final String INGAME_PLAYER_LIST = getConfigString("settings.tablist.ingame.player-list", "&f%minigame_player%");
+
+		public final long UPDATE_INTERVAL = getConfigLong("settings.tablist.update-interval", 20);
 	}
 
 	public static class ActivityRewardConfig {
@@ -246,6 +248,10 @@ public class GameValues {
 
 	private static double getConfigDouble(final String path, final double def) {
 		return config.getDouble(path, def);
+	}
+
+	private static long getConfigLong(final String path, final long def) {
+		return config.getLong(path, def);
 	}
 
 	private static List<String> getConfigStringList(final String path) {

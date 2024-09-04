@@ -1,6 +1,7 @@
 package me.florixak.minigametemplate.managers;
 
 import me.florixak.minigametemplate.config.ConfigType;
+import me.florixak.minigametemplate.game.GameValues;
 import me.florixak.minigametemplate.tasks.ScoreboardUpdateTask;
 import me.florixak.minigametemplate.tasks.TablistUpdateTask;
 import org.bukkit.Bukkit;
@@ -24,7 +25,7 @@ public class TasksManager {
 			Bukkit.getLogger().info("Scoreboard update interval is invalid, using default value of 20 ticks.");
 		}
 
-		this.tablistUpdateInterval = gameManager.getConfigManager().getFile(ConfigType.SETTINGS).getConfig().getLong("settings.tablist.update-interval", 20);
+		this.tablistUpdateInterval = GameValues.TABLIST.UPDATE_INTERVAL;
 		if (this.tablistUpdateInterval < 1) {
 			this.tablistUpdateInterval = 20;
 			Bukkit.getLogger().info("Tablist update interval is invalid, using default value of 20 ticks.");
@@ -37,8 +38,7 @@ public class TasksManager {
 		if (this.scoreboardUpdateTask != null) this.scoreboardUpdateTask.cancel();
 		this.scoreboardUpdateTask = new ScoreboardUpdateTask(this.gameManager);
 		this.scoreboardUpdateTask.runTaskTimer(this.gameManager.getPlugin(), 0, this.scoreboardUpdateInterval);
-
-
+		
 		if (this.tablistUpdateTask != null) this.tablistUpdateTask.cancel();
 		this.tablistUpdateTask = new TablistUpdateTask(this.gameManager);
 		this.tablistUpdateTask.runTaskTimer(this.gameManager.getPlugin(), 0, this.tablistUpdateInterval);
