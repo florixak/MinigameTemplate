@@ -4,6 +4,7 @@ import eu.decentsoftware.holograms.api.utils.PAPI;
 import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.listeners.events.ArenaDeathEvent;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.utils.Utils;
 import org.bukkit.Bukkit;
@@ -57,13 +58,17 @@ public class PlayerListener implements Listener {
 	public void handleDeath(final PlayerDeathEvent event) {
 		event.setDeathMessage(null);
 
-		GamePlayer uhcKiller = null;
-		if (event.getEntity().getKiller() instanceof Player) {
-			uhcKiller = this.gameManager.getPlayerManager().getGamePlayer(event.getEntity().getKiller().getUniqueId());
-		}
-		final GamePlayer uhcVictim = this.gameManager.getPlayerManager().getGamePlayer(event.getEntity().getPlayer().getUniqueId());
+		final Player p = event.getEntity();
+		final Arena arena = this.gameManager.getArenaManager().getPlayerArena(p);
+		final GamePlayer player = this.gameManager.getPlayerManager().getGamePlayer(p.getUniqueId());
 
-//		Bukkit.getServer().getPluginManager().callEvent(new GameKillEvent(uhcKiller, uhcVictim));
+		GamePlayer killer = null;
+		if (event.getEntity().getKiller() instanceof Player) {
+			final Player k = event.getEntity().getKiller();
+			killer = this.gameManager.getPlayerManager().getGamePlayer(k.getUniqueId());
+		}
+
+		Bukkit.getServer().getPluginManager().callEvent(new ArenaDeathEvent(player, killer, arena));
 	}
 
 	@EventHandler

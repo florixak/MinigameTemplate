@@ -1,15 +1,19 @@
 package me.florixak.minigametemplate.listeners;
 
+import com.cryptomorin.xseries.XMaterial;
+import me.florixak.minigametemplate.config.Messages;
 import me.florixak.minigametemplate.game.arena.Arena;
 import me.florixak.minigametemplate.game.player.GamePlayer;
+import me.florixak.minigametemplate.game.player.PlayerArenaData;
 import me.florixak.minigametemplate.gui.GuiManager;
 import me.florixak.minigametemplate.gui.GuiType;
 import me.florixak.minigametemplate.gui.MenuUtils;
 import me.florixak.minigametemplate.gui.menu.inGame.*;
+import me.florixak.minigametemplate.listeners.events.ArenaDeathEvent;
 import me.florixak.minigametemplate.managers.GameManager;
 import me.florixak.minigametemplate.managers.player.PlayerManager;
+import me.florixak.minigametemplate.utils.PAPIUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -91,42 +95,43 @@ public class ArenaListener implements Listener {
 		}
 	}*/
 
-	/*@EventHandler
-	public void handleGameKill(final GameKillEvent event) {
-		final UHCPlayer killer = event.getKiller();
-		final UHCPlayer victim = event.getVictim();
+	@EventHandler
+	public void handleArenaDeath(final ArenaDeathEvent event) {
+		final GamePlayer player = event.getPlayer();
+		final GamePlayer killer = event.getKiller();
+		final Arena arena = event.getArena();
 
-		victim.die();
+		final PlayerArenaData playerArenaData = arena.getPlayerArenaData(player);
 
-		if (GameValues.TEAM.TEAM_MODE && !victim.getTeam().isAlive()) {
-			Utils.broadcast(Messages.TEAM_DEFEATED.toString()
-					.replace("%team%", victim.getTeam().getDisplayName()));
+		arena.die(player, false);
+
+		if (!playerArenaData.getTeam().isAlive() && !arena.isSolo()) {
+			arena.broadcast(Messages.TEAM_DEFEATED.toString()
+					.replace("%team%", playerArenaData.getTeam().getDisplayName()));
 		}
 
 		if (killer == null) {
-//			Bukkit.getLogger().info("Killer is null");
-			Utils.broadcast(PlaceholderUtil.setPlaceholders(Messages.DEATH.toString(), victim.getPlayer()));
-			if (this.gameManager.getDamageTrackerManager().isInTracker(victim)) {
-				final UHCPlayer attacker = this.gameManager.getDamageTrackerManager().getAttacker(victim);
-				this.gameManager.getDamageTrackerManager().onDead(victim);
-				attacker.kill(victim);
+			arena.broadcast(PAPIUtils.setPlaceholders(player.getPlayer(), arena, Messages.ARENA_DEATH.toString()));
+			if (this.gameManager.getDamageTrackerManager().isInTracker(player)) {
+				final GamePlayer attacker = this.gameManager.getDamageTrackerManager().getAttacker(player);
+				this.gameManager.getDamageTrackerManager().onDead(player);
+				arena.getPlayerArenaData(attacker).kill(player);
 			}
-			return;
+		} else {
+			arena.broadcast(PAPIUtils.setPlaceholders(player.getPlayer(), arena, Messages.ARENA_DEATH.toString())
+					.replace("%killer%", killer.getName()));
+
+			final GamePlayer attacker = this.gameManager.getDamageTrackerManager().getAttacker(player);
+			arena.getPlayerArenaData(attacker).kill(player);
 		}
 
-		final UHCPlayer attacker = this.gameManager.getDamageTrackerManager().getAttacker(victim);
-		final UHCPlayer assistant = this.gameManager.getDamageTrackerManager().getAssistant(victim);
+		final GamePlayer assistant = this.gameManager.getDamageTrackerManager().getAssistant(player);
 
 		if (assistant != null) {
-			assistant.assist(victim);
+			arena.getPlayerArenaData(assistant).assist(player);
 		}
-		attacker.kill(victim);
-		this.gameManager.getDamageTrackerManager().onDead(victim);
-
-		Utils.broadcast(Messages.KILL.toString()
-				.replace("%player%", victim.getName())
-				.replace("%killer%", killer.getName()));
-	}*/
+		this.gameManager.getDamageTrackerManager().onDead(player);
+	}
 
 	@EventHandler
 	public void onItemClick(final PlayerInteractEvent event) {
@@ -140,10 +145,10 @@ public class ArenaListener implements Listener {
 		if (arena.isPlaying()) return;
 		final ItemStack item = gamePlayer.getInventory().getItemInHand();
 
-		if (item.getType() == Material.AIR || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName())
+		if (item.getType().equals(XMaterial.AIR.parseMaterial()) || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName())
 			return;
 
-		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+		if (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 			final MenuUtils menuUtils = this.gameManager.getMenuManager().getMenuUtils(gamePlayer);
 
 			if (item.equals(this.guiManager.getGui(GuiType.TEAMS_SELECTOR.getKey()).getDisplayItem())) {
