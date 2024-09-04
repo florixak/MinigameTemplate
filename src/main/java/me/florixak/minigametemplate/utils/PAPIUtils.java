@@ -136,7 +136,6 @@ public class PAPIUtils {
 			}
 		}
 
-
 		if (MinigameTemplate.getInstance().getPapiHook().hasPlaceholderAPI()) {
 			return PAPI.setPlaceholders(player, message);
 		}

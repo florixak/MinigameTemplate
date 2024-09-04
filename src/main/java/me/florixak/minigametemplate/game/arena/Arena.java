@@ -154,6 +154,10 @@ public class Arena {
 		return this.arenaState.equals(ArenaState.ENDING);
 	}
 
+	public boolean isRestarting() {
+		return this.arenaState.equals(ArenaState.RESTARTING);
+	}
+
 	public void setEnabled(final boolean enabled) {
 		if (this.enabled == enabled) return;
 		this.enabled = enabled;
@@ -448,10 +452,10 @@ public class Arena {
 
 		if (!isEnabled())
 			lore.add(Messages.ARENA_LORE_DISABLED.toString());
+		else if (isEnding() || isRestarting())
+			lore.add(Messages.ARENA_LORE_RESTARTING.toString());
 		else if (!isPlaying())
 			lore.add(Messages.ARENA_LORE_JOIN.toString());
-		else if (isEnding())
-			lore.add(Messages.ARENA_LORE_RESTARTING.toString());
 		else if (isPlaying())
 			lore.add(Messages.ARENA_LORE_IN_GAME.toString());
 
