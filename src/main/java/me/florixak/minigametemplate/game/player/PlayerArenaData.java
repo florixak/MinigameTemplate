@@ -8,6 +8,7 @@ import me.florixak.minigametemplate.game.kits.Kit;
 import me.florixak.minigametemplate.game.perks.Perk;
 import me.florixak.minigametemplate.game.teams.GameTeam;
 import me.florixak.minigametemplate.managers.GameManager;
+import me.florixak.minigametemplate.utils.PAPIUtils;
 import me.florixak.minigametemplate.utils.text.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -229,7 +230,7 @@ public class PlayerArenaData {
 		final List<String> rewards = this.winner ? Messages.REWARDS_WIN.toList() : Messages.REWARDS_LOSE.toList();
 
 		for (String message : rewards) {
-			message = PAPI.setPlaceholders(this.gamePlayer.getPlayer(), message);
+			message = PAPIUtils.setPlaceholders(this.gamePlayer.getPlayer(), this.gamePlayer.getArena(), message);
 			this.gamePlayer.sendMessage(TextUtils.color(message));
 		}
 	}

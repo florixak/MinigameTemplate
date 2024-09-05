@@ -497,7 +497,7 @@ public class Arena {
 				arenaData.showStatistics();
 				arenaData.getGamePlayer().sendTitle(arenaData.isWinner() ? "Victory" : "Game Over", arenaData.isWinner() ? "Congratulations!" : "Good luck next time", 20, 40, 20);
 			} else {
-				Bukkit.getLogger().info("Arena data saved for " + arenaData);
+				Bukkit.getLogger().info("Offline Player! Arena data saved for " + arenaData);
 			}
 		}
 	}
