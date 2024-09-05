@@ -13,6 +13,7 @@ import java.util.List;
 
 public class PAPIUtils {
 
+	private static final MinigameTemplate plugin = MinigameTemplate.getInstance();
 	private static final GameManager gameManager = GameManager.getInstance();
 	private static final String SCOREBOARD_FOOTER = gameManager.getConfigManager().getFile(ConfigType.SCOREBOARD).getConfig().getString("scoreboard.footer", "");
 
@@ -136,7 +137,7 @@ public class PAPIUtils {
 			}
 		}
 
-		if (MinigameTemplate.getInstance().getPapiHook().hasPlaceholderAPI()) {
+		if (plugin.getPapiHook().hasPlaceholderAPI()) {
 			return PAPI.setPlaceholders(player, message);
 		}
 
