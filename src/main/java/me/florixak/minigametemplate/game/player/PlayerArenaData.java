@@ -168,7 +168,7 @@ public class PlayerArenaData {
 		this.gamePlayer.sendMessage(Messages.REWARDS_ASSIST.toString()
 				.replace("%player%", victim.getName())
 				.replace("%money%", String.valueOf(GameValues.REWARDS.COINS_FOR_ASSIST))
-				.replace("%uhc-exp%", String.valueOf(GameValues.REWARDS.EXP_FOR_ASSIST)));
+				.replace("%exp%", String.valueOf(GameValues.REWARDS.EXP_FOR_ASSIST)));
 		this.gameManager.getSoundManager().playAssistSound(this.gamePlayer.getPlayer());
 
 		if (this.playerQuestData.hasQuestWithTypeOf("ASSIST")) {
